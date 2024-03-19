@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>0</x>
+      <y>290</y>
+      <w>230</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Application
+halign=center
+--
+- user: User
+- manager: Manager
+--
++ requestBooking():LodgingID
++ filter(): Arraylist&lt;String&gt;
+# addLodging()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>410</x>
+      <y>290</y>
+      <w>370</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Master
+halign=center
+--
+-reducer:Reducer
+--
+- search(filters:ArrayLisy&lt;String&gt;):Map&lt;map_id, filters&gt;
+- reserve(roomName:String)
+- removeLodging()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>220</x>
+      <y>330</y>
+      <w>210</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>communicates &gt;
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;20.0;190.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>920</x>
+      <y>290</y>
+      <w>260</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Worker
+halign=center
+--
+- LodgingList: ArrayList&lt;Logding&gt;
+--
+-search(filters:ArrayLisy&lt;String&gt;)  
+-updateBookingDate(roomName:String)
+#copyOfLodging()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>770</x>
+      <y>330</y>
+      <w>170</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>gives orders to &gt;
+m1=1
+m2=1...*</panel_attributes>
+    <additional_attributes>10.0;20.0;150.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>740</x>
+      <y>0</y>
+      <w>240</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>Lodging
+halign=center
+--
+#roomName: String 
+#noOfPerson: int
+#area: String
+#stars: int
+#noOfReviews: int
+#roomImage: String
+-- 
++create_lodging_data_file()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLGeneric</id>
+    <coordinates>
+      <x>580</x>
+      <y>530</y>
+      <w>520</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Reducer
+halign=center
+--
++map(key:String, value:ArrayList): ArrayList&lt;key2,value2&gt;
++reduce(key2,value2:ArrayList&lt;String&gt;): ArrayList&lt; key3, ArrayList&lt;String&gt; &gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>630</x>
+      <y>170</y>
+      <w>150</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>manages &gt;
+m1=1
+m2=1...*</panel_attributes>
+    <additional_attributes>10.0;120.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>920</x>
+      <y>170</y>
+      <w>120</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>&lt; has
+m1=1
+m2=1...*</panel_attributes>
+    <additional_attributes>100.0;120.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>870</x>
+      <y>400</y>
+      <w>170</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>&lt; send results to 
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>10.0;130.0;150.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>650</x>
+      <y>400</y>
+      <w>150</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>&lt; finalResults
+m1=1
+m2=1
+</panel_attributes>
+    <additional_attributes>10.0;10.0;80.0;130.0</additional_attributes>
+  </element>
+</diagram>
