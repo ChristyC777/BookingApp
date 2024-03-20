@@ -1,0 +1,13 @@
+public class ThreadCreation extends Thread 
+{
+    String name;
+    int n;
+
+    ThreadCreation(){}
+
+    ThreadCreation(String threadName)
+    {
+        super(threadName);
+    }
+
+}
