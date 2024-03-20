@@ -1,4 +1,5 @@
-
+package src.backend.master;
+package src.backend.Master;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;

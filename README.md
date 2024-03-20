@@ -119,4 +119,4 @@ _**ΠΡΟΣΟΧΗ: Απαγορεύεται η χρήση βάσης δεδομ�
 
 ### Domain Model
 
-![Domain Model](/images/new.png)
+![Domain Model](/images/class_diagram.png)

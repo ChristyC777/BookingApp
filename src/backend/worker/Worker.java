@@ -1,4 +1,6 @@
-public class Worker {
+package src.backend.worker;
+package src.backend.Worker;
+public class Worker implements WorkerInterface {
     
     private long workerID;
 
