@@ -10,4 +10,13 @@ public class ThreadCreation extends Thread
         super(threadName);
     }
 
+    @Override
+    public void run() {
+        
+        for (int i = 0; i < n; i++) {
+            System.out.println("Thread: " + i);
+
+        }
+    }
+
 }
