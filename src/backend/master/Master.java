@@ -6,6 +6,7 @@ import java.util.*;
 
 public class Master {
 
+    private final static int SERVERPORT = 7777;
     // finalResult    
 
     Master(){
@@ -15,7 +16,7 @@ public class Master {
     public static void main(String[] args) {
         System.out.println("I'm waiting for a connection request");
         try{
-            ServerSocket ss = new ServerSocket(4444);
+            ServerSocket ss = new ServerSocket(SERVERPORT);
             Socket soc = ss.accept();
             System.out.println("You're connected to Master! How may I asssist you?");
         }catch(Exception e){

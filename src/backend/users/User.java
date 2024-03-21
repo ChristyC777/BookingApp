@@ -8,9 +8,4 @@ public class User {
 
     private String username;
     private String password;
-
-    public static void main(String[] args) throws IOException
-    {
-        Socket s = new Socket("localhost", 4444);
-    }
 }
