@@ -2,6 +2,8 @@ package src.backend.users;
 
 import java.util.Map;
 
+import src.backend.lodging.Lodging;
+
 public interface GuestInterface {
     
     /** 

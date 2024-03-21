@@ -1,5 +1,4 @@
 package src.backend.master;
-package src.backend.Master;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,16 +23,71 @@ public class Master {
         }
     }
 
-    // Booking_request
-    // Filter_request
-    // function_which_gives_a_command_to_the_workers
-    // function_which_returns_result_to_the_application
-    // function_which_creates_threads_and_communicates_with_worker
+    /**
+     * Ανάθεση ενός καλύματος.
+     * 
+     */
+    public void assignRoom()
+    {
+
+    }
+
+    /**
+     * Αφαίρεση ενός καλύματος.
+     * 
+     */
+    public void removeRoom()
+    {
+
+    }
+
+    /**
+     * Επιστρέφει τις κρατήσεις των καλυμάτων ενός συγκεκριμένου καλύματος.
+     * @param -> RoomName: Όναμα καλύματος 
+     */
+    public ArrayList<String> viewBookings(String RoomName)
+    {
+        return null;
+    }
+
+    /**
+     * Ανανέωση διαθέσιμων ημερομηνιών προς ενοικίαση για συγκεκριμένο κατάλυμα.
+     */
+    public void updateDates(String roomName, Date startPeriod, Date endPeriod)
+    {
+
+    }
+
+    /**
+     * Επιστρέφει τα καλύματα που πληρούν τις προδιαγραφές που περιγράφονται στα filters.
+     * @param filters -> επιθυμητές προδιαγραφές δωματίου
+     */
+    public ArrayList<String> filterRooms(ArrayList<String> filters)
+    {
+        return null;
+    }
+
+    /**
+     * Προσθέτει κριτική του ενοικιαστή για συγκεκριμένο κατάλυμα.
+     * @param filters -> επιθυμητές προδιαγραφές δωματίου
+     */
+    public void addRating(String roomName)
+    {
+        
+    }
+    
 }
 
 class Reducer {
 
-    //map(key,value) -> [(key2,value2)]
-    //reduce(key2,[value2]) -> [final_result]
+    public Map<Integer, String> Map()
+    {
+        return null;
+    }
+
+    public Map<Integer, ArrayList<String>> Reduce()
+    {
+        return null;
+    } 
     
 }

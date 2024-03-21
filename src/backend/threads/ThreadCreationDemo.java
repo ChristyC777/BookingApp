@@ -1,4 +1,4 @@
-package src.backend.threadseads;
+package src.backend.threads;
 
 public class ThreadCreationDemo implements Runnable {
     

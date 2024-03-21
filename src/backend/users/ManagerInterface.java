@@ -1,6 +1,8 @@
-package src.backend.Users;
+package src.backend.users;
+import src.backend.lodging.Lodging;
+import java.util.Date;
 
-public isrc.backend.usersgerInterface {
+public interface ManagerInterface {
     
     /**
      * Προσθήκη ενός καλύματος.

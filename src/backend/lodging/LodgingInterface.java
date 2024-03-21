@@ -1,4 +1,5 @@
-package src.backend.lodgingging;
+package src.backend.lodging;
+
 public interface LodgingInterface {
     public String getRoomImage();
 

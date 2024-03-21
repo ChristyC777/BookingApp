@@ -1,5 +1,4 @@
 package src.backend.users;
-package src.backend.Users;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;

@@ -1,6 +1,4 @@
 package src.backend.lodging;
-package src.backend.Lodging;
-package BackEnd.
 
 public class Lodging implements LodgingInterface{
 
@@ -12,4 +10,34 @@ public class Lodging implements LodgingInterface{
     private int stars;
 
     Lodging(){}
+
+    public String getRoomImage()
+    {
+        return roomImage;
+    }
+
+    public String getRoomName()
+    {
+        return roomName;
+    }
+
+    public String getArea()
+    {
+        return area;
+    }
+
+    public int getNumberOfPersons()
+    {
+        return noOfPersons;
+    }
+
+    public int getNumberOfReviews()
+    {
+        return noOfReviews;
+    }
+
+    public int getStars()
+    {
+        return stars;
+    }
 }  

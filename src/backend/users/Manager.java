@@ -1,5 +1,40 @@
-package src.backend.userssers;
+package src.backend.users;
 
-public class Manager implements ManagerInterface extends User {
+import java.util.Date;
+
+import src.backend.lodging.Lodging;
+
+public class Manager extends User implements ManagerInterface  {
+
+    /**
+     * Προσθήκη ενός καλύματος.
+     * @param lodge -> Το κάλυμα προς πρόσθεση.
+     */
+    public void addLodging(Lodging lodge)
+    {
+
+    }
+
+    /**
+     * Αφαίρεση ενός καλύματος.
+     * @param lodge -> Το κάλυμα προς αφαίρεση.
+     */
+    public void removeLodging(Lodging lodge)
+    {
+
+    }
+
+    /**
+     * Επιστρέφει τις κρατήσεις των καλυμάτων στην ιδιοκτησία του διαχειριστή.
+     */
+    public void getBookings()
+    {
+
+    }
+
+    public void addBookingDate(Date startPeriod, Date endPeriod) 
+    {
+
+    }
     
 }
