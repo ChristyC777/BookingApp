@@ -6,13 +6,11 @@ import java.net.Socket;
 
 public class ConsoleApp {
 
-    private static Master master;
-
     public static void main(String[] args) throws IOException{
 
-        master = new Master();
+        Master master = new Master("MasterServer", 2);
+    
+        Socket clientSocket = new Socket("127.0.0.1", 7777);
     }
-
-
 
 }

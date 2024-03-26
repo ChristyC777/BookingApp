@@ -1,33 +1,55 @@
 package src.backend.worker;
 
-public class Worker extends Thread implements WorkerInterface {
-    
-    private long workerID;
+import java.util.Map;
+import java.util.stream.Stream;
 
-    Worker(String name)
+public class Worker extends Thread implements WorkerInterface {
+
+    private String inputStream;
+    
+    public Worker(String name)
     {
-        this.workerID = threadId();
+        super(name);
     }
 
     @Override
     public void run()
     {
-        System.out.println("Thread with id: " + workerID + " started!");
+        System.out.println(getName() + " has started!");
+
+        inputStream = "Bob";
 		
-		try {
-			sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("Thread with id: "+ workerID + " exiting...");
-		
+        while(true)
+        {
+            synchronized (inputStream)
+            {
+                try {
+                    inputStream.wait();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                processRequest(inputStream);
+                
+                // storeLodging(inputStream);
+
+                System.out.println(getName() + " is exiting...");
+            }
+        }
     }
 
-    public void processRequest(){}
+    @Override
+    public void processRequest(String inputStream) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'processRequest'");
+    }
 
-    public void storeLodging(){}
+    @Override
+    public void storeLodging(String inputStream) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'storeLodging'");
+    }
 
     //search(filters)
 }

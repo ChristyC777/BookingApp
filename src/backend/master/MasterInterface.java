@@ -8,13 +8,13 @@ public interface MasterInterface {
      * Ανάθεση ενός καλύματος.
      * 
      */
-    public void assignRoom();
+    public void assignRoom(String JsonFile);
 
     /**
      * Αφαίρεση ενός καλύματος.
      * 
      */
-    public void removeRoom();
+    public void removeRoom(String JsonFile);
 
     /**
      * Επιστρέφει τις κρατήσεις των καλυμάτων ενός συγκεκριμένου καλύματος.
