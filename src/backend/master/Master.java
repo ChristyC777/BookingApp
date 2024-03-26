@@ -1,16 +1,24 @@
 package src.backend.master;
 import java.io.*;
+import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+import src.backend.threads.MyThread;
+import src.backend.worker.Worker;
+
 public class Master {
 
     private final static int SERVERPORT = 7777;
-    // finalResult    
+    public final static MyThread master = new MyThread("Master");
 
-    Master(){
-        // num_of_workers
+    // When a master is created so are the threads of workers
+    public Master(int n){
+        
+        for (int i = 0; i<n; i++){
+            Worker workers = new Worker("worker"+ Integer.toString(i));
+        }
     }
 
     public static void main(String[] args) {
@@ -76,6 +84,8 @@ public class Master {
     {
         
     }
+
+
     
 }
 

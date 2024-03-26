@@ -38,8 +38,20 @@ public interface MasterInterface {
 
     /**
      * Προσθέτει κριτική του ενοικιαστή για συγκεκριμένο κατάλυμα.
-     * @param filters -> επιθυμητές προδιαγραφές δωματίου
+     * @param rating -> Η κριτική του ενοικιαστή (1 - 5)
      */
-    public void addRating(String roomName);
+    public void addRating(int rating);
+
+    /**
+     * Συνάρτηση κατακερματισμού για την επιλογή του worker.
+     * @param roomName -> Το όνομα του δωματίου
+     */
+    public long H(String roomName);
+
+    /**
+     * Επιλέγει Worker σύμφωνα με μια συνάρτηση κατακερματισμού. 
+     * @return Το WorkerID του Worker που επιλέχθηκε
+     */
+    public long selectWorker(String roomName);
 
 }

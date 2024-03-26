@@ -1,6 +1,6 @@
-package src.backend.threads;
 
-public class ThreadCreationDemo implements Runnable {
+
+public class MyThreadDemo implements Runnable {
     
     int sleepTime;
     int n;

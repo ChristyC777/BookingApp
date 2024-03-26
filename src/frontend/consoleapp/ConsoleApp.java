@@ -1,15 +1,16 @@
 package src.frontend.consoleapp;
+import src.backend.master.Master;
 
 import java.io.IOException;
 import java.net.Socket;
 
 public class ConsoleApp {
 
-    private Master master;
+    private static Master master;
 
     public static void main(String[] args) throws IOException{
 
-        Socket connectToMaster = new Socket(master.getSocket());
+        master = new Master();
     }
 
 
