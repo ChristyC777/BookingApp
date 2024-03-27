@@ -12,10 +12,12 @@ import org.json.simple.parser.ParseException;
 
 public class Master extends Thread implements MasterInterface {
 
-    private final static int SERVERPORT = 7777;
+    private final static int SERVERPORT = 4444;
     private int numberOfWorkers;
     private String inputStream;
     private ArrayList<Thread> workerThreads = new ArrayList<Thread>();
+    ServerSocket providerSocket;
+	Socket connection = null;
     
     // public final static MyThread master = new MyThread("Master");
 
@@ -25,17 +27,32 @@ public class Master extends Thread implements MasterInterface {
         this.numberOfWorkers = numberOfWorkers;
 
         // When a master is created so are the threads of workers
-        for (int i = 0; i < numberOfWorkers; i++){
-            Worker worker = new Worker("worker"+ Integer.toString(i));
-            worker.start();
-            workerThreads.add(worker);
-        }
+
     }
 
     @Override
     public void run()
     {
         inputStream = "Michael";
+        try {
+			providerSocket = new ServerSocket(4444);
+
+			while (true) {
+				connection = providerSocket.accept();
+
+				Thread t = new ActionsForClients(connection);
+				t.start();
+
+			}
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
+		} finally {
+			try {
+				providerSocket.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
+		}
         
         while(true)
         {
@@ -136,6 +153,9 @@ public class Master extends Thread implements MasterInterface {
         return H(roomName) % numberOfWorkers;
     }
 
+    public static void main(String[] args) {
+		new Master("Master", 3);
+	}
     
 
 }
