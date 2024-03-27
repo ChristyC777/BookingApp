@@ -40,9 +40,6 @@ public class Master extends Thread implements MasterInterface {
 			while (true) {
 				connection = providerSocket.accept();
 
-				Thread t = new ActionsForClients(connection);
-				t.start();
-
 			}
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
