@@ -1,23 +1,22 @@
 package src.frontend.consoleapp;
-import src.backend.master.Master;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import netscape.javascript.JSObject;
 
 public class ConsoleApp {
 
-	static ObjectInputStream in;
-	static ObjectOutputStream out;
+	private static ObjectInputStream in;
+	private static ObjectOutputStream out;
 
     ConsoleApp() { }
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
 
         Scanner input = new Scanner(System.in);
         Menu();
@@ -35,6 +34,7 @@ public class ConsoleApp {
         try {
 			out = new ObjectOutputStream(connection.getOutputStream());
 			in = new ObjectInputStream(connection.getInputStream());
+
             switch(option)
             {
                 case 1:
@@ -79,7 +79,6 @@ public class ConsoleApp {
 			}
 		}
 
-    
     }
 
     public static void Menu()

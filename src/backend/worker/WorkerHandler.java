@@ -17,7 +17,6 @@ public class WorkerHandler implements Runnable{
         
     }
 
-    
     public void processRequest(String inputStream) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'processRequest'");

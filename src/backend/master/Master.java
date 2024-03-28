@@ -1,12 +1,15 @@
 package src.backend.master;
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
 
 import src.backend.worker.Worker;
-import src.backend.master.RequestHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,12 +18,11 @@ public class Master extends Thread {
 
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
-    ArrayList<RequestHandler> threads = new ArrayList<>();
-    ServerSocket providerSocket;
-	Socket connection = null;
-    ObjectInputStream in;
-    ObjectOutputStream out;
-    
+    private ArrayList<RequestHandler> threads = new ArrayList<>();
+    private ServerSocket providerSocket;
+	private Socket connection = null;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
   
     public Master(String name, int numberOfWorkers){
         super(name);
@@ -83,7 +85,6 @@ public class Master extends Thread {
         }
     }
 
-   
     public void removeRoom(String JsonFile)
     {
         JSONParser parser = new JSONParser();
@@ -102,7 +103,6 @@ public class Master extends Thread {
         }
     }
 
-    
     public ArrayList<String> viewBookings(String RoomName)
     {
         return null;
@@ -114,7 +114,6 @@ public class Master extends Thread {
 
     }
 
-    
     public ArrayList<String> filterRooms(ArrayList<String> filters)
     {
         return null;
@@ -125,12 +124,11 @@ public class Master extends Thread {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addRating'");
     }
-
     
     public long H(String roomName) {
         String room = roomName.replaceAll("\\s","");
         long hash_value = 0;
-        final char[] s = roomName.toCharArray();
+        final char[] s = room.toCharArray();
         final int n = s.length;
 
         for (int i = 0; i < n; i++) {
@@ -138,7 +136,6 @@ public class Master extends Thread {
         }
         return hash_value;
     }
-
     
     public long selectWorker(String roomName) {
         return H(roomName) % numberOfWorkers;
@@ -148,7 +145,6 @@ public class Master extends Thread {
         Master master = new Master("Master", 5);
         master.openServer();
         Worker worker = new Worker(master.getNumOfWorkers());
-
     }
 
 }

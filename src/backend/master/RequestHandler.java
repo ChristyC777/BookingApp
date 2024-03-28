@@ -1,7 +1,6 @@
 package src.backend.master;
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -13,16 +12,16 @@ import org.json.simple.parser.ParseException;
 
 public class RequestHandler implements Runnable {
 
-    ObjectOutputStream out;
-    ObjectInputStream in;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
     private Socket requestSocket;
 
     public RequestHandler(Socket request)
     {
         this.requestSocket = request;
         try {
-            in = new ObjectInputStream(request.getInputStream());
-            out = new ObjectOutputStream(request.getOutputStream());
+            this.in = new ObjectInputStream(request.getInputStream());
+            this.out = new ObjectOutputStream(request.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,24 +1,25 @@
 package src.backend.worker;
 
-import java.io.*;
-import java.net.*;
-import java.util.Map;
-import java.util.stream.Stream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Worker extends Thread  {
 
     private final static int SERVERPORT = 7778;
-    ServerSocket providerSocket;
-	Socket connection = null;
-    ObjectInputStream in;
-    ObjectOutputStream out;
+    private ServerSocket providerSocket;
+	private Socket connection = null;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
 
     public Worker(int numberOfWorkers)
     {
         for (int i = 0; i<numberOfWorkers;i++)
         {
             String thread_name = "thread" + Integer.toString(i+1);
-            Thread thread = new Thread(new WorkerHandler(thread_name, SERVERPORT+1));
+            Thread thread = new Thread(new WorkerHandler(thread_name, SERVERPORT + 1)); // should this be i + 1?
             thread.start();
         }
         openServer();
