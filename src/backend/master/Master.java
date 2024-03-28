@@ -6,22 +6,22 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import src.backend.worker.Worker;
+import src.backend.master.RequestHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class Master extends Thread implements MasterInterface {
+public class Master extends Thread {
 
-    private final static int SERVERPORT = 4444;
+    private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
-    private String inputStream;
-    private ArrayList<Thread> workerThreads = new ArrayList<Thread>();
+    ArrayList<RequestHandler> threads = new ArrayList<>();
     ServerSocket providerSocket;
 	Socket connection = null;
+    ObjectInputStream in;
+    ObjectOutputStream out;
     
-    // public final static MyThread master = new MyThread("Master");
-
-    
+  
     public Master(String name, int numberOfWorkers){
         super(name);
         this.numberOfWorkers = numberOfWorkers;
@@ -30,16 +30,24 @@ public class Master extends Thread implements MasterInterface {
 
     }
 
-    @Override
-    public void run()
+    public int getNumOfWorkers()
     {
-        inputStream = "Michael";
-        try {
-			providerSocket = new ServerSocket(4444);
+        return numberOfWorkers;
+    }
+
+    void openServer() {
+		try {
+
+			providerSocket = new ServerSocket(SERVERPORT);
 
 			while (true) {
+                System.out.println("I'm open");
 				connection = providerSocket.accept();
+                out = new ObjectOutputStream(connection.getOutputStream());
+                in = new ObjectInputStream(connection.getInputStream());
 
+                Thread requestThread = new Thread(new RequestHandler(connection));
+                requestThread.start();
 			}
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
@@ -50,27 +58,13 @@ public class Master extends Thread implements MasterInterface {
 				ioException.printStackTrace();
 			}
 		}
-        
-        while(true)
-        {
-            System.out.println("I'm waiting for a filter...");
-            synchronized (inputStream)
-            {
-                try {
-                    inputStream.wait();
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+	}
 
-                inputStream = "";
-
-                inputStream.notifyAll();
-            }
-        }
+    public void startWorkers()
+    {
+        Worker worker = new Worker(this.getNumOfWorkers());
     }
 
-    @Override
     public void assignRoom(String JsonFile) 
     {
         JSONParser parser = new JSONParser();
@@ -89,7 +83,7 @@ public class Master extends Thread implements MasterInterface {
         }
     }
 
-    @Override
+   
     public void removeRoom(String JsonFile)
     {
         JSONParser parser = new JSONParser();
@@ -108,31 +102,31 @@ public class Master extends Thread implements MasterInterface {
         }
     }
 
-    @Override
+    
     public ArrayList<String> viewBookings(String RoomName)
     {
         return null;
     }
 
-    @Override
+    
     public void updateDates(String roomName, Date startPeriod, Date endPeriod)
     {
 
     }
 
-    @Override
+    
     public ArrayList<String> filterRooms(ArrayList<String> filters)
     {
         return null;
     }
 
-    @Override
+    
     public void addRating(int rating) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addRating'");
     }
 
-    @Override
+    
     public long H(String roomName) {
         String room = roomName.replaceAll("\\s","");
         long hash_value = 0;
@@ -145,15 +139,17 @@ public class Master extends Thread implements MasterInterface {
         return hash_value;
     }
 
-    @Override
+    
     public long selectWorker(String roomName) {
         return H(roomName) % numberOfWorkers;
     }
 
     public static void main(String[] args) {
-		new Master("Master", 3);
-	}
-    
+        Master master = new Master("Master", 5);
+        master.openServer();
+        Worker worker = new Worker(master.getNumOfWorkers());
+
+    }
 
 }
 

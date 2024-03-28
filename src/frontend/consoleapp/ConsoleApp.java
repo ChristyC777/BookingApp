@@ -1,10 +1,10 @@
 package src.frontend.consoleapp;
 import src.backend.master.Master;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,29 +31,55 @@ public class ConsoleApp {
             option = input.nextInt();
         }
 
-        Socket clientSocket = new Socket("localhost", 4444);
+        Socket connection = new Socket("localhost", 7777);
         try {
 			out = new ObjectOutputStream(connection.getOutputStream());
 			in = new ObjectInputStream(connection.getInputStream());
+            switch(option)
+            {
+                case 1:
+                    System.out.println("Please enter the file path for your json file: ");
+                    String fileName = input.next();
+                    
+                    // Reading file
+                    File file = new File(fileName);
+                    FileInputStream fileInputStream = new FileInputStream(file);
+                    byte[] fileBytes = new byte[(int) file.length()];
+                    fileInputStream.read(fileBytes);
+                    
+                    // Sending it throught tcp connection
+                    Map<String, byte[]> dataStructure = new HashMap<String, byte[]>();
+                    dataStructure.put("add", fileBytes);
+                    out.writeObject(dataStructure);
+                    out.flush(); 
+
+                    System.out.println("Room successfully added!!!");
+                    break;
+
+                case 2:
+                    System.out.println("Please enter the name of the room you would like to remove: ");
+                    String roomName = input.nextLine();
+
+                    out.writeObject(roomName);
+                    out.flush(); 
+
+                    System.out.println("Room successfully removed!!!");
+                    break;
+                case 3:
+                    break;
+            }
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				in.close();
+				out.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
 		}
 
-        switch(option)
-        {
-            case 1:
-                System.out.println("Please enter the file path for your json file: ");
-                String fileName = input.nextLine();
-                String json_file = in.readChar(); 
-                
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-        }
-
-
+    
     }
 
     public static void Menu()

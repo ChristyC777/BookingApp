@@ -1,56 +1,50 @@
 package src.backend.worker;
 
+import java.io.*;
+import java.net.*;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class Worker extends Thread implements WorkerInterface {
+public class Worker extends Thread  {
 
-    private String inputStream;
-    
-    public Worker(String name)
+    private final static int SERVERPORT = 7778;
+    ServerSocket providerSocket;
+	Socket connection = null;
+    ObjectInputStream in;
+    ObjectOutputStream out;
+
+    public Worker(int numberOfWorkers)
     {
-        super(name);
-    }
-
-    @Override
-    public void run()
-    {
-        System.out.println(getName() + " has started!");
-
-        inputStream = "Bob";
-		
-        while(true)
+        for (int i = 0; i<numberOfWorkers;i++)
         {
-            synchronized (inputStream)
-            {
-                try {
-                    inputStream.wait();
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                processRequest(inputStream);
-                
-                // storeLodging(inputStream);
-
-                System.out.println(getName() + " is exiting...");
-            }
+            String thread_name = "thread" + Integer.toString(i+1);
+            Thread thread = new Thread(new WorkerHandler(thread_name, SERVERPORT+1));
+            thread.start();
         }
+        openServer();
     }
 
-    @Override
-    public void processRequest(String inputStream) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'processRequest'");
-    }
+    void openServer() {
+		try {
+            in = new ObjectInputStream(in);
+			providerSocket = new ServerSocket(SERVERPORT);
 
-    @Override
-    public void storeLodging(String inputStream) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'storeLodging'");
-    }
+			while (true) {
+				connection = providerSocket.accept();
 
-    //search(filters)
+                // You take the parameter and see which worker does the master want to connect to
+                // You pass the connection the that worker_thread to handle the request  
+			}
+		} catch (IOException ioException) {
+			ioException.printStackTrace();
+		} finally {
+			try {
+				providerSocket.close();
+			} catch (IOException ioException) {
+				ioException.printStackTrace();
+			}
+		}
+	}
+
 }
 
