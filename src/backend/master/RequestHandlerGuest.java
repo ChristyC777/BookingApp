@@ -10,13 +10,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class RequestHandler implements Runnable {
+public class RequestHandlerGuest implements Runnable {
 
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Socket requestSocket;
 
-    public RequestHandler(Socket request)
+    public RequestHandlerGuest(Socket request)
     {
         this.requestSocket = request;
         try {

@@ -1,4 +1,4 @@
-package src.backend.master;
+ package src.backend.master;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -18,7 +18,7 @@ public class Master extends Thread {
 
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
-    private ArrayList<RequestHandler> threads = new ArrayList<>();
+    private ArrayList<RequestHandlerManager> threads = new ArrayList<>();
     private ServerSocket providerSocket;
 	private Socket connection = null;
     private ObjectInputStream in;
@@ -40,7 +40,7 @@ public class Master extends Thread {
     void openServer() {
 		try {
 
-			providerSocket = new ServerSocket(SERVERPORT);
+			providerSocket = new ServerSocket(SERVERPORT, 10);
 
 			while (true) {
                 System.out.println("I'm open");
@@ -48,7 +48,7 @@ public class Master extends Thread {
                 out = new ObjectOutputStream(connection.getOutputStream());
                 in = new ObjectInputStream(connection.getInputStream());
 
-                Thread requestThread = new Thread(new RequestHandler(connection));
+                Thread requestThread = new Thread(new RequestHandlerManager(connection));
                 requestThread.start();
 			}
 		} catch (IOException ioException) {
