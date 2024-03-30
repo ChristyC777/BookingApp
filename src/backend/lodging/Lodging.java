@@ -11,7 +11,10 @@ public class Lodging implements LodgingInterface, Serializable {
     private int noOfReviews;
     private int stars;
 
-    Lodging(){}
+    Lodging()
+    {
+        super();
+    }
 
     public String getRoomImage()
     {
