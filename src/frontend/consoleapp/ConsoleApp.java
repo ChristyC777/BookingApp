@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.google.gson.Gson;
+
+import src.backend.lodging.Lodging;
+
 public class ConsoleApp {
 
 	private static ObjectInputStream in;
@@ -17,7 +21,7 @@ public class ConsoleApp {
 
     ConsoleApp() { }
     public static void main(String[] args) throws IOException {
-
+        
         Scanner input = new Scanner(System.in);
         Menu();
         System.out.print("Enter your answer: ");
@@ -35,6 +39,9 @@ public class ConsoleApp {
 			out = new ObjectOutputStream(connection.getOutputStream());
 			in = new ObjectInputStream(connection.getInputStream());
 
+            // Create gson object for json object handling
+            Gson gson = new Gson();
+
             switch(option)
             {
                 case 1:
@@ -43,14 +50,17 @@ public class ConsoleApp {
                     
                     // Reading file
                     File file = new File(fileName);
-                    FileInputStream fileInputStream = new FileInputStream(file);
-                    byte[] fileBytes = new byte[(int) file.length()];
-                    fileInputStream.read(fileBytes);
+                    // FileInputStream fileInputStream = new FileInputStream(file);
+
+                    Lodging lodge = gson.fromJson(file.toString(), Lodging.class);
+
+                    // byte[] fileBytes = new byte[(int) file.length()];
+                    // fileInputStream.read(fileBytes);
                     
                     // Sending it throught tcp connection
-                    Map<String, byte[]> dataStructure = new HashMap<String, byte[]>();
-                    dataStructure.put("add", fileBytes);
-                    out.writeObject(dataStructure);
+                    // Map<String, byte[]> dataStructure = new HashMap<String, byte[]>();
+                    // dataStructure.put("add", fileBytes);
+                    out.writeObject(lodge);
                     out.flush(); 
 
                     System.out.println("Room successfully added!!!");
