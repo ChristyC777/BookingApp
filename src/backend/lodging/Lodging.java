@@ -1,6 +1,8 @@
 package src.backend.lodging;
 
-public class Lodging implements LodgingInterface{
+import java.io.Serializable;
+
+public class Lodging implements LodgingInterface, Serializable {
 
     private String roomImage;
     private String roomName;

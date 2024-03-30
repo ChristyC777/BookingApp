@@ -2,6 +2,7 @@ package src.frontend.consoleapp;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,14 +11,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.google.gson.Gson;
+
+import src.backend.lodging.Lodging;
+
 public class ConsoleApp {
 
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
     ConsoleApp() { }
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) throws IOException, ParseException {
+        
         Scanner input = new Scanner(System.in);
         Menu();
         System.out.print("Enter your answer: ");
@@ -30,10 +39,13 @@ public class ConsoleApp {
             option = input.nextInt();
         }
 
-        Socket connection = new Socket("localhost", 7777);
+        Socket connection = new Socket("192.168.1.24", 7777);
         try {
 			out = new ObjectOutputStream(connection.getOutputStream());
 			in = new ObjectInputStream(connection.getInputStream());
+
+            // Create gson object for json object handling
+            Gson gson = new Gson();
 
             switch(option)
             {
@@ -43,14 +55,15 @@ public class ConsoleApp {
                     
                     // Reading file
                     File file = new File(fileName);
-                    FileInputStream fileInputStream = new FileInputStream(file);
-                    byte[] fileBytes = new byte[(int) file.length()];
-                    fileInputStream.read(fileBytes);
+                    FileReader fileReader = new FileReader(file);
+
+                    Object obj = new JSONParser().parse(fileReader);
+
+                    JSONObject jobj = (JSONObject) obj;
+
+                    Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
                     
-                    // Sending it throught tcp connection
-                    Map<String, byte[]> dataStructure = new HashMap<String, byte[]>();
-                    dataStructure.put("add", fileBytes);
-                    out.writeObject(dataStructure);
+                    out.writeObject(lodge);
                     out.flush(); 
 
                     System.out.println("Room successfully added!!!");
