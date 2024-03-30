@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+import src.backend.lodging.Lodging;
 import src.backend.worker.Worker;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -45,8 +46,8 @@ public class Master extends Thread {
 			while (true) {
                 System.out.println("I'm open");
 				connection = providerSocket.accept();
-                out = new ObjectOutputStream(connection.getOutputStream());
-                in = new ObjectInputStream(connection.getInputStream());
+                // out = new ObjectOutputStream(connection.getOutputStream());
+                // in = new ObjectInputStream(connection.getInputStream());
 
                 Thread requestThread = new Thread(new RequestHandlerManager(connection));
                 requestThread.start();
