@@ -91,6 +91,7 @@ public class ConsoleApp {
 			try {
 				in.close();
 				out.close();
+                connection.close();
 			} catch (IOException ioException) {
 				ioException.printStackTrace();
 			}

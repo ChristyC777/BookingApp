@@ -7,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
 
 import src.backend.worker.Worker;
 import org.json.simple.JSONObject;
@@ -18,7 +17,7 @@ public class Master extends Thread {
 
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
-    private ArrayList<RequestHandlerManager> threads = new ArrayList<>();
+    private ArrayList<Thread> threads = new ArrayList<>();
     private ServerSocket providerSocket;
 	private Socket connection = null;
     private ObjectInputStream in;
@@ -41,15 +40,19 @@ public class Master extends Thread {
 		try {
 
 			providerSocket = new ServerSocket(SERVERPORT, 10);
+            System.out.printf("Master server now listening to port %d.%n", SERVERPORT);
 
 			while (true) {
-                System.out.println("I'm open");
+                System.out.println("Awaiting connection...");
 				connection = providerSocket.accept();
-                out = new ObjectOutputStream(connection.getOutputStream());
-                in = new ObjectInputStream(connection.getInputStream());
+                System.out.println("Successfully connected!");
+                // out = new ObjectOutputStream(connection.getOutputStream());
+                // in = new ObjectInputStream(connection.getInputStream());
 
                 Thread requestThread = new Thread(new RequestHandlerManager(connection));
+                threads.add(requestThread);
                 requestThread.start();
+                System.out.println(requestThread.getName() + " has started!");
 			}
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
@@ -125,7 +128,8 @@ public class Master extends Thread {
         throw new UnsupportedOperationException("Unimplemented method 'addRating'");
     }
     
-    public long H(String roomName) {
+    public long H(String roomName)
+    {
         String room = roomName.replaceAll("\\s","");
         long hash_value = 0;
         final char[] s = room.toCharArray();
@@ -147,18 +151,4 @@ public class Master extends Thread {
         Worker worker = new Worker(master.getNumOfWorkers());
     }
 
-}
-
-class Reducer {
-
-    public Map<Integer, String> Map()
-    {
-        return null;
-    }
-
-    public Map<Integer, ArrayList<String>> Reduce()
-    {
-        return null;
-    } 
-    
 }
