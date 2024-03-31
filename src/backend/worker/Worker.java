@@ -34,7 +34,7 @@ public class Worker extends Thread  {
 				connection = providerSocket.accept();
 
                 // You take the parameter and see which worker does the master want to connect to
-                // You pass the connection the that worker_thread to handle the request  
+                // You pass the connection to that worker_thread to handle the request  
 			}
 		} catch (IOException ioException) {
 			ioException.printStackTrace();

@@ -4,11 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Map;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import src.backend.lodging.Lodging;
 
@@ -35,8 +30,9 @@ public class RequestHandlerManager implements Runnable {
 
         }catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            System.err.println("An error has occurred while attempting to read the provided file.");
         } finally {
-            // Close the streams and socket
+            // Close the streams
             try {
                 in.close();
                 out.close();
