@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 
+import src.backend.lodging.Lodging;
 import src.backend.worker.Worker;
 
 public class Master {
@@ -66,9 +67,9 @@ public class Master {
         Worker worker = new Worker(this.getNumOfWorkers());
     }
 
-    public void assignRoom(String roomName) 
+    public void assignRoom(Lodging lodge) 
     {
-        long workerID = selectWorker(roomName);
+        long workerID = selectWorker(lodge.getRoomName());
         // TODO: code for sending it to the Worker class
     }
 
