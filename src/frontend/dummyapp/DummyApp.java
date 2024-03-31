@@ -1,23 +1,14 @@
 package src.frontend.dummyapp;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
-
-import src.backend.lodging.Lodging;
 
 public class DummyApp {
 
@@ -39,49 +30,50 @@ public class DummyApp {
             option = input.nextInt();
         }
 
-        Socket connection = new Socket("192.168.1.24", 7777);
-        try {
-			out = new ObjectOutputStream(connection.getOutputStream());
-			in = new ObjectInputStream(connection.getInputStream());
+        try (Socket connection = new Socket("192.168.1.24", 7777)) {
+            try {
+            	out = new ObjectOutputStream(connection.getOutputStream());
+            	in = new ObjectInputStream(connection.getInputStream());
 
-            // Create gson object for json object handling
-            Gson gson = new Gson();
+                // Create gson object for json object handling
+                Gson gson = new Gson();
 
-            switch(option)
-            {
-                case 1:
-                    System.out.println("Please enter the name of the room you would like to book: ");
-                    String roomName = input.next();
+                switch(option)
+                {
+                    case 1:
+                        System.out.println("Please enter the name of the room you would like to book: ");
+                        String roomName = input.next();
 
-                    System.out.println("Please select one of the following dates");
-                    
-                    // To be completed
+                        System.out.println("Please select one of the following dates");
+                        
+                        // To be completed
 
-                    System.out.println("Room successfully booked!!!");
-                    break;
+                        System.out.println("Room successfully booked!!!");
+                        break;
 
-                case 2:
+                    case 2:
 
-                    System.out.println("Please select from the following filters ");
-                    filters();
+                        System.out.println("Please select from the following filters ");
+                        filters();
 
 
-                    // To be completed
+                        // To be completed
 
-                    System.out.println("Here are the rooms that match your preferences!!!");
-                    break;
+                        System.out.println("Here are the rooms that match your preferences!!!");
+                        break;
 
+                }
+            } catch (IOException e) {
+            	e.printStackTrace();
+            } finally {
+            	try {
+            		in.close();
+            		out.close();
+            	} catch (IOException ioException) {
+            		ioException.printStackTrace();
+            	}
             }
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				in.close();
-				out.close();
-			} catch (IOException ioException) {
-				ioException.printStackTrace();
-			}
-		}
+        }
 
     }
 

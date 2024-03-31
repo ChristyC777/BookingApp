@@ -1,5 +1,5 @@
  package src.backend.master;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,26 +9,21 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import src.backend.worker.Worker;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-public class Master extends Thread {
+public class Master {
 
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
-    private ArrayList<Thread> threads = new ArrayList<>();
+    private ArrayList<Thread> masterThreads = new ArrayList<>();
     private ServerSocket providerSocket;
 	private Socket connection = null;
     private ObjectInputStream in;
     private ObjectOutputStream out;
   
-    public Master(String name, int numberOfWorkers){
-        super(name);
+    public Master(int numberOfWorkers)
+    {
         this.numberOfWorkers = numberOfWorkers;
-
-        // When a master is created so are the threads of workers
-
+        // startWorkers();
     }
 
     public int getNumOfWorkers()
@@ -49,9 +44,10 @@ public class Master extends Thread {
                 // out = new ObjectOutputStream(connection.getOutputStream());
                 // in = new ObjectInputStream(connection.getInputStream());
 
-                Thread requestThread = new Thread(new RequestHandlerManager(connection));
-                threads.add(requestThread);
+                Thread requestThread = new Thread(new RequestHandler(connection, this));
                 requestThread.start();
+                masterThreads.add(requestThread);
+
                 System.out.println(requestThread.getName() + " has started!");
 			}
 		} catch (IOException ioException) {
@@ -70,43 +66,19 @@ public class Master extends Thread {
         Worker worker = new Worker(this.getNumOfWorkers());
     }
 
-    public void assignRoom(String JsonFile) 
+    public void assignRoom(String roomName) 
     {
-        JSONParser parser = new JSONParser();
-        try
-        {
-            Object obj = parser.parse(new FileReader(JsonFile));
-
-            JSONObject jsonObject = (JSONObject) obj;
-            String roomName = (String) jsonObject.get("roomName");
-            long worker = selectWorker(roomName);
-            // code for sending it to the Worker class
-        }
-        catch (IOException | ParseException e)
-        {
-            e.printStackTrace();
-        }
+        long workerID = selectWorker(roomName);
+        // TODO: code for sending it to the Worker class
     }
 
-    public void removeRoom(String JsonFile)
+    public void removeRoom(String roomName)
     {
-        JSONParser parser = new JSONParser();
-        try
-        {
-            Object obj = parser.parse(new FileReader(JsonFile));
-
-            JSONObject jsonObject = (JSONObject) obj;
-            String roomName = (String) jsonObject.get("roomName");
-            long worker = selectWorker(roomName);
-            // code for sending it to the Worker class
-        }
-        catch (IOException | ParseException e)
-        {
-            e.printStackTrace();
-        }
+        long worker = selectWorker(roomName);
+        // TODO: code for sending it to the Worker class
     }
 
-    public ArrayList<String> viewBookings(String RoomName)
+    public ArrayList<String> viewBookings()
     {
         return null;
     }
@@ -146,7 +118,7 @@ public class Master extends Thread {
     }
 
     public static void main(String[] args) {
-        Master master = new Master("Master", 5);
+        Master master = new Master(5);
         master.openServer();
         Worker worker = new Worker(master.getNumOfWorkers());
     }
