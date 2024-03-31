@@ -26,6 +26,7 @@ public class ConsoleApp {
 
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
+    
 
     ConsoleApp() { }
     public static void main(String[] args) throws IOException, ParseException {
@@ -42,7 +43,7 @@ public class ConsoleApp {
             option = input.nextInt();
         }
 
-        Socket connection = new Socket("192.168.1.24", 7777);
+        Socket connection = new Socket("192.168.1.13", 7777);
         try {
 			out = new ObjectOutputStream(connection.getOutputStream());
 			in = new ObjectInputStream(connection.getInputStream());
@@ -132,6 +133,8 @@ public class ConsoleApp {
                     out.flush();
 
                     break;
+
+                // TODO: case 5 for part B
 
             }
 		} catch (IOException e) {

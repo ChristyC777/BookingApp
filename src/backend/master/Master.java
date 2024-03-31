@@ -5,10 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import src.backend.lodging.Lodging;
 import src.backend.worker.Worker;
+import static src.shared.ClientActions.*;
 
 public class Master {
 
@@ -66,21 +69,105 @@ public class Master {
         Worker worker = new Worker(this.getNumOfWorkers());
     }
 
-    public void assignRoom(String roomName) 
+    public void assignRoom(Lodging room) 
     {
-        long workerID = selectWorker(roomName);
-        // TODO: code for sending it to the Worker class
+        long workerID = selectWorker(room.getRoomName());
+        try {
+            
+            // Establish a connection with Worker
+            Socket new_connection = new Socket("localhost", 7778);
+            out = new ObjectOutputStream(new_connection.getOutputStream());
+
+            // Write the lodge that needs to be added
+            out.writeObject(room);
+            out.flush();
+
+            // Write the worker's ID
+            out.writeLong(workerID);
+            out.flush();
+
+            // Write Action
+            out.writeObject(ADD_LODGING);
+            out.flush();
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally
+        {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
-    public void removeRoom(String roomName)
+    public void removeRoom(Lodging room)
     {
-        long worker = selectWorker(roomName);
-        // TODO: code for sending it to the Worker class
+        long workerID = selectWorker(room.getRoomName());
+        try {
+
+            // Establish connection with Worker
+            Socket new_connection = new Socket("localhost", 7778);
+            out = new ObjectOutputStream(new_connection.getOutputStream());
+            
+            // Write the worker's ID 
+            out.writeLong(workerID);
+            out.flush();
+
+            // Write the action taking place
+            out.writeObject(REMOVE_LODGING);
+            out.flush();
+
+            // Write the lodge that needs to be added
+            out.writeObject(room);
+            out.flush();
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally
+        {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public ArrayList<String> viewBookings()
+    public void viewBookings(String manager)
     {
-        return null;
+        try {
+
+            // Establish connection with Worker
+            Socket new_connection = new Socket("localhost", 7778);
+            out = new ObjectOutputStream(new_connection.getOutputStream());
+
+            // Write the action taking place
+            out.writeObject(VIEW_BOOKINGS);
+            out.flush();
+
+            // Write the manager that wants to see the bookings
+            out.writeObject(manager);
+            out.flush();
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally
+        {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }   
     }
 
     
