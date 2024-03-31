@@ -14,18 +14,19 @@ public class Lodging implements LodgingInterface, Serializable {
     private int noOfReviews;
     private int stars;
     private String manager;
-    // private Date availableDates;
+    //private Date availableDates;
 
     Lodging()
     {
         super();
     }
 
+
     public String getManager()
     {
         return manager;
     }
-    
+
     public String getRoomImage()
     {
         return roomImage;

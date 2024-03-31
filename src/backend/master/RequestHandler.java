@@ -46,10 +46,11 @@ public class RequestHandler implements Runnable {
                     break;
                 case REMOVE_LODGING:
                     lodge = (Lodging) in.readObject();
-                    master.removeRoom(lodge.getRoomName());
+                    master.removeRoom(lodge);
                     break;
                 case VIEW_BOOKINGS:
-                    master.viewBookings();
+                    String manager = (String) in.readObject();
+                    master.viewBookings(manager);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
