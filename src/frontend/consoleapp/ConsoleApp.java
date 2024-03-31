@@ -91,23 +91,38 @@ public class ConsoleApp {
                     break;
                 case 3:
 
-                    Calendar cal = Calendar.getInstance();
+                    Calendar from = Calendar.getInstance();
+                    Calendar to = Calendar.getInstance();
         
                     System.out.println("Add available dates for booking!!! (Format: From (DD/MM/YYYY) - To (DD/MM/YYYY))");
+                    System.out.println("Input date (From)");
                     String in_date = input.next(); 
                     SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
                     try {
-                        cal.setTime(date.parse(in_date));
+                        from.setTime(date.parse(in_date));
                     } catch (java.text.ParseException e) {
                         e.printStackTrace();
                     }
-                    System.out.println(cal.getTime());
+                    System.out.println(from.getTime());
+
+                    System.out.println("Input date (To)");
+                    date = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        to.setTime(date.parse(in_date));
+                    } catch (java.text.ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    System.out.println(to.getTime());
 
                     out.writeObject(ADD_DATES);
                     out.flush();
 
-                    out.writeObject(cal.getTime());
-                    out.flush();                   
+                    out.writeObject(from.getTime());
+                    out.flush();   
+                    
+                    out.writeObject(to.getTime());
+                    out.flush();
 
                     break;
                 case 4:
