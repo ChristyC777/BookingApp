@@ -1,4 +1,4 @@
-package src.frontend.consoleapp;
+package src.frontend.dummyapp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,12 +19,12 @@ import com.google.gson.Gson;
 
 import src.backend.lodging.Lodging;
 
-public class ConsoleApp {
+public class DummyApp {
 
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
-    ConsoleApp() { }
+    DummyApp() { }
     public static void main(String[] args) throws IOException, ParseException {
         
         Scanner input = new Scanner(System.in);
@@ -50,40 +50,27 @@ public class ConsoleApp {
             switch(option)
             {
                 case 1:
-                    System.out.println("Please enter the file path for your json file: ");
-                    String fileName = input.next();
+                    System.out.println("Please enter the name of the room you would like to book: ");
+                    String roomName = input.next();
+
+                    System.out.println("Please select one of the following dates");
                     
-                    // Reading file
-                    File file = new File(fileName);
-                    FileReader fileReader = new FileReader(file);
+                    // To be completed
 
-                    Object obj = new JSONParser().parse(fileReader);
-
-                    JSONObject jobj = (JSONObject) obj;
-
-                    Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
-                    
-                    out.writeObject(lodge);
-                    out.flush(); 
-
-                    System.out.println("Room successfully added!!!");
+                    System.out.println("Room successfully booked!!!");
                     break;
 
                 case 2:
-                    System.out.println("Please enter the name of the room you would like to remove: ");
-                    String roomName = input.nextLine();
 
-                    out.writeObject(roomName);
-                    out.flush(); 
+                    System.out.println("Please select from the following filters ");
+                    filters();
 
-                    System.out.println("Room successfully removed!!!");
+
+                    // To be completed
+
+                    System.out.println("Here are the rooms that match your preferences!!!");
                     break;
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
+
             }
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -100,12 +87,18 @@ public class ConsoleApp {
 
     public static void Menu()
     {
-        System.out.println("Welcome!!! Please select from the following options (1-3)");
-        System.out.println("1. Add a room");
-        System.out.println("2. Delete a room");
-        System.out.println("3. Update dates");
-        System.out.println("4. View bookings");
-        System.out.println("5. View reservations per area");
+        System.out.println("Welcome!!!Please select from the following options (1-2)");
+        System.out.println("1. Book a room");
+        System.out.println("2. Use filters");
 
     }
+
+    public static void filters()
+    {
+        System.out.println("1. Star");
+        System.out.println("2. Area");
+        System.out.println("3. Number of people");
+        System.out.println("4. Name of room");
+    }
+
 }
