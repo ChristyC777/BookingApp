@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -17,6 +20,7 @@ import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
 
+import static src.shared.ManagerActions.*;
 import src.backend.lodging.Lodging;
 
 public class ConsoleApp {
@@ -62,7 +66,10 @@ public class ConsoleApp {
                     JSONObject jobj = (JSONObject) obj;
 
                     Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
-                    
+
+                    out.writeObject(ADD_LODGING);
+                    out.flush();
+
                     out.writeObject(lodge);
                     out.flush(); 
 
@@ -73,17 +80,45 @@ public class ConsoleApp {
                     System.out.println("Please enter the name of the room you would like to remove: ");
                     String roomName = input.nextLine();
 
+
+                    out.writeObject(REMOVE_LODGING);
+                    out.flush();
+
                     out.writeObject(roomName);
                     out.flush(); 
 
                     System.out.println("Room successfully removed!!!");
                     break;
                 case 3:
+
+                    Calendar cal = Calendar.getInstance();
+        
+                    System.out.println("Add available dates for booking!!! (Format: From (DD/MM/YYYY) - To (DD/MM/YYYY))");
+                    String in_date = input.next(); 
+                    SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        cal.setTime(date.parse(in_date));
+                    } catch (java.text.ParseException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(cal.getTime());
+
+                    out.writeObject(ADD_DATES);
+                    out.flush();
+
+                    out.writeObject(cal.getTime());
+                    out.flush();                   
+
                     break;
                 case 4:
+
+                    System.out.print("Here are the bookings made for your room(s)!!!");
+
+                    out.writeObject(VIEW_BOOKINGS);
+                    out.flush();
+
                     break;
-                case 5:
-                    break;
+
             }
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -106,7 +141,6 @@ public class ConsoleApp {
         System.out.println("2. Delete a room");
         System.out.println("3. Update dates");
         System.out.println("4. View bookings");
-        System.out.println("5. View reservations per area");
 
     }
 }

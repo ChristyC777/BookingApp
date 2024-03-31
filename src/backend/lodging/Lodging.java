@@ -1,6 +1,9 @@
 package src.backend.lodging;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import src.backend.users.Manager;
 
 public class Lodging implements LodgingInterface, Serializable {
 
@@ -10,6 +13,8 @@ public class Lodging implements LodgingInterface, Serializable {
     private int noOfPersons;
     private int noOfReviews;
     private int stars;
+    private Manager manager;
+    private Date availableDates;
 
     Lodging()
     {
