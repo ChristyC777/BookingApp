@@ -65,7 +65,7 @@ public class Worker {
 		}
 	}
 
-    public void viewBookings()
+    public void viewBookings(ArrayList<Lodging> bookings)
     {
 
     }

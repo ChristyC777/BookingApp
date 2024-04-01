@@ -64,7 +64,8 @@ public class DummyApp {
                                 System.out.print("Enter your answer: ");
                                 answer = input.nextInt();
                             }
-                            switch (answer) {
+                            switch (answer) 
+                            {
                                 case 1:
                                     System.out.print("Please select the number of stars (1-5): ");
                                     while (answer > 5 && answer < 1) 
@@ -106,6 +107,8 @@ public class DummyApp {
 
                         out.writeObject(FILTER);
                         out.flush();
+
+                        // TODO: MAPID
 
                         out.writeObject(map);
                         out.flush();

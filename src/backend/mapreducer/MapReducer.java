@@ -25,12 +25,12 @@ public class MapReducer {
 
     public Map<String, Object> Map(String mapid, ArrayList<Lodging> filter)
     {
-        Map<Lodging, Integer> count = new HashMap<Lodging, Integer>();
+        Map<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
         for (Lodging lodge : filter)
         {
             count.put(lodge, 1);
         }
-        Map<String, Object> k2_v2 = new HashMap<String, Object>();
+        Map<String, Object> k2_v2 = new HashMap<String, Object>(); // {mapid: {"room1":1, "room2":1, "room3":1}}
         k2_v2.put(mapid, count);
         return k2_v2;
     }
@@ -38,8 +38,8 @@ public class MapReducer {
     public Map<String, Object> Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
 
-        Map<Lodging, Integer> counts = new HashMap<>();
-        Map<String, Object> final_results = new HashMap<String, Object>();
+        Map<Lodging, Integer> counts = new HashMap<>(); // Creates {"room1":3, "room5":10}
+        Map<String, Object> final_results = new HashMap<String, Object>(); 
         for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
             Lodging lodge = item.getKey();
             int count = item.getValue();
@@ -47,6 +47,7 @@ public class MapReducer {
         }
         final_results.put(mapid, counts);
         return final_results;
+        //{mapid: {"room1":5, "room2": 3, "room7": 2}} -> <mapid, final_results>
     }
 
     void openServer() 

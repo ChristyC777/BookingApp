@@ -77,7 +77,7 @@ public class WorkerHandler implements Runnable {
                             bookings.add(l);
                         }
                     }
-                    worker.viewBookings();
+                    worker.viewBookings(bookings);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
@@ -85,7 +85,7 @@ public class WorkerHandler implements Runnable {
                 case FILTER:
                     // TODO: Read filter map from input stream
                     Map<String, Object> map = (Map<String, Object>) in.readObject();
-                    for (Map.Entry<String, Object> item : map.entrySet())
+                    for (Map.Entry<String, Object> item : map.entrySet()) // {"stars":3, "area":"Athens"}
                     {
                         String key = item.getKey();
                         Object value = item.getValue();
