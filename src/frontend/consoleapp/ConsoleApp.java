@@ -91,6 +91,9 @@ public class ConsoleApp {
                     break;
                 case 3:
 
+                    System.out.println("Enter the name of the lodge you want to add the available dates to: ");
+                    String name = input.next();
+
                     Calendar from = Calendar.getInstance();
                     Calendar to = Calendar.getInstance();
         
@@ -116,6 +119,9 @@ public class ConsoleApp {
                     System.out.println(to.getTime());
 
                     out.writeObject(ADD_DATES);
+                    out.flush();
+
+                    out.writeChars(name);
                     out.flush();
 
                     out.writeObject(from.getTime());

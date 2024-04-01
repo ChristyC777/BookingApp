@@ -1,13 +1,8 @@
  package src.backend.master;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.io.*;
+import java.net.*;
+import java.util.*;
 
 import src.backend.lodging.Lodging;
 import src.backend.worker.Worker;
@@ -23,16 +18,11 @@ public class Master {
     private ObjectInputStream in;
     private ObjectOutputStream out;
   
-    public Master(int numberOfWorkers)
+    public Master()
     {
-        this.numberOfWorkers = numberOfWorkers;
-        // startWorkers();
+
     }
 
-    public int getNumOfWorkers()
-    {
-        return numberOfWorkers;
-    }
 
     void openServer() {
 		try {
@@ -64,10 +54,6 @@ public class Master {
 		}
 	}
 
-    public void startWorkers()
-    {
-        Worker worker = new Worker(this.getNumOfWorkers());
-    }
 
     public void assignRoom(Lodging room) 
     {
@@ -176,9 +162,34 @@ public class Master {
 
     }
 
-    public ArrayList<String> filterRooms(ArrayList<String> filters)
+    public void filterRooms(Map<String, Object> filters)
     {
-        return null;
+        try {
+
+            // Establish connection with Worker
+            Socket new_connection = new Socket("localhost", 7778);
+            out = new ObjectOutputStream(new_connection.getOutputStream());
+
+            // Write the action taking place
+            out.writeObject(FILTER);
+            out.flush();
+
+            // Write the manager that wants to see the bookings
+            out.writeObject(filters);
+            out.flush();
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally
+        {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }   
     }
 
     
@@ -205,9 +216,7 @@ public class Master {
     }
 
     public static void main(String[] args) {
-        Master master = new Master(5);
-        master.openServer();
-        Worker worker = new Worker(master.getNumOfWorkers());
+        new Master().openServer();;
     }
 
 }

@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Map;
 
 import src.backend.lodging.Lodging;
 import src.shared.ClientActions;
@@ -63,6 +64,16 @@ public class Worker {
 			}
 		}
 	}
+
+    public void viewBookings()
+    {
+
+    }
+
+    public void filterRooms(Map<String, Object> map) 
+    {
+        
+    }
 
 }
 

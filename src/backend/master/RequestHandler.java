@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Date;
+import java.util.Map;
 
 import src.shared.ClientActions;
 
@@ -56,8 +57,8 @@ public class RequestHandler implements Runnable {
                     // TODO: Implement this for part B!
                     break;
                 case FILTER:
-                    // TODO: Read filter map from input stream
-                    master.filterRooms(null);
+                    Map<String, Object> map = (Map<String, Object>) in.readObject();
+                    master.filterRooms(map);
                     break;
                 case BOOK:
                     break;
