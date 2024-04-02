@@ -31,8 +31,8 @@ public class WorkerHandler implements Runnable {
     public void run()
     {
         try{
-            this.out = new ObjectOutputStream(requestSocket.getOutputStream());
-            this.in = new ObjectInputStream(requestSocket.getInputStream());
+                this.out = new ObjectOutputStream(requestSocket.getOutputStream());
+                this.in = new ObjectInputStream(requestSocket.getInputStream());
             
                 // Stream contains: | MAPID | *ACTION* | *LODGE* |
                 // (read in that order)
@@ -40,6 +40,7 @@ public class WorkerHandler implements Runnable {
                 // Action
                 ClientActions action = (ClientActions) in.readObject();
 
+                System.out.println("Action: " + action);
                 // Lodge
                 Lodging lodge;
 
@@ -55,10 +56,6 @@ public class WorkerHandler implements Runnable {
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
                     worker.addLodge(lodge);
-                    break;
-                case REMOVE_LODGING:
-                    lodge = (Lodging) in.readObject();
-                    worker.removeLodge(lodge);
                     break;
                 case VIEW_BOOKINGS:
                     ArrayList<Lodging> bookings = new ArrayList<Lodging>();

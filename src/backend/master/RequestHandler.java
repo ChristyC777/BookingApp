@@ -45,10 +45,6 @@ public class RequestHandler implements Runnable {
                     master.assignRoom(lodge);
                     System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
                     break;
-                case REMOVE_LODGING:
-                    lodge = (Lodging) in.readObject();
-                    master.removeRoom(lodge);
-                    break;
                 case VIEW_BOOKINGS:
                     String manager = (String) in.readObject();
                     master.viewBookings(manager);

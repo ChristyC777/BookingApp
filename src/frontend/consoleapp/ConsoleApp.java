@@ -40,9 +40,9 @@ public class ConsoleApp {
         User user = null;
         if (id.equals("Y"))
         {
-            System.out.println("Please enter your username: ");
+            System.out.printf("Please enter your username: ");
             String username = input.next();
-            System.out.println("Please enter your password: ");
+            System.out.printf("Please enter your password: ");
             String password = input.next();
             System.out.println("Waiting for identification...");
             user = new Manager(username, password);
@@ -115,143 +115,137 @@ public class ConsoleApp {
                     System.exit(0);
                 }
         }
-        Menu();
-        System.out.print("Enter your answer: ");
-        int option = input.nextInt();
-        while (option > 5 && option < 1) 
+        boolean exit = false;
+        while (exit == false)
         {
-            System.out.println("There is no such option!!! Please try again!!!");
             Menu();
             System.out.print("Enter your answer: ");
-            option = input.nextInt();
-
-        }
-
-        Socket connection = new Socket("localhost", 7777);
-                    ///////////////////////////////////////////////
-                    System.out.println("I created your connection");
-                    //////////////////////////////////////////////
-        try {
-			out = new ObjectOutputStream(connection.getOutputStream());
-			in = new ObjectInputStream(connection.getInputStream());
-
-            // Create gson object for json object handling
-            Gson gson = new Gson();
-
-            switch(option)
+            int option = input.nextInt();
+            while (option > 4 && option < 1) 
             {
-                case 1:
-                    System.out.println("Please enter the file path for your json file: ");
-                    String fileName = input.next();
-                    
-                    // Reading file
-                    File file = new File(fileName);
-                    FileReader fileReader = new FileReader(file);
-
-                    Object obj = new JSONParser().parse(fileReader);
-
-                    JSONObject jobj = (JSONObject) obj;
-
-                    Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
-                    lodge.setManager(user.getUsername());
-
-                    out.writeObject(ADD_LODGING);
-                    out.flush();
-
-                    out.writeObject(lodge);
-                    out.flush(); 
-
-                    System.out.println("Room successfully added!!!");
-                    break;
-
-                case 2:
-                    System.out.println("Please enter the name of the room you would like to remove: ");
-                    String roomName = input.nextLine();
-
-
-                    out.writeObject(REMOVE_LODGING);
-                    out.flush();
-
-                    out.writeObject(roomName);
-                    out.flush(); 
-
-                    System.out.println("Room successfully removed!!!");
-                    break;
-                case 3:
-
-                    System.out.println("Enter the name of the lodge you want to add the available dates to: ");
-                    String name = input.next();
-
-                    Calendar from = Calendar.getInstance();
-                    Calendar to = Calendar.getInstance();
-        
-                    System.out.println("Add available dates for booking!!! (Format: From (DD/MM/YYYY) - To (DD/MM/YYYY))");
-                    System.out.println("Input date (From)");
-                    String in_date = input.next(); 
-                    SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-                    try {
-                        from.setTime(date.parse(in_date));
-                    } catch (java.text.ParseException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println(from.getTime());
-
-                    System.out.println("Input date (To)");
-                    date = new SimpleDateFormat("dd/MM/yyyy");
-                    try {
-                        to.setTime(date.parse(in_date));
-                    } catch (java.text.ParseException e) {
-                        e.printStackTrace();
-                    }
-
-                    System.out.println(to.getTime());
-
-                    out.writeObject(ADD_DATES);
-                    out.flush();
-
-                    out.writeChars(name);
-                    out.flush();
-
-                    out.writeObject(from.getTime());
-                    out.flush();   
-                    
-                    out.writeObject(to.getTime());
-                    out.flush();
-
-                    break;
-                case 4:
-
-                    System.out.print("Here are the bookings made for your room(s)!!!");
-
-                    out.writeObject(VIEW_BOOKINGS);
-                    out.flush();
-
-                    break;
-
-                // TODO: case 5 for part B
-
+                System.out.println("There is no such option!!! Please try again!!!");
+                Menu();
+                System.out.print("Enter your answer: ");
+                option = input.nextInt();
+    
             }
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				in.close();
-				out.close();
-                connection.close();
-			} catch (IOException ioException) {
-				ioException.printStackTrace();
-			}
-		}
+    
+            Socket connection = new Socket("localhost", 7777);
 
+            try {
+                out = new ObjectOutputStream(connection.getOutputStream());
+                in = new ObjectInputStream(connection.getInputStream());
+    
+                // Create gson object for json object handling
+                Gson gson = new Gson();
+    
+                switch(option)
+                {
+                    case 1:
+                        System.out.println("Please enter the file path for your json file: ");
+                        String fileName = input.next();
+                        
+                        // Reading file
+                        File file = new File(fileName);
+                        FileReader fileReader = new FileReader(file);
+    
+                        Object obj = new JSONParser().parse(fileReader);
+    
+                        JSONObject jobj = (JSONObject) obj;
+    
+                        Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
+                        lodge.setManager(user.getUsername());
+    
+                        out.writeObject(ADD_LODGING);
+                        out.flush();
+    
+                        out.writeObject(lodge);
+                        out.flush(); 
+    
+                        System.out.println("Room successfully added!!!");
+                        break;
+    
+                    case 2:
+    
+                        System.out.println("Enter the name of the lodge you want to add the available dates to: ");
+                        String name = input.next();
+    
+                        Calendar from = Calendar.getInstance();
+                        Calendar to = Calendar.getInstance();
+            
+                        System.out.println("Add available dates for booking!!! (Format: From (DD/MM/YYYY) - To (DD/MM/YYYY))");
+                        System.out.println("Input date (From)");
+                        String in_date = input.next(); 
+                        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+                        try {
+                            from.setTime(date.parse(in_date));
+                        } catch (java.text.ParseException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(from.getTime());
+    
+                        System.out.println("Input date (To)");
+                        date = new SimpleDateFormat("dd/MM/yyyy");
+                        try {
+                            to.setTime(date.parse(in_date));
+                        } catch (java.text.ParseException e) {
+                            e.printStackTrace();
+                        }
+    
+                        System.out.println(to.getTime());
+    
+                        out.writeObject(ADD_DATES);
+                        out.flush();
+    
+                        out.writeChars(name);
+                        out.flush();
+    
+                        out.writeObject(from.getTime());
+                        out.flush();   
+                        
+                        out.writeObject(to.getTime());
+                        out.flush();
+    
+                        break;
+                    case 3:
+    
+                        System.out.print("Here are the bookings made for your room(s)!!!");
+    
+                        out.writeObject(VIEW_BOOKINGS);
+                        out.flush();
+    
+                        break;
+    
+                    // TODO: case 5 for part B
+                    case 4:
+                        exit = true;
+                        break;
+    
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    in.close();
+                    out.close();
+                    connection.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+    
+        }
     }
 
     public static void Menu()
     {
-        System.out.println("Welcome!!! Please select from the following options (1-3)");
+        System.out.println("");
+        System.out.println("////////////////////// MENU //////////////////////\n");
+        System.out.println("Please select from the following options (1-5)");
         System.out.println("1. Add a room");
-        System.out.println("2. Delete a room");
-        System.out.println("3. Update dates");
-        System.out.println("4. View bookings");
+        System.out.println("2. Update dates");
+        System.out.println("3. View bookings"); 
+        System.out.println("4. Exit");
 
     }
 }

@@ -69,7 +69,6 @@ public class Master {
             out = new ObjectOutputStream(new_connection.getOutputStream());
             in = new ObjectInputStream(new_connection.getInputStream());
 
-
             // Write Action
             out.writeObject(ADD_LODGING);
             out.flush();
@@ -78,7 +77,6 @@ public class Master {
             out.writeObject(room);
             out.flush();
 
-
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -93,39 +91,6 @@ public class Master {
             }
         }
 
-    }
-
-    public void removeRoom(Lodging room)
-    {
-        int workerID = selectWorker(room.getRoomName());
-        try {
-
-            // Establish connection with Worker
-            Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
-            out = new ObjectOutputStream(new_connection.getOutputStream());
-            in = new ObjectInputStream(new_connection.getInputStream());
-
-            // Write the action taking place
-            out.writeObject(REMOVE_LODGING);
-            out.flush();
-
-            // Write the lodge that needs to be added
-            out.writeObject(room);
-            out.flush();
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally
-        {
-            try {
-                out.close();
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void viewBookings(String manager)
@@ -247,10 +212,10 @@ public class Master {
 
         for (int i=0; i < master.getNumberOfWorkers(); i++)
         {
-            System.out.printf("Enter the IP address of Worker node %d:", i+1);
+            System.out.printf("Enter the IP address of Worker node %d: ", i+1);
             workerIP = input.next();
 
-            System.out.printf("Enter the port of Worker node %d:", i+1);
+            System.out.printf("Enter the port of Worker node %d: ", i+1);
             workerPort = input.nextInt();
             
             workerNode = new WorkerNode(workerIP, workerPort);

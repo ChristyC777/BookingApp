@@ -26,6 +26,7 @@ public class Worker {
     public Worker(int port)
     {
         this.port = port;
+        this.lodges = new ArrayList<Lodging>();
     }
 
     void openServer() {
@@ -35,8 +36,8 @@ public class Worker {
 			while (true)
             {
 				connection = providerSocket.accept();
-                out = new ObjectOutputStream(connection.getOutputStream());
-                in = new ObjectInputStream(connection.getInputStream());
+                // out = new ObjectOutputStream(connection.getOutputStream());
+                // in = new ObjectInputStream(connection.getInputStream());
 
                 // Stream contains: | ACTION | LODGE |
                 // (read in that order
@@ -48,6 +49,7 @@ public class Worker {
                 // You pass the connection to that worker_thread to handle the request  
                 Thread workerThread = new Thread(new WorkerHandler(this, connection));
                 workerThread.start();
+                System.out.println("Worker thread started successfully!");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -64,13 +66,6 @@ public class Worker {
     {
         this.lodges.add(lodge);
         System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
-        System.out.println(lodges.size());
-    }
-
-    public void removeLodge(Lodging lodge)
-    {
-        this.lodges.remove(lodge);
-        System.out.printf("Lodging \"%s\" has been removed succesfully!%n", lodge.getRoomName());
         System.out.println(lodges.size());
     }
 
