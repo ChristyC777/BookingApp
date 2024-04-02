@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Master",
+            "request": "launch",
+            "mainClass": "src.backend.master.Master",
+            "projectName": "BookingApp_b76e75fa"
+        },
+        {
+            "type": "java",
             "name": "ConsoleApp",
             "request": "launch",
             "mainClass": "src.frontend.consoleapp.ConsoleApp",

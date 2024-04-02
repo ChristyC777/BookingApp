@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import src.backend.lodging.Lodging;
-import src.shared.ClientActions;
 
 public class Worker {
 
@@ -36,14 +35,11 @@ public class Worker {
 			while (true)
             {
 				connection = providerSocket.accept();
-                // out = new ObjectOutputStream(connection.getOutputStream());
-                // in = new ObjectInputStream(connection.getInputStream());
 
-                // Stream contains: | ACTION | LODGE |
-                // (read in that order
-                
-                // WorkerID
-                // int workerID = (int) in.readObject();
+                /* Stream contains: | ACTION | LODGE |
+                 * (read in that order)
+                 */ 
+
 
                 // You take the parameter and see which worker does the master want to connect to
                 // You pass the connection to that worker_thread to handle the request  
