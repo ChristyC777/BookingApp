@@ -19,17 +19,12 @@ public class WorkerHandler implements Runnable {
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private Socket requestSocket;
-    private int threadID;
-    private int port;
     private Worker worker;
-    private ArrayList<Lodging> lodges;
 
-    public WorkerHandler(int threadID, int port, Worker worker)
+    public WorkerHandler(Worker worker, Socket requestSocket)
     {
-        this.threadID = threadID;
-        this.port = port;
         this.worker = worker;
-        this.lodges = new ArrayList<Lodging>();
+        this.requestSocket = requestSocket;
     }
 
     @Override
@@ -39,14 +34,14 @@ public class WorkerHandler implements Runnable {
             this.out = new ObjectOutputStream(requestSocket.getOutputStream());
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
-                // Stream contains: | WORKERID | *ACTION* | *LODGE* |
+                // Stream contains: | MAPID | *ACTION* | *LODGE* |
                 // (read in that order)
 
                 // Action
                 ClientActions action = (ClientActions) in.readObject();
 
                 // Lodge
-                Lodging lodge = (Lodging) in.readObject();
+                Lodging lodge;
 
             switch(action)
             {
@@ -59,18 +54,16 @@ public class WorkerHandler implements Runnable {
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
-                    lodges.add(lodge);
-                    System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
+                    worker.addLodge(lodge);
                     break;
                 case REMOVE_LODGING:
                     lodge = (Lodging) in.readObject();
-                    lodges.remove(lodge);
-                    System.out.printf("Lodging \"%s\" has been removed succesfully!%n", lodge.getRoomName());
+                    worker.removeLodge(lodge);
                     break;
                 case VIEW_BOOKINGS:
                     ArrayList<Lodging> bookings = new ArrayList<Lodging>();
                     String managerName = (String) in.readObject();
-                    for (Lodging l : lodges)
+                    for (Lodging l : worker.getLodges())
                     {
                         if (l.getManager().equals(managerName))
                         {

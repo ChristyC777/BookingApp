@@ -7,27 +7,30 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Scanner;
 
 import src.backend.lodging.Lodging;
 import src.shared.ClientActions;
 
 public class Worker {
 
-    private final static int SERVERPORT = 7778;
+    private int port;
     private ServerSocket providerSocket;
 	private Socket connection = null;
     private ObjectInputStream in;
     private ObjectOutputStream out;
     ArrayList<Thread> workerThreads = new ArrayList<Thread>();
+    private ArrayList<Lodging> lodges;
+    private ArrayList<Lodging> bookings;
 
-    public Worker()
+    public Worker(int port)
     {
-        openServer();
+        this.port = port;
     }
 
     void openServer() {
 		try {
-			providerSocket = new ServerSocket(SERVERPORT);
+			providerSocket = new ServerSocket(port);
 
 			while (true)
             {
@@ -35,22 +38,20 @@ public class Worker {
                 out = new ObjectOutputStream(connection.getOutputStream());
                 in = new ObjectInputStream(connection.getInputStream());
 
-                // Stream contains: | *WORKERID* | ACTION | LODGE |
+                // Stream contains: | ACTION | LODGE |
                 // (read in that order
                 
                 // WorkerID
-                int workerID = (int) in.readObject();
+                // int workerID = (int) in.readObject();
 
                 // You take the parameter and see which worker does the master want to connect to
                 // You pass the connection to that worker_thread to handle the request  
-                workerThreads.get(workerID);
+                Thread workerThread = new Thread(new WorkerHandler(this, connection));
+                workerThread.start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
+		} finally {
 			try {
 				providerSocket.close();
 			} catch (IOException e) {
@@ -59,9 +60,33 @@ public class Worker {
 		}
 	}
 
+    public void addLodge(Lodging lodge)
+    {
+        this.lodges.add(lodge);
+        System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
+        System.out.println(lodges.size());
+    }
+
+    public void removeLodge(Lodging lodge)
+    {
+        this.lodges.remove(lodge);
+        System.out.printf("Lodging \"%s\" has been removed succesfully!%n", lodge.getRoomName());
+        System.out.println(lodges.size());
+    }
+
+    public ArrayList<Lodging> getLodges()
+    {
+        return this.lodges;
+    }
+
     public void viewBookings(ArrayList<Lodging> bookings)
     {
-
+        this.bookings.addAll(bookings);
+        
+        for (Lodging booking : bookings)
+        {
+            System.out.println(booking.getRoomName());
+        }
     }
 
     public void filterRooms(Map<String, Object> map) 
@@ -70,7 +95,10 @@ public class Worker {
     }
 
     public static void main(String[] args) {
-        new Worker();
+        Scanner input = new Scanner(System.in);
+        System.out.printf("Please enter the desired port for the worker to run on: ");
+        int port = input.nextInt();
+        new Worker(port).openServer();
     }
 
 }

@@ -6,7 +6,6 @@ import src.backend.lodging.Lodging;
 
 public class Guest extends User implements GuestInterface {
 
-
     public Guest()
     {
         super();
@@ -16,7 +15,6 @@ public class Guest extends User implements GuestInterface {
     {
         super(username, password);
     }
-
 
     public void search(Map<Integer, String> filter)
     {

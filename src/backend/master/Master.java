@@ -13,6 +13,7 @@ public class Master {
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
     private ArrayList<Thread> masterThreads = new ArrayList<>();
+    private ArrayList<WorkerNode> workerNodes = new ArrayList<WorkerNode>(); // "<IP: Port>"
     private ServerSocket providerSocket;
 	private Socket connection = null;
     private ObjectInputStream in;
@@ -20,7 +21,6 @@ public class Master {
   
     public Master()
     {
-
     }
 
     public void setWorkers(int workers)
@@ -61,11 +61,11 @@ public class Master {
 
     public void assignRoom(Lodging room) 
     {
-        long workerID = selectWorker(room.getRoomName());
+        int workerID = selectWorker(room.getRoomName());
         try {
             
             // Establish a connection with Worker
-            Socket new_connection = new Socket("localhost", 7778);
+            Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
             out = new ObjectOutputStream(new_connection.getOutputStream());
 
             // Write the lodge that needs to be added
@@ -97,11 +97,11 @@ public class Master {
 
     public void removeRoom(Lodging room)
     {
-        long workerID = selectWorker(room.getRoomName());
+        int workerID = selectWorker(room.getRoomName());
         try {
 
             // Establish connection with Worker
-            Socket new_connection = new Socket("localhost", 7778);
+            Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
             out = new ObjectOutputStream(new_connection.getOutputStream());
             
             // Write the worker's ID 
@@ -135,16 +135,19 @@ public class Master {
         try {
 
             // Establish connection with Worker
-            Socket new_connection = new Socket("localhost", 7778);
-            out = new ObjectOutputStream(new_connection.getOutputStream());
+            for (WorkerNode workerID : workerNodes)
+            {
+                Socket new_connection = new Socket(workerID.getIP(), workerID.getPort());
+                out = new ObjectOutputStream(new_connection.getOutputStream());
 
-            // Write the action taking place
-            out.writeObject(VIEW_BOOKINGS);
-            out.flush();
-
-            // Write the manager that wants to see the bookings
-            out.writeObject(manager);
-            out.flush();
+                // Write the action taking place
+                out.writeObject(VIEW_BOOKINGS);
+                out.flush();
+    
+                // Write the manager that wants to see the bookings
+                out.writeObject(manager);
+                out.flush();
+            }
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -160,7 +163,6 @@ public class Master {
         }   
     }
 
-    
     public void updateDates(String roomName, Date startPeriod, Date endPeriod)
     {
 
@@ -171,16 +173,20 @@ public class Master {
         try {
 
             // Establish connection with Worker
-            Socket new_connection = new Socket("localhost", 7778);
-            out = new ObjectOutputStream(new_connection.getOutputStream());
+            for (WorkerNode workerID : workerNodes)
+            {
+                Socket new_connection = new Socket(workerID.getIP(), workerID.getPort());
+                out = new ObjectOutputStream(new_connection.getOutputStream());
 
-            // Write the action taking place
-            out.writeObject(FILTER);
-            out.flush();
+                // Write the action taking place
+                out.writeObject(FILTER);
+                out.flush();
+    
+                // Write the manager that wants to see the bookings
+                out.writeObject(filters);
+                out.flush();
+            }
 
-            // Write the manager that wants to see the bookings
-            out.writeObject(filters);
-            out.flush();
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -196,16 +202,26 @@ public class Master {
         }   
     }
 
+    public int getNumberOfWorkers()
+    {
+        return this.numberOfWorkers;
+    }
+
+    public void addWorkerNode(WorkerNode worker)
+    {
+        this.workerNodes.add(worker);
+    }
+
     
     public void addRating(int rating) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addRating'");
     }
     
-    public long H(String roomName)
+    public int H(String roomName)
     {
         String room = roomName.replaceAll("\\s","");
-        long hash_value = 0;
+        int hash_value = 0;
         final char[] s = room.toCharArray();
         final int n = s.length;
 
@@ -215,14 +231,56 @@ public class Master {
         return hash_value;
     }
     
-    public long selectWorker(String roomName) {
+    public int selectWorker(String roomName) {
         return H(roomName) % numberOfWorkers;
     }
 
     public static void main(String[] args) {
         Master master = new Master();
-        master.selectWorker(args[0]);
+        master.setWorkers(Integer.parseInt(args[0]));
+        
+        Scanner input = new Scanner(System.in);
+        String workerIP;
+        int workerPort;
+        WorkerNode workerNode;
 
+        for (int i=0; i < master.getNumberOfWorkers(); i++)
+        {
+            System.out.printf("Enter the IP address of Worker node %d:", i+1);
+            workerIP = input.next();
+
+            System.out.printf("Enter the port of Worker node %d:", i+1);
+            workerPort = input.nextInt();
+            
+            workerNode = new WorkerNode(workerIP, workerPort);
+            master.addWorkerNode(workerNode);
+        }
+
+        master.openServer();
+    }
+
+    private static class WorkerNode
+    {
+        private String ip;
+        private int port;
+        
+        private WorkerNode(String ip, int port)
+        {
+            this.ip = ip;
+            this.port = port;
+        }
+    
+        private String getIP()
+        {
+            return this.ip;
+        }
+
+        private int getPort()
+        {
+            return this.port;
+        }
     }
 
 }
+
+
