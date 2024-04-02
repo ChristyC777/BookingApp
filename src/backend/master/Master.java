@@ -67,18 +67,17 @@ public class Master {
             // Establish a connection with Worker
             Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
             out = new ObjectOutputStream(new_connection.getOutputStream());
+            in = new ObjectInputStream(new_connection.getInputStream());
 
-            // Write the lodge that needs to be added
-            out.writeObject(room);
-            out.flush();
-
-            // Write the worker's ID
-            out.writeLong(workerID);
-            out.flush();
 
             // Write Action
             out.writeObject(ADD_LODGING);
             out.flush();
+            
+            // Write the lodge that needs to be added
+            out.writeObject(room);
+            out.flush();
+
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -88,6 +87,7 @@ public class Master {
         {
             try {
                 out.close();
+                in.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -103,10 +103,7 @@ public class Master {
             // Establish connection with Worker
             Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
             out = new ObjectOutputStream(new_connection.getOutputStream());
-            
-            // Write the worker's ID 
-            out.writeLong(workerID);
-            out.flush();
+            in = new ObjectInputStream(new_connection.getInputStream());
 
             // Write the action taking place
             out.writeObject(REMOVE_LODGING);
@@ -124,6 +121,7 @@ public class Master {
         {
             try {
                 out.close();
+                in.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -138,6 +136,7 @@ public class Master {
             for (WorkerNode workerID : workerNodes)
             {
                 Socket new_connection = new Socket(workerID.getIP(), workerID.getPort());
+                in = new ObjectInputStream(new_connection.getInputStream());
                 out = new ObjectOutputStream(new_connection.getOutputStream());
 
                 // Write the action taking place
@@ -157,6 +156,7 @@ public class Master {
         {
             try {
                 out.close();
+                in.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -195,6 +195,7 @@ public class Master {
         }finally
         {
             try {
+                in.close();
                 out.close();
             } catch (IOException e) {
                 e.printStackTrace();

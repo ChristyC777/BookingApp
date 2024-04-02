@@ -15,8 +15,8 @@ public class Lodging implements LodgingInterface, Serializable {
     private int noOfReviews;
     private int stars;
     private String manager;
-    private Calendar from;
-    private Calendar to;
+    private Calendar from = null;
+    private Calendar to = null;
 
     Lodging()
     {
