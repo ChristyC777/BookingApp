@@ -20,14 +20,8 @@ public class Worker {
     private ObjectOutputStream out;
     ArrayList<Thread> workerThreads = new ArrayList<Thread>();
 
-    public Worker(int numberOfWorkers)
+    public Worker()
     {
-        for (int i = 0; i<numberOfWorkers; i++)
-        {
-            Thread thread = new Thread(new WorkerHandler(i, SERVERPORT + i + 1, this));
-            thread.start();
-            workerThreads.add(thread);
-        }
         openServer();
     }
 
@@ -73,6 +67,10 @@ public class Worker {
     public void filterRooms(Map<String, Object> map) 
     {
         
+    }
+
+    public static void main(String[] args) {
+        new Worker();
     }
 
 }

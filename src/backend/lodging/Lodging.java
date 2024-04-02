@@ -23,6 +23,11 @@ public class Lodging implements LodgingInterface, Serializable {
         super();
     }
 
+    public void setManager(String manager)
+    {
+        this.manager = manager;
+    }
+
     public void setFrom(Calendar from)
     {
         this.from = from;

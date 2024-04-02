@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import static src.shared.ClientActions.*;
 
 import src.backend.lodging.Lodging;
+import src.backend.users.Manager;
+import src.backend.users.User;
 
 public class ConsoleApp {
 
@@ -29,9 +31,90 @@ public class ConsoleApp {
     
 
     ConsoleApp() { }
-    public static void main(String[] args) throws IOException, ParseException {
+    public static void main(String[] args) throws IOException, ParseException 
+    {
         
         Scanner input = new Scanner(System.in);
+        System.out.println("Are you a user of this App?(Y/N)");
+        String id = input.next();
+        User user = null;
+        if (id.equals("Y"))
+        {
+            System.out.println("Please enter your username: ");
+            String username = input.next();
+            System.out.println("Please enter your password: ");
+            String password = input.next();
+            System.out.println("Waiting for identification...");
+            user = new Manager(username, password);
+            boolean flag = user.login(username, password, "Manager");
+            // If the account doesn't exist
+            if (flag == false)
+            {
+                System.out.println("It is important for you as a manager to create an account");
+                System.out.println("Would you like to create a new account? (Y/N)");
+                String decision = input.next();
+                // New Account creation
+                if (decision.equals("Y"))
+                {
+                    boolean creating_account = true;
+                    while (creating_account == true){
+                        System.out.println("Please enter your username: ");
+                        username = input.next();
+                        System.out.println("Please enter your password: ");
+                        password = input.next();
+                        flag = user.login(username, password, "Manager");
+                        if (flag == true)
+                        {
+                            System.out.println("Sorry this user exists!!! Try again");
+                        }
+                        else 
+                        {
+                            user = new Manager(username, password);
+                            user.addUser(user);
+                            creating_account = false;
+                        }
+                    }
+                }
+                else // else exit the app
+                {
+                    System.out.println("Closing App...");
+                    System.exit(0);
+                }
+            } // esle if the account exist we proceed
+        } 
+        else if (id.equals("N"))
+        {
+            System.out.println("Would you like to create a new account? (Y/N)");
+                String decision = input.next();
+                // New Account creation
+                if (decision.equals("Y"))
+                {
+                    boolean creating_account = true;
+                    while (creating_account == true){
+                        System.err.println("Please enter your username: ");
+                        String username = input.next();
+                        System.out.println("Please enter your password: ");
+                        String password = input.next();
+                        user = new User(username, password);
+                        boolean flag = user.login(username, password, "Manager");
+                        if (flag == true)
+                        {
+                            System.out.println("Sorry this user exists!!! Try again");
+                        }
+                        else 
+                        {
+                            user = new User(username, password);
+                            user.addUser(user);
+                            creating_account = false;
+                        }
+                    }
+                }
+                else // else exit the app
+                {
+                    System.out.println("Closing App...");
+                    System.exit(0);
+                }
+        }
         Menu();
         System.out.print("Enter your answer: ");
         int option = input.nextInt();
@@ -41,9 +124,13 @@ public class ConsoleApp {
             Menu();
             System.out.print("Enter your answer: ");
             option = input.nextInt();
+
         }
 
-        Socket connection = new Socket("192.168.1.13", 7777);
+        Socket connection = new Socket("localhost", 7777);
+                    ///////////////////////////////////////////////
+                    System.out.println("I created your connection");
+                    //////////////////////////////////////////////
         try {
 			out = new ObjectOutputStream(connection.getOutputStream());
 			in = new ObjectInputStream(connection.getInputStream());
@@ -66,6 +153,7 @@ public class ConsoleApp {
                     JSONObject jobj = (JSONObject) obj;
 
                     Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
+                    lodge.setManager(user.getUsername());
 
                     out.writeObject(ADD_LODGING);
                     out.flush();

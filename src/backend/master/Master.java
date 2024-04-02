@@ -23,6 +23,10 @@ public class Master {
 
     }
 
+    public void setWorkers(int workers)
+    {
+        numberOfWorkers = workers;
+    }
 
     void openServer() {
 		try {
@@ -216,7 +220,9 @@ public class Master {
     }
 
     public static void main(String[] args) {
-        new Master().openServer();;
+        Master master = new Master();
+        master.selectWorker(args[0]);
+
     }
 
 }

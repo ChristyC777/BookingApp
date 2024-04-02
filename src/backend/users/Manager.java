@@ -6,6 +6,12 @@ import src.backend.lodging.Lodging;
 
 public class Manager extends User implements ManagerInterface  {
 
+
+    public Manager(String username, String password)
+    {
+        super(username, password);
+    }
+    
     /**
      * Προσθήκη ενός καλύματος.
      * @param lodge -> Το κάλυμα προς πρόσθεση.

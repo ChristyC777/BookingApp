@@ -9,6 +9,9 @@ import static src.shared.ClientActions.*;
 
 import com.google.gson.Gson;
 
+import src.backend.users.Guest;
+import src.backend.users.User;
+
 public class DummyApp {
 
 	private static ObjectInputStream in;
@@ -16,8 +19,100 @@ public class DummyApp {
 
     DummyApp() { }
     public static void main(String[] args) throws IOException, ParseException {
-        
+
         Scanner input = new Scanner(System.in);
+        System.out.println("Are you a user of this App?(Y/N)");
+        String id = input.next();
+        if (id.equals("Y"))
+        {     
+            System.out.println("Please enter your username: ");
+            String username = input.next();
+            System.out.println("Please enter your password: ");
+            String password = input.next();
+            System.out.println("Waiting for identification...");
+            User user = new Guest(username, password);
+            boolean flag = user.login(username, password, "Guest");
+            // If the account doesn't exist
+            if (flag == false)
+            {
+                System.out.println("Sorry we didn't find any account under those credentials");
+                System.out.println("Would you like to create a new account? (Y/N)");
+                String decision = input.next();
+                // New Account creation
+                if (decision.equals("Y"))
+                {
+                    boolean creating_account = true;
+                    while (creating_account == true){
+                        System.out.println("Please enter your username: ");
+                        username = input.next();
+                        System.out.println("Please enter your password: ");
+                        password = input.next();
+                        flag = user.login(username, password, "Guest");
+                        if (flag == true)
+                        {
+                            System.out.println("Sorry this user exists!!! Try again");
+                        }
+                        else 
+                        {
+                            user = new Guest(username, password);
+                            user.addUser(user);
+                            creating_account = false;
+                        }
+                    }
+                }
+                else // else exit the app
+                {
+                    System.out.println("Closing App...");
+                    System.exit(0);
+                }
+            } // esle if the account exist we proceed
+        } 
+        else if (id.equals("N"))
+        {
+            System.out.println("Would you like to create a new account? (Y/N)");
+                String decision = input.next();
+                // New Account creation
+                if (decision.equals("Y"))
+                {
+                    System.out.println("Would you like to sign up as a guest or as a user? (G - guest, U - User)");
+                    String ans = input.next();
+                    if (ans.equals("G"))
+                    {
+                        System.out.println("Creating an account for you...");
+                        User user = new Guest();
+                        System.out.printf("Your unique id is: %s", user.getUUID(), "Please save this message. Your code won't be given to you again...");
+                    }
+                    else
+                    {
+                        boolean creating_account = true;
+                        while (creating_account == true)
+                        {
+                            System.out.println("Please enter your username: ");
+                            String username = input.next();
+                            System.out.println("Please enter your password: ");
+                            String password = input.next();
+                            User user = new Guest(username, password);
+                            boolean flag = user.login(username, password, "Guest");
+                            if (flag == true)
+                            {
+                                System.out.println("Sorry this user exists!!! Try again");
+                            }
+                            else 
+                            {
+                                user = new Guest(username, password);
+                                user.addUser(user);
+                                creating_account = false;
+                            }
+                        }
+                    }
+                }
+                else // else exit the app
+                {
+                    System.out.println("Closing App...");
+                    System.exit(0);
+                }
+        }
+        
         Menu();
         System.out.print("Enter your answer: ");
         int option = input.nextInt();
