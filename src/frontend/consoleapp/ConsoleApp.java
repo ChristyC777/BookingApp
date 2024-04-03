@@ -165,45 +165,70 @@ public class ConsoleApp {
                         System.out.println("Room successfully added!!!");
                         break;
     
-                    case 2:
-    
-                        System.out.println("Enter the name of the lodge you want to add the available dates to: ");
-                        String name = input.next();
-    
+                    case 2: // Manager wants to add dates of availability for a lodge
+
+                        boolean input_wrong = true;
+                        String name = null;
                         Calendar from = Calendar.getInstance();
                         Calendar to = Calendar.getInstance();
-            
-                        System.out.println("Add available dates for booking!!! (Format: From (DD/MM/YYYY) - To (DD/MM/YYYY))");
-                        System.out.println("Input date (From)");
-                        String in_date = input.next(); 
-                        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
-                        try {
-                            from.setTime(date.parse(in_date));
-                        } catch (java.text.ParseException e) {
-                            e.printStackTrace();
+                        while (input_wrong) // Till the input is right
+                        {
+                            // Ask for the name of the lodge 
+                            System.out.println("Enter the name of the lodge you want to add the available dates to: ");
+                            name = input.next();
+                
+                            // Ask for the dates of availability
+                            System.out.println("Add available dates for booking!!!");
+                            System.out.println("Input starting date of availability (DD/MM/YYYY)");
+                            String in_date = input.next(); 
+                            SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy");
+                            try {
+                                from.setTime(date.parse(in_date));
+                            } catch (java.text.ParseException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println(from.getTime());
+        
+                            System.out.println("Input ending date of availability (DD/MM/YYYY)");
+                            date = new SimpleDateFormat("dd/MM/yyyy");
+
+                            try {
+                                to.setTime(date.parse(in_date));
+                            } catch (java.text.ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            // Compare then so that the date of from is always smaller than the date of to
+                            if (from.compareTo(to) < 0)
+                            {
+                                input_wrong = false;
+                            }
+                            else
+                            {
+                                System.out.println("Wrong dates please try again");
+                            }
                         }
-                        System.out.println(from.getTime());
-    
-                        System.out.println("Input date (To)");
-                        date = new SimpleDateFormat("dd/MM/yyyy");
-                        try {
-                            to.setTime(date.parse(in_date));
-                        } catch (java.text.ParseException e) {
-                            e.printStackTrace();
-                        }
-    
+                        
                         System.out.println(to.getTime());
-    
+        
+                        // Send the action
                         out.writeObject(ADD_DATES);
                         out.flush();
     
+                        // Send the name of the room 
                         out.writeChars(name);
                         out.flush();
+                        
+                        // Send the username of the manager
+                        out.writeChars(user.getUsername());
+                        out.flush();
     
-                        out.writeObject(from.getTime());
+                        // Send starting date of availability
+                        out.writeObject(from);
                         out.flush();   
                         
-                        out.writeObject(to.getTime());
+                        // Send ending date of availability
+                        out.writeObject(to);
                         out.flush();
     
                         break;

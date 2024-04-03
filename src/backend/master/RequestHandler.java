@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Date;
 import java.util.Map;
+import java.util.Calendar;
 
 import src.shared.ClientActions;
 
@@ -37,8 +38,11 @@ public class RequestHandler implements Runnable {
             switch(action)
             {
                 case ADD_DATES:
-                    lodge = (Lodging) in.readObject();
-                    master.updateDates(lodge.getRoomName(), new Date(), new Date());
+                    String namelodge = (String) in.readObject();
+                    String manager = (String) in.readObject();
+                    Calendar startPeriod = (Calendar) in.readObject();
+                    Calendar endPeriod = (Calendar) in.readObject();
+                    master.updateDates(namelodge, manager, startPeriod, endPeriod);
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();

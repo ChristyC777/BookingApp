@@ -20,19 +20,6 @@ public class MapReducer {
 
     MapReducer()
     {
-        openServer();
-    }
-
-    public Map<String, Object> Map(String mapid, ArrayList<Lodging> filter)
-    {
-        Map<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
-        for (Lodging lodge : filter)
-        {
-            count.put(lodge, 1);
-        }
-        Map<String, Object> k2_v2 = new HashMap<String, Object>(); // {mapid: {"room1":1, "room2":1, "room3":1}}
-        k2_v2.put(mapid, count);
-        return k2_v2;
     }
 
     public Map<String, Object> Reduce(String mapid, Map<Lodging, Integer> filter_results)
@@ -54,15 +41,15 @@ public class MapReducer {
     {
             try {
                 providerSocket = new ServerSocket(SERVERPORT);
+                    
+                connection = providerSocket.accept();
+                out = new ObjectOutputStream(connection.getOutputStream());
+                in = new ObjectInputStream(connection.getInputStream());
+                String mapid = (String) in.readObject();
+                Map<Lodging, Integer> filter_results = (Map<Lodging, Integer>) in.readObject();
+                Reduce(mapid, filter_results);
 
-                while (true)
-                {
-                    connection = providerSocket.accept();
-                    out = new ObjectOutputStream(connection.getOutputStream());
-                    in = new ObjectInputStream(connection.getInputStream());
-
-                }
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -73,7 +60,9 @@ public class MapReducer {
             }
         }
 
-
+    public static void main(String[] args) {
+        new MapReducer().openServer();
+    }
         
 
 }

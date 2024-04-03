@@ -128,9 +128,50 @@ public class Master {
         }   
     }
 
-    public void updateDates(String roomName, Date startPeriod, Date endPeriod)
+    public void updateDates(String roomName, String manager, Calendar startPeriod, Calendar endPeriod)
     {
+        int workerID = selectWorker(roomName);
+        try {
+            // Establish connection with Worker
 
+                Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
+                in = new ObjectInputStream(new_connection.getInputStream());
+                out = new ObjectOutputStream(new_connection.getOutputStream());
+
+                // Write the action taking place
+                out.writeObject(ADD_DATES);
+                out.flush();
+
+                // Write the name of the lodge
+                out.writeChars(roomName);
+                out.flush();
+    
+                // Write the manager that wants to see the bookings
+                out.writeObject(manager);
+                out.flush();
+
+                // Write the starting date of availability
+                out.writeObject(startPeriod);
+                out.flush();
+
+                // Write the ending date of availability
+                out.writeObject(endPeriod);
+                out.flush();
+            
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally
+        {
+            try {
+                out.close();
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }   
     }
 
     public void filterRooms(Map<String, Object> filters)

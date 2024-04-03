@@ -7,7 +7,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
+import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Calendar;
 
 import src.backend.lodging.Lodging;
 import src.shared.ClientActions;
@@ -62,6 +65,30 @@ public class Worker {
 		}
 	}
 
+    public void addDates(String roomName, String manager, Calendar startPeriod, Calendar endPeriod)
+    {
+        Lodging lodge = lodges.stream().filter(room -> room.getRoomName() == roomName).findFirst().orElse(null);
+        if (lodge!=null)
+        {
+            if(lodge.getManager().equals(manager))
+            {
+                lodge.setFrom(startPeriod);
+                lodge.setTo(endPeriod);
+            }
+            else
+            {
+                //////////////////////////////////////////////////////////////////////////////////////
+                System.out.println("You're not the manager of this room so you can't add dates"); // We need to see how we'll use the streams to return a message
+                //////////////////////////////////////////////////////////////////////////////////////
+            }
+        }
+        else 
+        {   ////////////////////////////////////////////////
+            System.out.println("Room does not exist"); // We need to see how we'll use the streams to return a message
+            ////////////////////////////////////////////////
+        }
+    }
+
     public void addLodge(Lodging lodge)
     {
         this.lodges.add(lodge);
@@ -87,6 +114,23 @@ public class Worker {
     public void filterRooms(Map<String, Object> map) 
     {
         
+    }
+
+    public void manageFilters(Map<String, Object> map)
+    {
+
+    }
+
+    public Map<String, Object> Map(String mapid, ArrayList<Lodging> filter)
+    {
+        Map<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
+        for (Lodging lodge : filter)
+        {
+            count.put(lodge, 1);
+        }
+        Map<String, Object> k2_v2 = new HashMap<String, Object>(); // {mapid: {"room1":1, "room2":1, "room3":1}}
+        k2_v2.put(mapid, count);
+        return k2_v2;
     }
 
     public static void main(String[] args) {

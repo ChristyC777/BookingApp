@@ -47,11 +47,11 @@ public class WorkerHandler implements Runnable {
             switch(action)
             {
                 case ADD_DATES:
-                    lodge = (Lodging) in.readObject();
+                    String namelodge = (String) in.readObject();
+                    String manager = (String) in.readObject();
                     Calendar from = (Calendar) in.readObject();
                     Calendar to = (Calendar) in.readObject();
-                    lodge.setFrom(from);
-                    lodge.setTo(to);
+                    worker.addDates(namelodge, manager, from, to);
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
