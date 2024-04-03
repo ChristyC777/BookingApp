@@ -50,7 +50,7 @@ public class RequestHandler implements Runnable {
                     System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
                     break;
                 case VIEW_BOOKINGS:
-                    String manager = (String) in.readObject();
+                    manager = (String) in.readObject();
                     master.viewBookings(manager);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
