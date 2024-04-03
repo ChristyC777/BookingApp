@@ -127,7 +127,7 @@ public class Master {
         }   
     }
 
-    public void updateDates(String roomName, String manager, Calendar startPeriod, Calendar endPeriod)
+    public void updateDates(String roomName, String manager, String startPeriod, String endPeriod)
     {
         int workerID = selectWorker(roomName);
         try {
@@ -142,11 +142,11 @@ public class Master {
                 out.flush();
 
                 // Write the name of the lodge
-                out.writeChars(roomName);
+                out.writeObject(roomName);
                 out.flush();
     
                 // Write the manager that wants to see the bookings
-                out.writeChars(manager);
+                out.writeObject(manager);
                 out.flush();
 
                 // Write the starting date of availability

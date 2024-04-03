@@ -7,8 +7,6 @@ import java.util.*;
 import org.json.simple.parser.ParseException;
 import static src.shared.ClientActions.*;
 
-import com.google.gson.Gson;
-
 import src.backend.lodging.Lodging;
 import src.backend.users.Guest;
 import src.backend.users.User;
@@ -25,13 +23,13 @@ public class DummyApp {
         User user = null;
         Scanner input = new Scanner(System.in);
         System.out.println("Are you a registered user of this app?(Y/N)");
-        String id = input.next();
-        if (id.equals("Y"))
+        String id = input.nextLine().trim().toLowerCase();
+        if (id.equals("y"))
         {     
             System.out.print("Please enter your username: ");
-            String username = input.next();
+            String username = input.nextLine().trim();
             System.out.print("Please enter your password: ");
-            String password = input.next();
+            String password = input.nextLine().trim();
             System.out.println("Waiting for identification...");
             user = new Guest(username, password);
             boolean flag = user.login(username, password, "Guest");
@@ -40,16 +38,16 @@ public class DummyApp {
             {
                 System.out.println("Sorry, we didn't find any account under those credentials.");
                 System.out.println("Would you like to create a new account? (Y/N)");
-                String decision = input.next();
+                String decision = input.nextLine().trim().toLowerCase();
                 // New Account creation
-                if (decision.equals("Y"))
+                if (decision.equals("y"))
                 {
                     boolean creating_account = true;
                     while (creating_account == true){
                         System.out.print("Please enter your username: ");
-                        username = input.next();
+                        username = input.nextLine().trim();
                         System.out.print("Please enter your password: ");
-                        password = input.next();
+                        password = input.nextLine().trim();;
                         flag = user.login(username, password, "Guest");
                         if (flag == true)
                         {
@@ -70,20 +68,20 @@ public class DummyApp {
                 }
             } // esle if the account exist we proceed
         } 
-        else if (id.equals("N"))
+        else if (id.equals("n"))
         {
             System.out.println("Would you like to create a new account? (Y/N)");
-                String decision = input.next();
+                String decision = input.nextLine().trim().toLowerCase();
                 // New Account creation
-                if (decision.equals("Y"))
+                if (decision.equals("y"))
                 {
                     System.out.println("Would you like to sign up as a guest or as a user? (G - guest, U - User)");
-                    String ans = input.next();
-                    if (ans.equals("G"))
+                    String ans = input.nextLine().trim().toLowerCase();
+                    if (ans.equals("g"))
                     {
                         System.out.println("Creating an account for you...");
                         user = new Guest();
-                        System.out.printf("Your unique id is: %s", user.getUUID(), "Please save this message. Your code won't be given to you again.");
+                        System.out.printf("Your unique id is: %s%nPlease save this message. Your code won't be given to you again.%n", user.getUUID());
                     }
                     else
                     {
@@ -91,9 +89,9 @@ public class DummyApp {
                         while (creating_account == true)
                         {
                             System.out.print("Please enter your username: ");
-                            String username = input.next();
+                            String username = input.nextLine().trim();
                             System.out.print("Please enter your password: ");
-                            String password = input.next();
+                            String password = input.nextLine().trim();
                             user = new Guest(username, password);
                             boolean flag = user.login(username, password, "Guest");
                             if (flag == true)
@@ -119,12 +117,14 @@ public class DummyApp {
         Menu();
         System.out.print("Enter your answer: ");
         int option = input.nextInt();
+        input.nextLine(); // consume newline
         while (option > 5 && option < 1) 
         {
             System.out.println("There is no such option!!! Please try again!!!");
             Menu();
             System.out.print("Enter your answer: ");
             option = input.nextInt();
+            input.nextLine(); // consume newline
         }
 
         try (Socket connection = new Socket("localhost", 7777)) {
@@ -151,7 +151,7 @@ public class DummyApp {
                 System.out.println("Here are the rooms that match your preferences!!!");
                 for (Map.Entry<Lodging, Integer> item : room_list.entrySet())
                 {
-                    item.getKey().printRoom();
+                    System.out.println(item.getKey());
                 }
 
                 System.out.println("These are our rooms");
@@ -160,7 +160,7 @@ public class DummyApp {
                 {
                     case 1:
                         System.out.print("Please enter the name of the room you would like to book: ");
-                        String roomName = input.next();
+                        String roomName = input.nextLine().trim();
 
                         System.out.println("Please select one of the following dates:");
                         
@@ -176,12 +176,14 @@ public class DummyApp {
                             System.out.println("Please select from the following filters (1-4)");
                             filters();
                             int answer = input.nextInt();
+                            input.nextLine(); // consume newline
                             while (answer > 4 && answer < 1) 
                             {
                                 System.out.println("There is no such option!!! Please try again!!!");
                                 filters();
                                 System.out.print("Enter your answer: ");
                                 answer = input.nextInt();
+                                input.nextLine(); // consume newline
                             }
                             switch (answer) 
                             {
@@ -192,12 +194,13 @@ public class DummyApp {
                                         System.out.println("There is no such option!!! Please try again!!!");
                                         System.out.print("Please select the number of stars (1-5): ");
                                         answer = input.nextInt();
+                                        input.nextLine(); // consume newline
                                     }
                                     map.put("stars", answer);
                                     break;
                                 case 2:
                                     System.out.print("Please select the area you want to go to: ");
-                                    String area = input.next();
+                                    String area = input.nextLine();
                                     map.put("area", area);
                                     break;
                                 case 3:
@@ -207,18 +210,19 @@ public class DummyApp {
                                         System.out.println("Invalid number!!! Please try again!!!");
                                         System.out.print("Please select the number of people: ");
                                         answer = input.nextInt();
+                                        input.nextLine(); // consume newline
                                     }
                                     map.put("noOfPersons", answer);
                                     break;
                                 case 4:
                                     System.out.print("Please select the name of the room: ");
-                                    String name = input.next();
+                                    String name = input.nextLine();
                                     map.put("roomName", name);
                                     break;
                             }
                             System.out.println("Would you like to add more filters? Y/N");
-                            String ans = input.next();
-                            if (ans.equals("N"))
+                            String ans = input.nextLine().trim().toLowerCase();
+                            if (ans.equals("n"))
                             {
                                 add_filter = false;
                             }
@@ -229,12 +233,12 @@ public class DummyApp {
 
                         if (user.getUsername().equals(null))
                         {
-                            out.writeChars(user.getUUID());
+                            out.writeObject(user.getUUID());
                             out.flush();
                         }
                         else 
                         {
-                            out.writeChars(user.getUsername());
+                            out.writeObject(user.getUsername());
                             out.flush();
                         }
 
@@ -257,7 +261,7 @@ public class DummyApp {
                         System.out.println("Here are the rooms that match your preferences!!!");
                         for (Map.Entry<Lodging, Integer> item : room_list.entrySet())
                         {
-                            item.getKey().printRoom();
+                            System.out.println(item.getKey());
                         }
                         break;
 
@@ -281,7 +285,6 @@ public class DummyApp {
         System.out.println("Welcome!!!Please select from the following options (1-2)");
         System.out.println("1. Book a room");
         System.out.println("2. Use filters");
-
     }
 
     public static void filters()

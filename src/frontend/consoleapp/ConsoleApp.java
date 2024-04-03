@@ -8,7 +8,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.Map;
 
@@ -25,6 +24,7 @@ import src.backend.users.User;
 
 public class ConsoleApp {
 
+    private final static int SERVERPORT = 7777;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 
@@ -35,29 +35,30 @@ public class ConsoleApp {
 
         Scanner input = new Scanner(System.in);
         System.out.println("Are you a user of this App? (Y/N)");
-        String id = input.next();
+        String id = input.nextLine().trim().toLowerCase();
         User user = null;
-        if (id.equals("Y")) {
+        if (id.equals("y")) {
             System.out.print("Please enter your username: ");
-            String username = input.next();
+            String username = input.nextLine();
             System.out.print("Please enter your password: ");
-            String password = input.next();
+            String password = input.nextLine();
             System.out.println("Waiting for identification...");
             user = new Manager(username, password);
             boolean flag = user.login(username, password, "Manager");
             // If the account doesn't exist
             if (flag == false) {
+                System.out.println("Sorry, no account was found with the provided credentials.");
                 System.out.println("It is important for you as a manager to create an account.");
                 System.out.println("Would you like to create a new account? (Y/N)");
-                String decision = input.next();
+                String decision = input.nextLine().trim().toLowerCase();
                 // New Account creation
-                if (decision.equals("Y")) {
+                if (decision.equals("y")) {
                     boolean creating_account = true;
                     while (creating_account == true) {
                         System.out.print("Please enter your username: ");
-                        username = input.next();
+                        username = input.nextLine();
                         System.out.print("Please enter your password: ");
-                        password = input.next();
+                        password = input.nextLine();
                         flag = user.login(username, password, "Manager");
                         if (flag == true) {
                             System.out.println("Sorry, this user exists!!! Try again.");
@@ -73,17 +74,17 @@ public class ConsoleApp {
                     System.exit(0);
                 }
             } // esle if the account exist we proceed
-        } else if (id.equals("N")) {
+        } else {
             System.out.println("Would you like to create a new account? (Y/N)");
-            String decision = input.next();
+            String decision = input.nextLine().trim().toLowerCase();
             // New Account creation
-            if (decision.equals("Y")) {
+            if (decision.equals("y")) {
                 boolean creating_account = true;
                 while (creating_account == true) {
                     System.err.print("Please enter your username: ");
-                    String username = input.next();
+                    String username = input.nextLine();
                     System.out.print("Please enter your password: ");
-                    String password = input.next();
+                    String password = input.nextLine();
                     user = new User(username, password);
                     boolean flag = user.login(username, password, "Manager");
                     if (flag == true) {
@@ -105,18 +106,16 @@ public class ConsoleApp {
             Menu();
             System.out.print("Enter your answer: ");
             int option = input.nextInt();
+            input.nextLine(); // consume newline
             while (option > 4 && option < 1) {
                 System.out.println("There is no such option!!! Please try again!!!");
                 Menu();
                 System.out.print("Enter your answer: ");
                 option = input.nextInt();
-
+                input.nextLine(); // consume newline
             }
 
-            
-
             try {
-
 
                 // Create gson object for json object handling
                 Gson gson = new Gson();
@@ -126,7 +125,7 @@ public class ConsoleApp {
                 switch (option) {
                     case 1:
                         System.out.println("Please enter the file path for your json file: ");
-                        String fileName = input.next();
+                        String fileName = input.nextLine();
 
                         // Reading file
                         File file = new File(fileName);
@@ -139,7 +138,7 @@ public class ConsoleApp {
                         Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
                         lodge.setManager(user.getUsername());
 
-                        connection = new Socket("localhost", 7777);
+                        connection = new Socket("localhost", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -157,6 +156,8 @@ public class ConsoleApp {
 
                         boolean input_wrong = true;
                         String name = null;
+                        String fromInput = null;
+                        String toInput = null;
                         Calendar from = Calendar.getInstance();
                         Calendar to = Calendar.getInstance();
                         while (input_wrong) // Till the input is right
@@ -166,20 +167,18 @@ public class ConsoleApp {
                             name = input.nextLine();
 
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                            dateFormat.setLenient(false);
+
                             // Ask for the dates of availability
                             System.out.print("Add available dates for booking!!!\n");
+
                             System.out.print("Input starting date of availability (DD/MM/YYYY): \n");
-                            String inDate = input.next();
-
-                            dateFormat.setLenient(false);
-                            from.setTime(dateFormat.parse(inDate));
-
-                            System.out.println(from.getTime());
+                            fromInput = input.nextLine();
+                            from.setTime(dateFormat.parse(fromInput));
 
                             System.out.println("Input ending date of availability (DD/MM/YYYY)");
-                            inDate = input.next();
-                            to.setTime(dateFormat.parse(inDate));
-                            System.out.println(to.getTime());
+                            toInput = input.nextLine();
+                            to.setTime(dateFormat.parse(toInput));
                             
                             // Compare then so that the date of from is always smaller than the date of to
                             if (from.compareTo(to) < 0) {
@@ -188,9 +187,7 @@ public class ConsoleApp {
                                 System.out.println("Wrong dates please try again");
                             }
                         }
-                        System.out.println(name);
-
-                        connection = new Socket("localhost", 7777);
+                        connection = new Socket("localhost", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -200,27 +197,27 @@ public class ConsoleApp {
                         out.flush();
 
                         // Send the name of the room
-                        out.writeChars(name);
+                        out.writeObject(name);
                         out.flush();
 
                         // Send the username of the manager
-                        out.writeChars(user.getUsername());
+                        out.writeObject(user.getUsername());
                         out.flush();
 
                         // Send starting date of availability
-                        out.writeObject(from);
+                        out.writeObject(fromInput);
                         out.flush();
 
                         // Send ending date of availability
-                        out.writeObject(to);
+                        out.writeObject(toInput);
                         out.flush();
 
                         break;
-                    case 3:
 
+                    case 3:
                         System.out.print("Here are the bookings made for your room(s)!!!");
 
-                        connection = new Socket("localhost", 7777);
+                        connection = new Socket("localhost", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -243,32 +240,30 @@ public class ConsoleApp {
                         Map<Lodging, Integer> room_list = (Map<Lodging, Integer>) filtered_rooms.get(firstKey);
                         System.out.println("Here are the rooms that match your preferences!!!");
                         for (Map.Entry<Lodging, Integer> item : room_list.entrySet()) {
-                            item.getKey().printRoom();
+                            System.out.println(item.getKey());
                         }
                         break;
 
                     case 4:
                         exit = true;
                         break;
-
                 }
             } catch (IOException | java.text.ParseException e) {
                 e.printStackTrace();
             } finally {
-                try {
-                    in.close();
-                    out.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
+            // Close the streams
+            try {
+                in.close();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
+        }
         }
     }
 
     public static void Menu() {
-        System.out.println("");
-        System.out.println("////////////////////// MENU //////////////////////\n");
+        System.out.println("\n////////////////////// MENU //////////////////////\n");
         System.out.println("Please select from the following options (1-4)");
         System.out.println("1. Add a room");
         System.out.println("2. Update dates");

@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Date;
 import java.util.Map;
-import java.util.Calendar;
 
 import src.shared.ClientActions;
 
@@ -39,10 +37,9 @@ public class RequestHandler implements Runnable {
             {
                 case ADD_DATES:
                     String namelodge = (String) in.readObject();
-                    System.out.println(namelodge);
                     String manager = (String) in.readObject();
-                    Calendar startPeriod = (Calendar) in.readObject();
-                    Calendar endPeriod = (Calendar) in.readObject();
+                    String startPeriod = (String) in.readObject();
+                    String endPeriod = (String) in.readObject();
                     master.updateDates(namelodge, manager, startPeriod, endPeriod);
                     break;
                 case ADD_LODGING:

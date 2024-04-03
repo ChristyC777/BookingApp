@@ -81,21 +81,32 @@ public class Lodging implements LodgingInterface, Serializable {
         return stars;
     }
 
-
-    public void printRoom()
+    @Override
+    public String toString()
     {
-        System.out.println("////////////////////////////");
-        System.out.println("         ROOM DATA        ");
-        System.out.println("////////////////////////////");
-        System.out.printf("Name: %s%n", this.getRoomName());
-        System.out.printf("Stars: %d%n", this.getStars());
-        System.out.printf("Area: %s%n", this.getArea());
-        System.out.printf("Number of People: %d%n", this.getNumberOfPersons());
-        System.out.printf("Number of Reviews: %d%n", this.getNumberOfReviews());
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDate = dateFormat.format(from.getTime());
-        System.out.printf("Available from: %s%n", formattedDate);
-        formattedDate = dateFormat.format(to.getTime());
-        System.out.printf("Available from: %s%n", formattedDate);
+        String fromFormattedDate = dateFormat.format(from.getTime());
+        String toFormattedDate = dateFormat.format(to.getTime());
+        return String.format(
+            """ 
+            ###################
+            #### ROOM DATA ####
+            ###################
+
+            Name: %s
+            Stars: %d
+            Area: %s
+            Number of people: %d
+            Number of reviews: %d
+            Available from: %s
+            Available to: %s""",
+            this.getRoomName(),
+            this.getStars(),
+            this.getArea(),
+            this.getNumberOfPersons(),
+            this.getNumberOfReviews(),
+            fromFormattedDate,
+            toFormattedDate
+        );
     }
 }  

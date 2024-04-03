@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Map;
 
 import src.backend.lodging.Lodging;
@@ -46,8 +46,8 @@ public class WorkerHandler implements Runnable {
                 case ADD_DATES:
                     String namelodge = (String) in.readObject();
                     String manager = (String) in.readObject();
-                    Calendar from = (Calendar) in.readObject();
-                    Calendar to = (Calendar) in.readObject();
+                    String from = (String) in.readObject();
+                    String to = (String) in.readObject();
                     worker.addDates(namelodge, manager, from, to);
                     break;
                 case ADD_LODGING:
@@ -99,6 +99,16 @@ public class WorkerHandler implements Runnable {
         } catch (IOException | ClassNotFoundException e)
         {
             e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } finally {
+            // Close the streams
+            try {
+                in.close();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     

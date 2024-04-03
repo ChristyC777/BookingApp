@@ -5,9 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Optional;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Calendar;
@@ -34,6 +35,7 @@ public class Worker {
     void openServer() {
 		try {
 			providerSocket = new ServerSocket(port);
+            System.out.printf("Worker now listening to port %d.%n", port);
 
 			while (true)
             {
@@ -42,7 +44,6 @@ public class Worker {
                 /* Stream contains: | ACTION | LODGE |
                  * (read in that order)
                  */ 
-
 
                 // You take the parameter and see which worker does the master want to connect to
                 // You pass the connection to that worker_thread to handle the request  
@@ -61,17 +62,28 @@ public class Worker {
 		}
 	}
 
-    public void addDates(String roomName, String manager, Calendar startPeriod, Calendar endPeriod)
+    public void addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
     {
-        Lodging lodge = lodges.stream().filter(room -> room.getRoomName() == roomName).findFirst().orElse(null);
-        if (lodge!=null)
+        Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
+        if (lodge != null)
         {
             if(lodge.getManager().equals(manager))
             {
-                lodge.setFrom(startPeriod);
-                lodge.setTo(endPeriod);
-                System.out.println(lodge.getFrom());
-                System.out.println(lodge.getTo());
+                // Create calendar instances
+                Calendar from = Calendar.getInstance();
+                Calendar to = Calendar.getInstance();
+
+                // Create date formatter, non-lenient
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                dateFormat.setLenient(false);
+                
+                from.setTime(dateFormat.parse(startPeriod));
+                to.setTime(dateFormat.parse(endPeriod));
+
+                lodge.setFrom(from);
+                lodge.setTo(to);
+
+                System.out.println(lodge);
             }
             else
             {
