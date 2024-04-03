@@ -9,17 +9,20 @@ import static src.shared.ClientActions.*;
 
 import com.google.gson.Gson;
 
+import src.backend.lodging.Lodging;
 import src.backend.users.Guest;
 import src.backend.users.User;
 
 public class DummyApp {
 
+    private final Object lock = new Object();
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
     DummyApp() { }
     public static void main(String[] args) throws IOException, ParseException {
 
+        User user = null;
         Scanner input = new Scanner(System.in);
         System.out.println("Are you a registered user of this app?(Y/N)");
         String id = input.next();
@@ -30,7 +33,7 @@ public class DummyApp {
             System.out.print("Please enter your password: ");
             String password = input.next();
             System.out.println("Waiting for identification...");
-            User user = new Guest(username, password);
+            user = new Guest(username, password);
             boolean flag = user.login(username, password, "Guest");
             // If the account doesn't exist
             if (flag == false)
@@ -79,7 +82,7 @@ public class DummyApp {
                     if (ans.equals("G"))
                     {
                         System.out.println("Creating an account for you...");
-                        User user = new Guest();
+                        user = new Guest();
                         System.out.printf("Your unique id is: %s", user.getUUID(), "Please save this message. Your code won't be given to you again.");
                     }
                     else
@@ -91,7 +94,7 @@ public class DummyApp {
                             String username = input.next();
                             System.out.print("Please enter your password: ");
                             String password = input.next();
-                            User user = new Guest(username, password);
+                            user = new Guest(username, password);
                             boolean flag = user.login(username, password, "Guest");
                             if (flag == true)
                             {
@@ -124,13 +127,34 @@ public class DummyApp {
             option = input.nextInt();
         }
 
-        try (Socket connection = new Socket("192.168.1.24", 7777)) {
+        try (Socket connection = new Socket("localhost", 7777)) {
             try {
             	out = new ObjectOutputStream(connection.getOutputStream());
             	in = new ObjectInputStream(connection.getInputStream());
 
-                // Create gson object for json object handling
-                Gson gson = new Gson();
+                out.writeObject(VIEW);
+                out.flush();
+                
+                /////////////////////////////////////////////////////////////////////////
+                /////////////////////////// SYNCHRONIZED CODE ///////////////////////////
+                ////////////////////////////////////////////////////////////////////////
+
+                Map<String, Object> filtered_rooms = null;
+                try {
+                    filtered_rooms = (Map<String, Object>) in.readObject();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                String firstKey = filtered_rooms.keySet().iterator().next();
+                Map<Lodging, Integer> room_list = (Map<Lodging, Integer>) filtered_rooms.get(firstKey);
+                System.out.println("Here are the rooms that match your preferences!!!");
+                for (Map.Entry<Lodging, Integer> item : room_list.entrySet())
+                {
+                    item.getKey().printRoom();
+                }
+
+                System.out.println("These are our rooms");
 
                 switch(option)
                 {
@@ -203,13 +227,38 @@ public class DummyApp {
                         out.writeObject(FILTER);
                         out.flush();
 
-                        // TODO: MAPID
+                        if (user.getUsername().equals(null))
+                        {
+                            out.writeChars(user.getUUID());
+                            out.flush();
+                        }
+                        else 
+                        {
+                            out.writeChars(user.getUsername());
+                            out.flush();
+                        }
 
                         out.writeObject(map);
                         out.flush();
-                        // To be completed
+        
+                        /////////////////////////////////////////////////////////////////////////
+                        /////////////////////////// SYNCHRONIZED CODE ///////////////////////////
+                        ////////////////////////////////////////////////////////////////////////
 
+                        filtered_rooms = null;
+                        try {
+                            filtered_rooms = (Map<String, Object>) in.readObject();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        firstKey = filtered_rooms.keySet().iterator().next();
+                        room_list = (Map<Lodging, Integer>) filtered_rooms.get(firstKey);
                         System.out.println("Here are the rooms that match your preferences!!!");
+                        for (Map.Entry<Lodging, Integer> item : room_list.entrySet())
+                        {
+                            item.getKey().printRoom();
+                        }
                         break;
 
                 }

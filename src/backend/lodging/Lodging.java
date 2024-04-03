@@ -2,6 +2,7 @@ package src.backend.lodging;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 public class Lodging implements LodgingInterface, Serializable {
 
@@ -78,5 +79,23 @@ public class Lodging implements LodgingInterface, Serializable {
     public int getStars()
     {
         return stars;
+    }
+
+
+    public void printRoom()
+    {
+        System.out.println("////////////////////////////");
+        System.out.println("         ROOM DATA        ");
+        System.out.println("////////////////////////////");
+        System.out.printf("Name: %s%n", this.getRoomName());
+        System.out.printf("Stars: %d%n", this.getStars());
+        System.out.printf("Area: %s%n", this.getArea());
+        System.out.printf("Number of People: %d%n", this.getNumberOfPersons());
+        System.out.printf("Number of Reviews: %d%n", this.getNumberOfReviews());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = dateFormat.format(from.getTime());
+        System.out.printf("Available from: %s%n", formattedDate);
+        formattedDate = dateFormat.format(to.getTime());
+        System.out.printf("Available from: %s%n", formattedDate);
     }
 }  

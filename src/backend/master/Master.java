@@ -146,7 +146,7 @@ public class Master {
                 out.flush();
     
                 // Write the manager that wants to see the bookings
-                out.writeObject(manager);
+                out.writeChars(manager);
                 out.flush();
 
                 // Write the starting date of availability

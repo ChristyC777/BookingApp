@@ -39,6 +39,7 @@ public class RequestHandler implements Runnable {
             {
                 case ADD_DATES:
                     String namelodge = (String) in.readObject();
+                    System.out.println(namelodge);
                     String manager = (String) in.readObject();
                     Calendar startPeriod = (Calendar) in.readObject();
                     Calendar endPeriod = (Calendar) in.readObject();

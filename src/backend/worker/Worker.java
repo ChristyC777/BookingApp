@@ -70,6 +70,8 @@ public class Worker {
             {
                 lodge.setFrom(startPeriod);
                 lodge.setTo(endPeriod);
+                System.out.println(lodge.getFrom());
+                System.out.println(lodge.getTo());
             }
             else
             {
