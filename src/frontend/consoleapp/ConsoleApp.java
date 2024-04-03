@@ -6,11 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.json.simple.JSONObject;
@@ -28,21 +25,20 @@ public class ConsoleApp {
 
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
-    
 
     ConsoleApp() { }
     public static void main(String[] args) throws IOException, ParseException 
     {
         
         Scanner input = new Scanner(System.in);
-        System.out.println("Are you a user of this App?(Y/N)");
+        System.out.println("Are you a user of this App? (Y/N)");
         String id = input.next();
         User user = null;
         if (id.equals("Y"))
         {
-            System.out.printf("Please enter your username: ");
+            System.out.print("Please enter your username: ");
             String username = input.next();
-            System.out.printf("Please enter your password: ");
+            System.out.print("Please enter your password: ");
             String password = input.next();
             System.out.println("Waiting for identification...");
             user = new Manager(username, password);
@@ -50,7 +46,7 @@ public class ConsoleApp {
             // If the account doesn't exist
             if (flag == false)
             {
-                System.out.println("It is important for you as a manager to create an account");
+                System.out.println("It is important for you as a manager to create an account.");
                 System.out.println("Would you like to create a new account? (Y/N)");
                 String decision = input.next();
                 // New Account creation
@@ -58,14 +54,14 @@ public class ConsoleApp {
                 {
                     boolean creating_account = true;
                     while (creating_account == true){
-                        System.out.println("Please enter your username: ");
+                        System.out.print("Please enter your username: ");
                         username = input.next();
-                        System.out.println("Please enter your password: ");
+                        System.out.print("Please enter your password: ");
                         password = input.next();
                         flag = user.login(username, password, "Manager");
                         if (flag == true)
                         {
-                            System.out.println("Sorry this user exists!!! Try again");
+                            System.out.println("Sorry, this user exists!!! Try again.");
                         }
                         else 
                         {
@@ -91,9 +87,9 @@ public class ConsoleApp {
                 {
                     boolean creating_account = true;
                     while (creating_account == true){
-                        System.err.println("Please enter your username: ");
+                        System.err.print("Please enter your username: ");
                         String username = input.next();
-                        System.out.println("Please enter your password: ");
+                        System.out.print("Please enter your password: ");
                         String password = input.next();
                         user = new User(username, password);
                         boolean flag = user.login(username, password, "Manager");

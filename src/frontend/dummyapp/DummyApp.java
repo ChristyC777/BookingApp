@@ -21,13 +21,13 @@ public class DummyApp {
     public static void main(String[] args) throws IOException, ParseException {
 
         Scanner input = new Scanner(System.in);
-        System.out.println("Are you a user of this App?(Y/N)");
+        System.out.println("Are you a registered user of this app?(Y/N)");
         String id = input.next();
         if (id.equals("Y"))
         {     
-            System.out.println("Please enter your username: ");
+            System.out.print("Please enter your username: ");
             String username = input.next();
-            System.out.println("Please enter your password: ");
+            System.out.print("Please enter your password: ");
             String password = input.next();
             System.out.println("Waiting for identification...");
             User user = new Guest(username, password);
@@ -35,7 +35,7 @@ public class DummyApp {
             // If the account doesn't exist
             if (flag == false)
             {
-                System.out.println("Sorry we didn't find any account under those credentials");
+                System.out.println("Sorry, we didn't find any account under those credentials.");
                 System.out.println("Would you like to create a new account? (Y/N)");
                 String decision = input.next();
                 // New Account creation
@@ -43,14 +43,14 @@ public class DummyApp {
                 {
                     boolean creating_account = true;
                     while (creating_account == true){
-                        System.out.println("Please enter your username: ");
+                        System.out.print("Please enter your username: ");
                         username = input.next();
-                        System.out.println("Please enter your password: ");
+                        System.out.print("Please enter your password: ");
                         password = input.next();
                         flag = user.login(username, password, "Guest");
                         if (flag == true)
                         {
-                            System.out.println("Sorry this user exists!!! Try again");
+                            System.out.println("Sorry, this user exists!!! Try again.");
                         }
                         else 
                         {
@@ -80,22 +80,22 @@ public class DummyApp {
                     {
                         System.out.println("Creating an account for you...");
                         User user = new Guest();
-                        System.out.printf("Your unique id is: %s", user.getUUID(), "Please save this message. Your code won't be given to you again...");
+                        System.out.printf("Your unique id is: %s", user.getUUID(), "Please save this message. Your code won't be given to you again.");
                     }
                     else
                     {
                         boolean creating_account = true;
                         while (creating_account == true)
                         {
-                            System.out.println("Please enter your username: ");
+                            System.out.print("Please enter your username: ");
                             String username = input.next();
-                            System.out.println("Please enter your password: ");
+                            System.out.print("Please enter your password: ");
                             String password = input.next();
                             User user = new Guest(username, password);
                             boolean flag = user.login(username, password, "Guest");
                             if (flag == true)
                             {
-                                System.out.println("Sorry this user exists!!! Try again");
+                                System.out.println("Sorry, this user exists!!! Try again");
                             }
                             else 
                             {
@@ -135,10 +135,10 @@ public class DummyApp {
                 switch(option)
                 {
                     case 1:
-                        System.out.println("Please enter the name of the room you would like to book: ");
+                        System.out.print("Please enter the name of the room you would like to book: ");
                         String roomName = input.next();
 
-                        System.out.println("Please select one of the following dates");
+                        System.out.println("Please select one of the following dates:");
                         
                         // To be completed
 

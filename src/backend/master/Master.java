@@ -5,7 +5,6 @@ import java.net.*;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
-import src.backend.worker.Worker;
 import static src.shared.ClientActions.*;
 
 public class Master {

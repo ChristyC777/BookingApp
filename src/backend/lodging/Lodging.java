@@ -2,9 +2,6 @@ package src.backend.lodging;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
-
-import src.backend.users.Manager;
 
 public class Lodging implements LodgingInterface, Serializable {
 
