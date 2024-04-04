@@ -5,6 +5,37 @@
             "name": "DummyApp",
             "request": "launch",
             "mainClass": "src.frontend.dummyapp.DummyApp",
+            "projectName": "BookingApp_95cded6a"
+        },
+        {
+            "type": "java",
+            "name": "ConsoleApp",
+            "request": "launch",
+            "mainClass": "src.frontend.consoleapp.ConsoleApp",
+            "projectName": "BookingApp_95cded6a"
+        },
+        {
+            "args": [
+                1
+            ],
+            "type": "java",
+            "name": "Master",
+            "request": "launch",
+            "mainClass": "src.backend.master.Master",
+            "projectName": "BookingApp_95cded6a"
+        },
+        {
+            "type": "java",
+            "name": "Worker",
+            "request": "launch",
+            "mainClass": "src.backend.worker.Worker",
+            "projectName": "BookingApp_95cded6a"
+        },
+        {
+            "type": "java",
+            "name": "DummyApp",
+            "request": "launch",
+            "mainClass": "src.frontend.dummyapp.DummyApp",
             "projectName": "BookingApp_b76e75fa"
         },
         {

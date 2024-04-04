@@ -92,6 +92,41 @@ public class Master {
 
     }
 
+    public void makeBooking(String roomName, String username, Calendar from, Calendar to)
+    {
+        int workerID = selectWorker(roomName);
+        try 
+        {
+            Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
+            in = new ObjectInputStream(new_connection.getInputStream());
+            out = new ObjectOutputStream(new_connection.getOutputStream());
+
+            // Write the action taking place
+            out.writeObject(ADD_DATES);
+            out.flush();
+
+            // Write the name of the lodge
+            out.writeObject(roomName);
+            out.flush();
+    
+            // Write the username 
+            out.writeObject(username);
+            out.flush();
+
+            // Write the check-in date 
+            out.writeObject(from);
+            out.flush();
+
+            // Write the check-out date 
+            out.writeObject(to);
+            out.flush();
+        }
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void viewBookings(String manager)
     {
         try {
@@ -173,7 +208,7 @@ public class Master {
         }   
     }
 
-    public void filterRooms(Map<String, Object> filters)
+    public void filterRooms(String mapid, Map<String, Object> filters)
     {
         try {
 
@@ -185,6 +220,10 @@ public class Master {
 
                 // Write the action taking place
                 out.writeObject(FILTER);
+                out.flush();
+
+                // Write mapid
+                out.writeObject(mapid);
                 out.flush();
     
                 // Write the manager that wants to see the bookings

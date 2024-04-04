@@ -22,9 +22,10 @@ public class MapReducer {
     {
     }
 
-    public Map<String, Object> Reduce(String mapid, Map<Lodging, Integer> filter_results)
+    public void Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
 
+        // lock the function and allow of threads with the current mapid to get in
         Map<Lodging, Integer> counts = new HashMap<>(); // Creates {"room1":3, "room5":10}
         Map<String, Object> final_results = new HashMap<String, Object>(); 
         for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
@@ -33,8 +34,10 @@ public class MapReducer {
             counts.put(lodge, counts.getOrDefault(lodge, 0) + count);
         }
         final_results.put(mapid, counts);
-        return final_results;
         //{mapid: {"room1":5, "room2": 3, "room7": 2}} -> <mapid, final_results>
+        // When all the workers have send results for this mapid release the lock 
+        // Create a socket to send the reults back to the master
+        // Unlock the function
     }
 
     void openServer() 

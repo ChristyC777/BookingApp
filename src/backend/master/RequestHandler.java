@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.Map;
 
 import src.shared.ClientActions;
@@ -55,10 +56,14 @@ public class RequestHandler implements Runnable {
                     // TODO: Implement this for part B!
                     break;
                 case FILTER:
+                    String mapid = (String) in.readObject(); 
                     Map<String, Object> map = (Map<String, Object>) in.readObject();
-                    master.filterRooms(map);
+                    master.filterRooms(mapid, map);
                     break;
                 case BOOK:
+                    String username = (String) in.readObject();
+                    Calendar from = (Calendar) in.readObject();
+                    Calendar to = (Calendar) in.readObject();
                     break;
                 case VIEW:
                     break;

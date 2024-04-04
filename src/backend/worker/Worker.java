@@ -10,9 +10,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import java.util.Calendar;
 
+import src.backend.lodging.Booking;
+import src.backend.lodging.DateRange;
 import src.backend.lodging.Lodging;
 
 public class Worker {
@@ -99,6 +103,21 @@ public class Worker {
         }
     }
 
+    public void makeBooking(String roomName, String username, Calendar from, Calendar to)
+    {
+        Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
+        DateRange dateRange = new DateRange(from, to);
+        Booking booking = new Booking(dateRange, username, lodge);
+        if (booking.addBooking(dateRange, username, lodge))
+        {
+            System.out.println("Booking successfully made");
+        }
+        else 
+        {
+            System.out.println("The booking failed");
+        }
+    } 
+
     public void addLodge(Lodging lodge)
     {
         this.lodges.add(lodge);
@@ -121,17 +140,34 @@ public class Worker {
         }
     }
 
-    public void filterRooms(Map<String, Object> map) 
+    public ArrayList<Lodging> filterRooms(Map<String, Object> map) 
     {
-        
+        return (ArrayList<Lodging>) lodges.stream().filter(room -> map.entrySet().stream().allMatch(entry -> 
+                                    {
+                                    String key = entry.getKey();
+                                    Object value = entry.getValue();
+                                    switch (key) {
+                                        case "stars":
+                                            return room.getStars() == (int) value;
+                                        case "area":
+                                            return room.getArea().equals(value);
+                                        case "noOfPersons":
+                                            return room.getNumberOfPersons() == (int) value;
+                                        case "roomName":
+                                            return room.getRoomName().equals(value);
+                                        default: 
+                                            return false;
+                                    }
+                                    })).collect(Collectors.toList());
     }
 
-    public void manageFilters(Map<String, Object> map)
+    public void manageFilters(String mapid, Map<String, Object> map)
     {
-
+        ArrayList<Lodging> filters = filterRooms(map);
+        Map(mapid, filters);
     }
 
-    public Map<String, Object> Map(String mapid, ArrayList<Lodging> filter)
+    public void Map(String mapid, ArrayList<Lodging> filter)
     {
         Map<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
         for (Lodging lodge : filter)
@@ -140,7 +176,19 @@ public class Worker {
         }
         Map<String, Object> k2_v2 = new HashMap<String, Object>(); // {mapid: {"room1":1, "room2":1, "room3":1}}
         k2_v2.put(mapid, count);
-        return k2_v2;
+        try
+        {
+            Socket reducer = new Socket("localhost", 7778);
+
+            ObjectOutputStream output = new ObjectOutputStream(reducer.getOutputStream());
+            ObjectInputStream input = new ObjectInputStream(reducer.getInputStream());
+
+            out.writeObject(k2_v2);
+            out.flush();
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

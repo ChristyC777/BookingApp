@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 
 import src.backend.lodging.Lodging;
@@ -70,26 +71,17 @@ public class WorkerHandler implements Runnable {
                     // TODO: Implement this for part B!
                     break;
                 case FILTER:
-                    // TODO: Read filter map from input stream
+                    String mapid = (String) in.readObject();
                     Map<String, Object> map = (Map<String, Object>) in.readObject();
-                    for (Map.Entry<String, Object> item : map.entrySet()) // {"stars":3, "area":"Athens"}
-                    {
-                        String key = item.getKey();
-                        Object value = item.getValue();
-                        switch (key) {
-                            case "roomName":
-                                break;
-                            case "stars":
-                                break;
-                            case "area":
-                                break;
-                            case "noOfPersons":
-                                break;
-                        }
-                    }
-                    worker.filterRooms(map);
+                    
+                    worker.manageFilters(mapid, map);
                     break;
                 case BOOK:
+                    String roomName = (String) in.readObject();
+                    String username = (String) in.readObject();
+                    Calendar datefrom = (Calendar) in.readObject();
+                    Calendar dateto = (Calendar) in.readObject();
+                    worker.makeBooking(roomName, username, datefrom, dateto);
                     break;
                 case VIEW:
                     break;
