@@ -61,9 +61,11 @@ public class RequestHandler implements Runnable {
                     master.filterRooms(mapid, map);
                     break;
                 case BOOK:
+                    String roomName = (String) in.readObject();
                     String username = (String) in.readObject();
                     Calendar from = (Calendar) in.readObject();
                     Calendar to = (Calendar) in.readObject();
+                    master.makeBooking(roomName, username, from, to);
                     break;
                 case VIEW:
                     break;
@@ -75,14 +77,6 @@ public class RequestHandler implements Runnable {
         }catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             System.err.println("An error has occurred while attempting to read the provided file.");
-        } finally {
-            // Close the streams
-            try {
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

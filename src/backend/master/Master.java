@@ -48,12 +48,6 @@ public class Master {
 			}
 		} catch (IOException ioException) {
 			ioException.printStackTrace();
-		} finally {
-			try {
-				providerSocket.close();
-			} catch (IOException ioException) {
-				ioException.printStackTrace();
-			}
 		}
 	}
 
@@ -80,16 +74,7 @@ public class Master {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally
-        {
-            try {
-                out.close();
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-
     }
 
     public void makeBooking(String roomName, String username, Calendar from, Calendar to)
@@ -151,15 +136,7 @@ public class Master {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally
-        {
-            try {
-                out.close();
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }   
+        }
     }
 
     public void updateDates(String roomName, String manager, String startPeriod, String endPeriod)
@@ -197,15 +174,7 @@ public class Master {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally
-        {
-            try {
-                out.close();
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }   
+        }
     }
 
     public void filterRooms(String mapid, Map<String, Object> filters)
@@ -236,14 +205,6 @@ public class Master {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally
-        {
-            try {
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }   
     }
 

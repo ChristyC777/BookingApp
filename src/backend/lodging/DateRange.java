@@ -1,6 +1,5 @@
 package src.backend.lodging;
 
-import java.time.LocalDate;
 import java.util.Calendar;
 
 public class DateRange {

@@ -10,8 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.Calendar;
 
@@ -57,12 +58,6 @@ public class Worker {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				providerSocket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -159,6 +154,7 @@ public class Worker {
                                             return false;
                                     }
                                     })).collect(Collectors.toList());
+                                    
     }
 
     public void manageFilters(String mapid, Map<String, Object> map)
@@ -169,12 +165,13 @@ public class Worker {
 
     public void Map(String mapid, ArrayList<Lodging> filter)
     {
-        Map<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
+        HashMap<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
+        Set<Lodging> filtereredUniques = new HashSet<Lodging>(filter);
         for (Lodging lodge : filter)
         {
             count.put(lodge, 1);
         }
-        Map<String, Object> k2_v2 = new HashMap<String, Object>(); // {mapid: {"room1":1, "room2":1, "room3":1}}
+        HashMap<Lodging, Integer> k2_v2 = new HashMap<Lodging, Integer>(); // {mapid: {"room1":1, "room2":1, "room3":1}}
         k2_v2.put(mapid, count);
         try
         {
@@ -183,8 +180,8 @@ public class Worker {
             ObjectOutputStream output = new ObjectOutputStream(reducer.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(reducer.getInputStream());
 
-            out.writeObject(k2_v2);
-            out.flush();
+            output.writeObject(k2_v2);
+            output.flush();
         }catch (IOException e)
         {
             e.printStackTrace();
@@ -197,6 +194,5 @@ public class Worker {
         int port = input.nextInt();
         new Worker(port).openServer();
     }
-
 }
 

@@ -6,7 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-
+import java.util.Map.Entry;
 
 import src.backend.lodging.Lodging;
 
@@ -25,7 +25,7 @@ public class MapReducer {
     public void Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
 
-        // lock the function and allow of threads with the current mapid to get in
+        // TODO: lock the function and allow of threads with the current mapid to get in
         Map<Lodging, Integer> counts = new HashMap<>(); // Creates {"room1":3, "room5":10}
         Map<String, Object> final_results = new HashMap<String, Object>(); 
         for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
@@ -34,7 +34,9 @@ public class MapReducer {
             counts.put(lodge, counts.getOrDefault(lodge, 0) + count);
         }
         final_results.put(mapid, counts);
+
         //{mapid: {"room1":5, "room2": 3, "room7": 2}} -> <mapid, final_results>
+        // TODO:
         // When all the workers have send results for this mapid release the lock 
         // Create a socket to send the reults back to the master
         // Unlock the function
@@ -43,14 +45,20 @@ public class MapReducer {
     void openServer() 
     {
             try {
-                providerSocket = new ServerSocket(SERVERPORT);
-                    
-                connection = providerSocket.accept();
-                out = new ObjectOutputStream(connection.getOutputStream());
-                in = new ObjectInputStream(connection.getInputStream());
-                String mapid = (String) in.readObject();
-                Map<Lodging, Integer> filter_results = (Map<Lodging, Integer>) in.readObject();
-                Reduce(mapid, filter_results);
+                providerSocket = new ServerSocket(SERVERPORT, 10);
+                
+                System.out.printf("Reducer now listening to port %d.%n", SERVERPORT);
+
+                while(true)
+                {
+                    connection = providerSocket.accept();
+                    out = new ObjectOutputStream(connection.getOutputStream());
+                    in = new ObjectInputStream(connection.getInputStream());
+                    FilterData filter_results = (FilterData) in.readObject();
+                    Pair<String, HashMap<Lodging, Integer>> dataPair = new Pair<String, HashMap<Lodging, Integer>>();
+                    Reduce(dataPair.getLeft(), dataPair.getRight());
+                    // Reduce(dataPair.getLeft(), dataPair.getRight())
+                }
 
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();

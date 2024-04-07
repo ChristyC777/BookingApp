@@ -93,14 +93,6 @@ public class WorkerHandler implements Runnable {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
-        } finally {
-            // Close the streams
-            try {
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
     

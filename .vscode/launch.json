@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "MapReducer",
+            "request": "launch",
+            "mainClass": "src.backend.mapreducer.MapReducer",
+            "projectName": "BookingApp_95cded6a"
+        },
+        {
+            "type": "java",
             "name": "DummyApp",
             "request": "launch",
             "mainClass": "src.frontend.dummyapp.DummyApp",

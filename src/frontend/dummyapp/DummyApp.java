@@ -228,7 +228,7 @@ public class DummyApp {
                             switch (answer) 
                             {
                                 case 1:
-                                    if (!(map.containsKey("stars") || map.size() == 4))
+                                    if (!(map.containsKey("stars") || map.size() > 4))
                                     {
                                         System.out.print("Please select the number of stars (1-5): ");
                                         answer = input.nextInt();
@@ -255,7 +255,7 @@ public class DummyApp {
                                     }
                                     break;
                                 case 2:
-                                    if (!(map.containsKey("area") || map.size() == 4)) 
+                                    if (!(map.containsKey("area") || map.size() > 4)) 
                                     {   
                                         System.out.print("Please select the area you want to go to: ");
                                         String area = input.nextLine();
@@ -275,7 +275,7 @@ public class DummyApp {
                                     }
                                     break;
                                 case 3:
-                                    if (!(map.containsKey("noOfPersons") || map.size() == 4)) 
+                                    if (!(map.containsKey("noOfPersons") || map.size() > 4)) 
                                     {
                                         System.out.print("Please select the number of people: ");
                                         answer = input.nextInt();
@@ -302,7 +302,7 @@ public class DummyApp {
                                     }
                                     break;
                                 case 4:
-                                    if (!(map.containsKey("roomName") || map.size() == 4))
+                                    if (!(map.containsKey("roomName") || map.size() > 4))
                                     {   
                                         System.out.print("Please select the name of the room: ");
                                         name = input.nextLine();
@@ -380,12 +380,7 @@ public class DummyApp {
                 }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally
-        {
-            out.close();
-            in.close();
         }
-        
     }
 
     public static void Menu()
