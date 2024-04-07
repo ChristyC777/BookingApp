@@ -17,6 +17,7 @@ public class DummyApp {
 
     private final Object lock = new Object();
     private final static int SERVERPORT = 7777;
+    private final static String HOST = "192.168.1.2";
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
@@ -171,7 +172,7 @@ public class DummyApp {
                             }
                         }
                         
-                        connection = new Socket("192.168.0.2", SERVERPORT);
+                        connection = new Socket(HOST, SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -335,11 +336,10 @@ public class DummyApp {
                             }
                         }
 
-                        connection = new Socket("192.168.0.2", SERVERPORT);
+                        connection = new Socket(HOST, SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
-
                         
                         out.writeObject(FILTER);
                         out.flush();
