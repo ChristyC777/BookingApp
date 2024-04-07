@@ -79,8 +79,8 @@ public class WorkerHandler implements Runnable {
                 case BOOK:
                     String roomName = (String) in.readObject();
                     String username = (String) in.readObject();
-                    Calendar datefrom = (Calendar) in.readObject();
-                    Calendar dateto = (Calendar) in.readObject();
+                    String datefrom = (String) in.readObject();
+                    String dateto = (String) in.readObject();
                     worker.makeBooking(roomName, username, datefrom, dateto);
                     break;
                 case VIEW:

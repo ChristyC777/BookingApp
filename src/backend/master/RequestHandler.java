@@ -63,8 +63,8 @@ public class RequestHandler implements Runnable {
                 case BOOK:
                     String roomName = (String) in.readObject();
                     String username = (String) in.readObject();
-                    Calendar from = (Calendar) in.readObject();
-                    Calendar to = (Calendar) in.readObject();
+                    String from = (String) in.readObject();
+                    String to = (String) in.readObject();
                     master.makeBooking(roomName, username, from, to);
                     break;
                 case VIEW:

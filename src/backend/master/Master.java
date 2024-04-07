@@ -77,7 +77,7 @@ public class Master {
         }
     }
 
-    public void makeBooking(String roomName, String username, Calendar from, Calendar to)
+    public void makeBooking(String roomName, String username, String from, String to)
     {
         int workerID = selectWorker(roomName);
         try 
