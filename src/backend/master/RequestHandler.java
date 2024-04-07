@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Calendar;
 import java.util.Map;
 
 import src.shared.ClientActions;
@@ -32,7 +31,6 @@ public class RequestHandler implements Runnable {
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
             ClientActions action = (ClientActions) in.readObject();
-            Lodging lodge;
 
             switch(action)
             {
@@ -44,7 +42,7 @@ public class RequestHandler implements Runnable {
                     master.updateDates(namelodge, manager, startPeriod, endPeriod);
                     break;
                 case ADD_LODGING:
-                    lodge = (Lodging) in.readObject();
+                    Lodging lodge = (Lodging) in.readObject();
                     master.assignRoom(lodge);
                     System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
                     break;

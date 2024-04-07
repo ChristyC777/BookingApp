@@ -15,7 +15,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.xml.crypto.dsig.spec.XPathType.Filter;
 
 import java.util.Calendar;
 
@@ -33,7 +32,7 @@ public class Worker {
     private ObjectOutputStream out;
     ArrayList<Thread> workerThreads = new ArrayList<Thread>();
     private ArrayList<Lodging> lodges;
-    private ArrayList<Lodging> bookings;
+    private ArrayList<Booking> bookings;
 
     public Worker(int port)
     {
@@ -143,13 +142,13 @@ public class Worker {
         return this.lodges;
     }
 
-    public void viewBookings(ArrayList<Lodging> bookings)
+    public void viewBookings(ArrayList<Booking> bookings)
     {
         this.bookings.addAll(bookings);
         
-        for (Lodging booking : bookings)
+        for (Booking booking : bookings)
         {
-            System.out.println(booking.getRoomName());
+            System.out.println(booking.getLodgeName());
         }
     }
 
