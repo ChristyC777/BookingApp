@@ -72,19 +72,20 @@ public class Worker {
         {
             if(lodge.getManager().equals(manager))
             {
+
                 // Create calendar instances
                 Calendar from = Calendar.getInstance();
                 Calendar to = Calendar.getInstance();
-
+                
                 // Create date formatter, non-lenient
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 dateFormat.setLenient(false);
                 
                 from.setTime(dateFormat.parse(startPeriod));
                 to.setTime(dateFormat.parse(endPeriod));
-
-                lodge.setFrom(from);
-                lodge.setTo(to);
+                
+                DateRange dateRange = new DateRange(from, to);
+                lodge.setDateRange(dateRange);
 
                 System.out.println(lodge);
             }
@@ -105,15 +106,18 @@ public class Worker {
     public void makeBooking(String roomName, String username, Calendar from, Calendar to)
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
-        DateRange dateRange = new DateRange(from, to);
-        Booking booking = new Booking(dateRange, username, lodge);
-        if (booking.addBooking(dateRange, username, lodge))
+        if (lodge!=null)
         {
-            System.out.println("Booking successfully made");
-        }
-        else 
-        {
-            System.out.println("The booking failed");
+            DateRange dateRange = new DateRange(from, to);
+            Booking booking = new Booking(dateRange, username, lodge);
+            if (booking.addBooking(dateRange, username, lodge))
+            {
+                System.out.println("Booking successfully made");
+            }
+            else 
+            {
+                System.out.println("The booking failed");
+            }
         }
     } 
 

@@ -179,7 +179,12 @@ public class DummyApp {
 
                         out.writeObject(BOOK);
                         out.flush();
-
+                                                
+                        // Send the name of the room
+                        out.writeObject(name);
+                        out.flush();
+                        
+                        // Send the name of the user
                         if (user.getUsername() == null)
                         {
                             out.writeObject(user.getUUID());
@@ -190,14 +195,6 @@ public class DummyApp {
                             out.writeObject(user.getUsername());
                             out.flush();
                         }
-
-                        // Send the name of the room
-                        out.writeObject(name);
-                        out.flush();
-
-                        // Send the username of the manager
-                        out.writeObject(user.getUsername());
-                        out.flush();
 
                         // Send starting date of availability
                         out.writeObject(fromInput);

@@ -83,11 +83,11 @@ public class Master {
         try 
         {
             Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
-            in = new ObjectInputStream(new_connection.getInputStream());
             out = new ObjectOutputStream(new_connection.getOutputStream());
+            in = new ObjectInputStream(new_connection.getInputStream());
 
             // Write the action taking place
-            out.writeObject(ADD_DATES);
+            out.writeObject(BOOK);
             out.flush();
 
             // Write the name of the lodge

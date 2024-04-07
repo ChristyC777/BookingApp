@@ -1,6 +1,7 @@
 package src.backend.lodging;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
@@ -13,8 +14,7 @@ public class Lodging implements LodgingInterface, Serializable {
     private int noOfReviews;
     private int stars;
     private String manager;
-    private Calendar from = null;
-    private Calendar to = null;
+    private DateRange dateRange;
 
     Lodging()
     {
@@ -26,24 +26,14 @@ public class Lodging implements LodgingInterface, Serializable {
         this.manager = manager;
     }
 
-    public void setFrom(Calendar from)
+    public void setDateRange(DateRange dateRange)
     {
-        this.from = from;
+        this.dateRange = dateRange;
     }
 
-    public void setTo(Calendar to)
+    public DateRange getDateRange()
     {
-        this.to = to;
-    }
-
-    public Calendar getTo()
-    {
-        return to;
-    }
-
-    public Calendar getFrom()
-    {
-        return from;
+        return dateRange;
     }
 
     public String getManager()
@@ -85,8 +75,8 @@ public class Lodging implements LodgingInterface, Serializable {
     public String toString()
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String fromFormattedDate = dateFormat.format(from.getTime());
-        String toFormattedDate = dateFormat.format(to.getTime());
+        String fromFormattedDate = dateFormat.format(dateRange.getFrom());
+        String toFormattedDate = dateFormat.format(dateRange.getTo());
         return String.format(
             """ 
             ###################
@@ -96,6 +86,7 @@ public class Lodging implements LodgingInterface, Serializable {
             Name: %s
             Stars: %d
             Area: %s
+            Manager: %s
             Number of people: %d
             Number of reviews: %d
             Available from: %s
@@ -103,6 +94,7 @@ public class Lodging implements LodgingInterface, Serializable {
             this.getRoomName(),
             this.getStars(),
             this.getArea(),
+            this.getManager(),
             this.getNumberOfPersons(),
             this.getNumberOfReviews(),
             fromFormattedDate,
