@@ -8,6 +8,7 @@ import org.json.simple.parser.ParseException;
 import static src.shared.ClientActions.*;
 
 import src.backend.lodging.Lodging;
+import src.backend.mapreducer.FilterData;
 import src.backend.users.Guest;
 import src.backend.users.User;
 import java.text.SimpleDateFormat;
@@ -170,7 +171,7 @@ public class DummyApp {
                             }
                         }
                         
-                        connection = new Socket("localhost", SERVERPORT);
+                        connection = new Socket("192.168.0.2", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -334,14 +335,15 @@ public class DummyApp {
                             }
                         }
 
-                        connection = new Socket("localhost", SERVERPORT);
+                        connection = new Socket("192.168.0.2", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
 
+                        
                         out.writeObject(FILTER);
                         out.flush();
-
+                        
                         if (user.getUsername() == null)
                         {
                             out.writeObject(user.getUUID());

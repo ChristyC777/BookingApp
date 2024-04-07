@@ -14,11 +14,15 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.xml.crypto.dsig.spec.XPathType.Filter;
+
 import java.util.Calendar;
 
 import src.backend.lodging.Booking;
 import src.backend.lodging.DateRange;
 import src.backend.lodging.Lodging;
+import src.backend.mapreducer.FilterData;
 
 public class Worker {
 
@@ -171,8 +175,7 @@ public class Worker {
         {
             count.put(lodge, 1);
         }
-        HashMap<Lodging, Integer> k2_v2 = new HashMap<Lodging, Integer>(); // {mapid: {"room1":1, "room2":1, "room3":1}}
-        k2_v2.put(mapid, count);
+        FilterData filterData = new FilterData(mapid, count);
         try
         {
             Socket reducer = new Socket("localhost", 7778);
@@ -180,7 +183,7 @@ public class Worker {
             ObjectOutputStream output = new ObjectOutputStream(reducer.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(reducer.getInputStream());
 
-            output.writeObject(k2_v2);
+            output.writeObject(filterData);
             output.flush();
         }catch (IOException e)
         {

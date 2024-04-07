@@ -138,7 +138,7 @@ public class ConsoleApp {
                         Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
                         lodge.setManager(user.getUsername());
 
-                        connection = new Socket("localhost", SERVERPORT);
+                        connection = new Socket("192.168.0.2", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -187,7 +187,7 @@ public class ConsoleApp {
                                 System.out.println("Wrong dates please try again");
                             }
                         }
-                        connection = new Socket("localhost", SERVERPORT);
+                        connection = new Socket("192.168.0.2", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -217,7 +217,7 @@ public class ConsoleApp {
                     case 3:
                         System.out.print("Here are the bookings made for your room(s)!!!");
 
-                        connection = new Socket("localhost", SERVERPORT);
+                        connection = new Socket("192.168.0.2", SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());

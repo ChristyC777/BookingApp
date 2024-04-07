@@ -34,6 +34,9 @@ public class MapReducer {
             counts.put(lodge, counts.getOrDefault(lodge, 0) + count);
         }
         final_results.put(mapid, counts);
+        System.out.println("MapID and the rooms found");
+        System.out.println(mapid);
+        System.out.println(counts);
 
         //{mapid: {"room1":5, "room2": 3, "room7": 2}} -> <mapid, final_results>
         // TODO:
@@ -55,9 +58,7 @@ public class MapReducer {
                     out = new ObjectOutputStream(connection.getOutputStream());
                     in = new ObjectInputStream(connection.getInputStream());
                     FilterData filter_results = (FilterData) in.readObject();
-                    Pair<String, HashMap<Lodging, Integer>> dataPair = new Pair<String, HashMap<Lodging, Integer>>();
-                    Reduce(dataPair.getLeft(), dataPair.getRight());
-                    // Reduce(dataPair.getLeft(), dataPair.getRight())
+                    Reduce(filter_results.getMapid(), filter_results.getFilters());
                 }
 
             } catch (IOException | ClassNotFoundException e) {
