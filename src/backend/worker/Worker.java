@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 import java.util.Calendar;
 
-import src.backend.lodging.Booking;
+import src.backend.booking.Booking;
 import src.backend.lodging.DateRange;
 import src.backend.lodging.Lodging;
 import src.backend.mapreducer.FilterData;
@@ -28,16 +28,18 @@ public class Worker {
     private int port;
     private ServerSocket providerSocket;
 	private Socket connection = null;
-    private ObjectInputStream in;
     private ObjectOutputStream out;
-    ArrayList<Thread> workerThreads = new ArrayList<Thread>();
+    private ObjectInputStream in;
     private ArrayList<Lodging> lodges;
-    private static final Booking bookings = new Booking();
+    private ArrayList<Booking> bookings;
+    private ArrayList<Thread> workerThreads;
 
     public Worker(int port)
     {
         this.port = port;
         this.lodges = new ArrayList<Lodging>();
+        this.bookings = new ArrayList<Booking>();
+        this.workerThreads = new ArrayList<Thread>();
     }
 
     void openServer() {
@@ -58,6 +60,7 @@ public class Worker {
                 Thread workerThread = new Thread(new WorkerHandler(this, connection));
                 workerThread.start();
                 System.out.println("Worker thread started successfully!");
+                workerThreads.add(workerThread);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -65,7 +68,7 @@ public class Worker {
 	}
 
     /**
-     * Adds availability dates to a lodge
+     * Adds availability dates to a lodge.
      * @param roomName -> the lodge the user wants to book.
      * @param manager -> the name of the manager
      * @param startPeriod -> first day of availability
@@ -97,20 +100,23 @@ public class Worker {
             }
             else
             {
+                // TODO:
                 //////////////////////////////////////////////////////////////////////////////////////
                 System.out.println("You're not the manager of this room so you can't add dates"); // We need to see how we'll use the streams to return a message
                 //////////////////////////////////////////////////////////////////////////////////////
             }
         }
         else 
-        {   ////////////////////////////////////////////////
+        {   
+            // TODO:
+            ////////////////////////////////////////////////
             System.out.println("Room does not exist"); // We need to see how we'll use the streams to return a message
             ////////////////////////////////////////////////
         }
     }
 
     /**
-     * Makes a Booking
+     * Makes a Booking.
      * @param roomName -> the lodge the user wants to book.
      * @param username -> the name of the user
      * @param startPeriod -> check-in date
@@ -132,8 +138,7 @@ public class Worker {
             from.setTime(dateFormat.parse(startPeriod));
             to.setTime(dateFormat.parse(endPeriod));
             DateRange dateRange = new DateRange(from, to);
-            Booking booking = new Booking(dateRange, username, lodge);
-            if (booking.addBooking(dateRange, username, lodge))
+            if (this.addBooking(dateRange, username, lodge))
             {
                 System.out.println("Booking successfully made");
             }
@@ -142,10 +147,44 @@ public class Worker {
                 System.out.println("The booking failed");
             }
         }
-    } 
+    }
+    
+    /**
+     * Adds a booking.
+     * @param dateRange -> the lodge the manager wants to add
+     * @param userName ->
+     * @param lodgeName -> the name of the lodge to be booked
+     */ 
+    public boolean addBooking(DateRange dateRange, String userName, Lodging lodgeName) {
+        for (Booking booking : bookings) {
+            if (booking.getLodgeName().equals(lodgeName) && booking.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo())) {
+                System.out.println("Booking conflict! The lodge is already booked for the specified date range.");
+                return false;
+            }
+        }
+
+        Booking newBooking = new Booking(dateRange, userName, lodgeName);
+        bookings.add(newBooking);
+        System.out.println("Booking successful!");
+        return true;
+    }
 
     /**
-     * Adds a lodge
+     * Returns a list of bookings belonging to the currently connected manager.
+     * @return the list of bookings.
+     */ 
+    public ArrayList<Lodging> getBookings(String manager)
+    {
+        List<Lodging> managerBookings = bookings.stream()
+                .filter(booking -> booking.getLodgeName().getManager().equals(manager))
+                .map(Booking::getLodgeName)
+                .collect(Collectors.toList());
+
+        return (ArrayList<Lodging>) managerBookings;
+    }
+
+    /**
+     * Adds a lodge.
      * @param lodge -> the lodge the manager wants to add
      */ 
     public void addLodge(Lodging lodge)
@@ -161,17 +200,17 @@ public class Worker {
     }
 
     /**
-     * Views all bookings of manager
+     * Views all bookings of manager.
      * @param manager -> the name of the manager
      */ 
     public void viewBookings(String manager)
     {
-       ArrayList<Lodging> filteredLodges = bookings.getBookings(manager);
+       ArrayList<Lodging> filteredLodges = this.getBookings(manager);
        Map(manager, filteredLodges);
     }
 
     /**
-     * Filters rooms according to the characteristics given
+     * Filters rooms according to the characteristics given.
      * @param map -> includes the characteristics of the desired room(s)
      */ 
     public ArrayList<Lodging> filterRooms(Map<String, Object> map) 
@@ -209,7 +248,7 @@ public class Worker {
 
     /**
      * Creates a Map with the following format: {roomName: frequency}  
-     * Sends it to the MapReducer class
+     * and sends it to the Reducer.
      * @param mapid -> the name of the user 
      * @param filter -> arraylist of the filtered room(s)
      */ 

@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
-import java.util.Map.Entry;
 
 import src.backend.lodging.Lodging;
 
@@ -18,14 +17,17 @@ public class MapReducer {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    MapReducer()
-    {
-    }
+    MapReducer(){}
 
+    /**
+     * Reducer function that takes a mapping and produces an aggregated mapping.
+     * @param mapid -> the ID of the specific request.
+     * @param filter_results -> the filters to apply the reduction on.
+     */
     public void Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
 
-        // TODO: lock the function and allow of threads with the current mapid to get in
+        // TODO: lock the function and allow threads with the current mapid to get in
         Map<Lodging, Integer> counts = new HashMap<>(); // Creates {"room1":3, "room5":10}
         Map<String, Object> final_results = new HashMap<String, Object>(); 
         for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
@@ -39,8 +41,8 @@ public class MapReducer {
         System.out.println(counts);
 
         //{mapid: {"room1":5, "room2": 3, "room7": 2}} -> <mapid, final_results>
-        // TODO:
-        // When all the workers have send results for this mapid release the lock 
+
+        // TODO: When all the workers have send results for this mapid release the lock 
         // Create a socket to send the reults back to the master
         // Unlock the function
     }

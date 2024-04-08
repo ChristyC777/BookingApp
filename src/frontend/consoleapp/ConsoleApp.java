@@ -25,7 +25,7 @@ import src.backend.users.User;
 public class ConsoleApp {
 
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "192.168.1.2";
+    private final static String HOST = "localhost";
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 

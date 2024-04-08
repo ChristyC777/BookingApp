@@ -8,7 +8,6 @@ import org.json.simple.parser.ParseException;
 import static src.shared.ClientActions.*;
 
 import src.backend.lodging.Lodging;
-import src.backend.mapreducer.FilterData;
 import src.backend.users.Guest;
 import src.backend.users.User;
 import java.text.SimpleDateFormat;
@@ -17,7 +16,7 @@ public class DummyApp {
 
     private final Object lock = new Object();
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "192.168.1.2";
+    private final static String HOST = "localhost";
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
@@ -26,7 +25,7 @@ public class DummyApp {
 
         User user = null;
         Scanner input = new Scanner(System.in);
-        System.out.println("Are you a registered user of this app?(Y/N)");
+        System.out.println("Are you a registered user of this app? (Y/N)");
         String id = input.nextLine().trim().toLowerCase();
         if (id.equals("y"))
         {     
@@ -118,273 +117,279 @@ public class DummyApp {
                 }
         }
         
-        Menu();
-        System.out.print("Enter your answer: ");
-        int option = input.nextInt();
-        input.nextLine(); // consume newline
-        while (option > 3 && option < 1) 
-        {
-            System.out.println("There is no such option!!! Please try again!!!");
-            Menu();
-            System.out.print("Enter your answer: ");
-            option = input.nextInt();
-            input.nextLine(); // consume newline
-        }
+        boolean exit = false;
+        while (exit == false) {
+            try {
+                    Menu();
+                    System.out.print("Enter your answer: ");
+                    int option = input.nextInt();
+                    input.nextLine(); // consume newline
+                    while (option > 3 && option < 1) 
+                    {
+                        System.out.println("There is no such option!!! Please try again!!!");
+                        Menu();
+                        System.out.print("Enter your answer: ");
+                        option = input.nextInt();
+                        input.nextLine(); // consume newline
+                    }
 
-        
-        try {
-                Socket connection;
+                    Socket connection;
 
-                HashMap<String, Object> filtered_rooms;
-                HashMap<Lodging, Integer> room_list;
+                    HashMap<String, Object> filtered_rooms;
+                    HashMap<Lodging, Integer> room_list;
 
-                switch(option)
-                {
-                    case 1:
-                        String fromInput = null;
-                        String toInput = null;
-                        String name = null;
-                        boolean input_wrong = true;
-                        Calendar from = Calendar.getInstance();
-                        Calendar to = Calendar.getInstance();
-                        while (input_wrong) // Till the input is right
-                        {
-                            // Ask for the name of the lodge
-                            System.out.print("Enter the name of the lodge you want to book: ");
-                            name = input.nextLine();
+                    switch(option)
+                    {
+                        case 1:
+                            String fromInput = null;
+                            String toInput = null;
+                            String name = null;
+                            boolean input_wrong = true;
+                            Calendar from = Calendar.getInstance();
+                            Calendar to = Calendar.getInstance();
+                            while (input_wrong) // Till the input is right
+                            {
+                                // Ask for the name of the lodge
+                                System.out.print("Enter the name of the lodge you want to book: ");
+                                name = input.nextLine();
 
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                            dateFormat.setLenient(false);
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                dateFormat.setLenient(false);
 
-                            System.out.print("Input check-in date (DD/MM/YYYY): \n");
-                            fromInput = input.nextLine();
-                            from.setTime(dateFormat.parse(fromInput));
+                                System.out.print("Input check-in date (DD/MM/YYYY): \n");
+                                fromInput = input.nextLine();
+                                from.setTime(dateFormat.parse(fromInput));
 
-                            System.out.println("Input check-out date (DD/MM/YYYY)");
-                            toInput = input.nextLine();
-                            to.setTime(dateFormat.parse(toInput));
+                                System.out.println("Input check-out date (DD/MM/YYYY)");
+                                toInput = input.nextLine();
+                                to.setTime(dateFormat.parse(toInput));
+                                
+                                // Compare then so that the date of from is always smaller than the date of to
+                                if (from.compareTo(to) < 0) {
+                                    input_wrong = false;
+                                } else {
+                                    System.out.println("Wrong dates please try again");
+                                }
+                            }
                             
-                            // Compare then so that the date of from is always smaller than the date of to
-                            if (from.compareTo(to) < 0) {
-                                input_wrong = false;
-                            } else {
-                                System.out.println("Wrong dates please try again");
-                            }
-                        }
-                        
-                        connection = new Socket(HOST, SERVERPORT);
+                            connection = new Socket(HOST, SERVERPORT);
 
-                        out = new ObjectOutputStream(connection.getOutputStream());
-                        in = new ObjectInputStream(connection.getInputStream());
+                            out = new ObjectOutputStream(connection.getOutputStream());
+                            in = new ObjectInputStream(connection.getInputStream());
 
-                        out.writeObject(BOOK);
-                        out.flush();
-                                                
-                        // Send the name of the room
-                        out.writeObject(name);
-                        out.flush();
-                        
-                        // Send the name of the user
-                        if (user.getUsername() == null)
-                        {
-                            out.writeObject(user.getUUID());
+                            out.writeObject(BOOK);
                             out.flush();
-                        }
-                        else 
-                        {
-                            out.writeObject(user.getUsername());
+                                                    
+                            // Send the name of the room
+                            out.writeObject(name);
                             out.flush();
-                        }
-
-                        // Send starting date of availability
-                        out.writeObject(fromInput);
-                        out.flush();
-
-                        // Send ending date of availability
-                        out.writeObject(toInput);
-                        out.flush();
-
-                        System.out.println("Room successfully booked!!!");
-                        break;
-
-                    case 2:
-                        HashMap<String, Object> map = new HashMap<String, Object>();
-                        boolean add_filter = true;
-                        while (add_filter) {
-                            System.out.println("Please select from the following options (1-5)");
-                            filters();
-                            System.out.println("Enter your answer: ");
-                            int answer = input.nextInt();
-                            input.nextLine(); // consume newline
-                            while (answer > 5 && answer < 1) 
+                            
+                            // Send the name of the user
+                            if (user.getUsername() == null)
                             {
-                                System.out.println("There is no such option!!! Please try again!!!");
+                                out.writeObject(user.getUUID());
+                                out.flush();
+                            }
+                            else 
+                            {
+                                out.writeObject(user.getUsername());
+                                out.flush();
+                            }
+
+                            // Send starting date of availability
+                            out.writeObject(fromInput);
+                            out.flush();
+
+                            // Send ending date of availability
+                            out.writeObject(toInput);
+                            out.flush();
+
+                            System.out.println("Room successfully booked!!!");
+                            break;
+
+                        case 2:
+                            HashMap<String, Object> map = new HashMap<String, Object>();
+                            boolean add_filter = true;
+                            while (add_filter) {
+                                System.out.println("Please select from the following options (1-5)");
                                 filters();
-                                System.out.print("Enter your answer: ");
-                                answer = input.nextInt();
+                                System.out.println("Enter your answer: ");
+                                int answer = input.nextInt();
                                 input.nextLine(); // consume newline
-                            }
-                            switch (answer) 
-                            {
-                                case 1:
-                                    if (!(map.containsKey("stars") || map.size() > 4))
-                                    {
-                                        System.out.print("Please select the number of stars (1-5): ");
-                                        answer = input.nextInt();
-                                        input.nextLine(); 
-                                        while (answer > 5 && answer < 1) 
+                                while (answer > 5 && answer < 1) 
+                                {
+                                    System.out.println("There is no such option!!! Please try again!!!");
+                                    filters();
+                                    System.out.print("Enter your answer: ");
+                                    answer = input.nextInt();
+                                    input.nextLine(); // consume newline
+                                }
+                                switch (answer) 
+                                {
+                                    case 1:
+                                        if (!(map.containsKey("stars") || map.size() > 4))
                                         {
-                                            System.out.println("There is no such option!!! Please try again!!!");
                                             System.out.print("Please select the number of stars (1-5): ");
                                             answer = input.nextInt();
                                             input.nextLine(); 
-                                        }
-                                        map.put("stars", answer);
-                                    }
-                                    else 
-                                    {
-                                        if (map.containsKey("stars"))
-                                        {
-                                            System.out.println("You've already added that field.");
-                                        }
-                                        else 
-                                        {
-                                            System.out.println("You've completed all fields");
-                                        }
-                                    }
-                                    break;
-                                case 2:
-                                    if (!(map.containsKey("area") || map.size() > 4)) 
-                                    {   
-                                        System.out.print("Please select the area you want to go to: ");
-                                        String area = input.nextLine();
-                                        input.nextLine();
-                                        map.put("area", area);
-                                    }
-                                    else 
-                                    {
-                                        if (map.containsKey("area"))
-                                        {
-                                            System.out.println("You've already added that field.");
+                                            while (answer > 5 && answer < 1) 
+                                            {
+                                                System.out.println("There is no such option!!! Please try again!!!");
+                                                System.out.print("Please select the number of stars (1-5): ");
+                                                answer = input.nextInt();
+                                                input.nextLine(); 
+                                            }
+                                            map.put("stars", answer);
                                         }
                                         else 
                                         {
-                                            System.out.println("You've completed all fields");
+                                            if (map.containsKey("stars"))
+                                            {
+                                                System.out.println("You've already added that field.");
+                                            }
+                                            else 
+                                            {
+                                                System.out.println("You've completed all fields");
+                                            }
                                         }
-                                    }
-                                    break;
-                                case 3:
-                                    if (!(map.containsKey("noOfPersons") || map.size() > 4)) 
-                                    {
-                                        System.out.print("Please select the number of people: ");
-                                        answer = input.nextInt();
-                                        input.nextLine(); 
-                                        while (answer < 1) 
+                                        break;
+                                    case 2:
+                                        if (!(map.containsKey("area") || map.size() > 4)) 
+                                        {   
+                                            System.out.print("Please select the area you want to go to: ");
+                                            String area = input.nextLine();
+                                            input.nextLine();
+                                            map.put("area", area);
+                                        }
+                                        else 
                                         {
-                                            System.out.println("Invalid number!!! Please try again!!!");
+                                            if (map.containsKey("area"))
+                                            {
+                                                System.out.println("You've already added that field.");
+                                            }
+                                            else 
+                                            {
+                                                System.out.println("You've completed all fields");
+                                            }
+                                        }
+                                        break;
+                                    case 3:
+                                        if (!(map.containsKey("noOfPersons") || map.size() > 4)) 
+                                        {
                                             System.out.print("Please select the number of people: ");
                                             answer = input.nextInt();
                                             input.nextLine(); 
-                                        }
-                                        map.put("noOfPersons", answer);
-                                    }
-                                    else 
-                                    {
-                                        if (map.containsKey("noOfPersons"))
-                                        {
-                                            System.out.println("You've already added that field.");
-                                        }
-                                        else 
-                                        {
-                                            System.out.println("You've completed all fields");
-                                        }
-                                    }
-                                    break;
-                                case 4:
-                                    if (!(map.containsKey("roomName") || map.size() > 4))
-                                    {   
-                                        System.out.print("Please select the name of the room: ");
-                                        name = input.nextLine();
-                                        input.nextLine();
-                                        map.put("roomName", name);
-                                    }
-                                    else
-                                    {
-                                        if (map.containsKey("roomName"))
-                                        {
-                                            System.out.println("You've already added that field.");
+                                            while (answer < 1) 
+                                            {
+                                                System.out.println("Invalid number!!! Please try again!!!");
+                                                System.out.print("Please select the number of people: ");
+                                                answer = input.nextInt();
+                                                input.nextLine(); 
+                                            }
+                                            map.put("noOfPersons", answer);
                                         }
                                         else 
                                         {
-                                            System.out.println("You've completed all fields");
+                                            if (map.containsKey("noOfPersons"))
+                                            {
+                                                System.out.println("You've already added that field.");
+                                            }
+                                            else 
+                                            {
+                                                System.out.println("You've completed all fields");
+                                            }
                                         }
-                                    }
-                                    break;
+                                        break;
+                                    case 4:
+                                        if (!(map.containsKey("roomName") || map.size() > 4))
+                                        {   
+                                            System.out.print("Please select the name of the room: ");
+                                            name = input.nextLine();
+                                            input.nextLine();
+                                            map.put("roomName", name);
+                                        }
+                                        else
+                                        {
+                                            if (map.containsKey("roomName"))
+                                            {
+                                                System.out.println("You've already added that field.");
+                                            }
+                                            else 
+                                            {
+                                                System.out.println("You've completed all fields");
+                                            }
+                                        }
+                                        break;
 
-                                case 5:
-                                    map.clear();
-                                    break;
+                                    case 5:
+                                        map.clear();
+                                        break;
+                                }
+                                System.out.println("Would you like to add more filters? Y/N");
+                                String ans = input.nextLine().trim().toLowerCase();
+                                if (ans.equals("n"))
+                                {
+                                    add_filter = false;
+                                }
                             }
-                            System.out.println("Would you like to add more filters? Y/N");
-                            String ans = input.nextLine().trim().toLowerCase();
-                            if (ans.equals("n"))
+
+                            connection = new Socket(HOST, SERVERPORT);
+
+                            out = new ObjectOutputStream(connection.getOutputStream());
+                            in = new ObjectInputStream(connection.getInputStream());
+                            
+                            out.writeObject(FILTER);
+                            out.flush();
+                            
+                            if (user.getUsername() == null)
                             {
-                                add_filter = false;
+                                out.writeObject(user.getUUID());
+                                out.flush();
                             }
-                        }
+                            else 
+                            {
+                                out.writeObject(user.getUsername());
+                                out.flush();
+                            }
+                            System.out.print(map);
 
-                        connection = new Socket(HOST, SERVERPORT);
-
-                        out = new ObjectOutputStream(connection.getOutputStream());
-                        in = new ObjectInputStream(connection.getInputStream());
-                        
-                        out.writeObject(FILTER);
-                        out.flush();
-                        
-                        if (user.getUsername() == null)
-                        {
-                            out.writeObject(user.getUUID());
+                            out.writeObject(map);
                             out.flush();
-                        }
-                        else 
-                        {
-                            out.writeObject(user.getUsername());
-                            out.flush();
-                        }
-                        System.out.print(map);
+            
+                            /////////////////////////////////////////////////////////////////////////
+                            /////////////////////////// SYNCHRONIZED CODE ///////////////////////////
+                            ////////////////////////////////////////////////////////////////////////
 
-                        out.writeObject(map);
-                        out.flush();
-        
-                        /////////////////////////////////////////////////////////////////////////
-                        /////////////////////////// SYNCHRONIZED CODE ///////////////////////////
-                        ////////////////////////////////////////////////////////////////////////
+                            // filtered_rooms = null;
+                            // try {
+                            //     filtered_rooms = (Map<String, Object>) in.readObject();
+                            // } catch (ClassNotFoundException e) {
+                            //     e.printStackTrace();
+                            // }
 
-                        // filtered_rooms = null;
-                        // try {
-                        //     filtered_rooms = (Map<String, Object>) in.readObject();
-                        // } catch (ClassNotFoundException e) {
-                        //     e.printStackTrace();
-                        // }
+                            // String firstKey = filtered_rooms.keySet().iterator().next();
+                            // room_list = (Map<Lodging, Integer>) filtered_rooms.get(firstKey);
+                            // System.out.println("Here are the rooms that match your preferences!!!");
+                            // for (Map.Entry<Lodging, Integer> item : room_list.entrySet())
+                            // {
+                            //     System.out.println(item.getKey());
+                            // }
+                            // break;
 
-                        // String firstKey = filtered_rooms.keySet().iterator().next();
-                        // room_list = (Map<Lodging, Integer>) filtered_rooms.get(firstKey);
-                        // System.out.println("Here are the rooms that match your preferences!!!");
-                        // for (Map.Entry<Lodging, Integer> item : room_list.entrySet())
-                        // {
-                        //     System.out.println(item.getKey());
-                        // }
-                        // break;
-
-                }
-        } catch (IOException e) {
-            e.printStackTrace();
+                            break;
+                        case 3:
+                            exit = true;
+                            break;
+                    }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public static void Menu()
     {
-        System.out.println("Welcome!!!Please select from the following options (1-3)");
+        System.out.println("Please select from the following options (1-3):");
         System.out.println("1. Book a room");
         System.out.println("2. Use filters");
         System.out.println("3. Exit App");
@@ -397,6 +402,7 @@ public class DummyApp {
         System.out.println("3. Number of people");
         System.out.println("4. Name of room");
         System.out.println("5. Clear all filters");
+        
     }
 
 }
