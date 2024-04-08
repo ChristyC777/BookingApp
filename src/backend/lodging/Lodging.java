@@ -74,9 +74,8 @@ public class Lodging implements LodgingInterface, Serializable {
     @Override
     public String toString()
     {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String fromFormattedDate = dateRange.getFrom().toString();
-        String toFormattedDate = dateRange.getTo().toString();
+        String fromFormattedDate = dateRange.getFrom().getTime().toString();
+        String toFormattedDate = dateRange.getTo().getTime().toString();
         return String.format(
             """ 
             ###################

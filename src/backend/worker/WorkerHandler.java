@@ -56,16 +56,8 @@ public class WorkerHandler implements Runnable {
                     worker.addLodge(lodge);
                     break;
                 case VIEW_BOOKINGS:
-                    ArrayList<Lodging> bookings = new ArrayList<Lodging>();
                     String managerName = (String) in.readObject();
-                    for (Lodging l : worker.getLodges())
-                    {
-                        if (l.getManager().equals(managerName))
-                        {
-                            bookings.add(l);
-                        }
-                    }
-                    worker.viewBookings(bookings);
+                    worker.viewBookings(managerName);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
@@ -82,8 +74,6 @@ public class WorkerHandler implements Runnable {
                     String datefrom = (String) in.readObject();
                     String dateto = (String) in.readObject();
                     worker.makeBooking(roomName, username, datefrom, dateto);
-                    break;
-                case VIEW:
                     break;
                 default:
                     System.err.println("Invalid request.");

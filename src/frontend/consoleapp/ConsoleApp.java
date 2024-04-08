@@ -251,15 +251,7 @@ public class ConsoleApp {
                 }
             } catch (IOException | java.text.ParseException e) {
                 e.printStackTrace();
-            } finally {
-            // Close the streams
-            try {
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+            } 
         }
     }
 

@@ -37,8 +37,7 @@ public class Master {
                 System.out.println("Awaiting connection...");
 				connection = providerSocket.accept();
                 System.out.println("Successfully connected!");
-                // out = new ObjectOutputStream(connection.getOutputStream());
-                // in = new ObjectInputStream(connection.getInputStream());
+            
 
                 Thread requestThread = new Thread(new RequestHandler(connection, this));
                 requestThread.start();

@@ -32,7 +32,7 @@ public class Worker {
     private ObjectOutputStream out;
     ArrayList<Thread> workerThreads = new ArrayList<Thread>();
     private ArrayList<Lodging> lodges;
-    private ArrayList<Booking> bookings;
+    private static final Booking bookings = new Booking();
 
     public Worker(int port)
     {
@@ -64,6 +64,13 @@ public class Worker {
 		}
 	}
 
+    /**
+     * Adds availability dates to a lodge
+     * @param roomName -> the lodge the user wants to book.
+     * @param manager -> the name of the manager
+     * @param startPeriod -> first day of availability
+     * @param endPeriod -> last day of availability
+     */ 
     public void addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
@@ -102,6 +109,13 @@ public class Worker {
         }
     }
 
+    /**
+     * Makes a Booking
+     * @param roomName -> the lodge the user wants to book.
+     * @param username -> the name of the user
+     * @param startPeriod -> check-in date
+     * @param endPeriod -> check-out date
+     */ 
     public void makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
@@ -130,6 +144,10 @@ public class Worker {
         }
     } 
 
+    /**
+     * Adds a lodge
+     * @param lodge -> the lodge the manager wants to add
+     */ 
     public void addLodge(Lodging lodge)
     {
         this.lodges.add(lodge);
@@ -142,16 +160,20 @@ public class Worker {
         return this.lodges;
     }
 
-    public void viewBookings(ArrayList<Booking> bookings)
+    /**
+     * Views all bookings of manager
+     * @param manager -> the name of the manager
+     */ 
+    public void viewBookings(String manager)
     {
-        this.bookings.addAll(bookings);
-        
-        for (Booking booking : bookings)
-        {
-            System.out.println(booking.getLodgeName());
-        }
+       ArrayList<Lodging> filteredLodges = bookings.getBookings(manager);
+       Map(manager, filteredLodges);
     }
 
+    /**
+     * Filters rooms according to the characteristics given
+     * @param map -> includes the characteristics of the desired room(s)
+     */ 
     public ArrayList<Lodging> filterRooms(Map<String, Object> map) 
     {
         return (ArrayList<Lodging>) lodges.stream().filter(room -> map.entrySet().stream().allMatch(entry -> 
@@ -174,12 +196,23 @@ public class Worker {
                                     
     }
 
+    /**
+     * Takes the results of the rooms that have the desired characteristics and starts the map-reducing procedure
+     * @param mapid -> the name of the user 
+     * @param map -> includes the characteristics of the desired room(s)
+     */ 
     public void manageFilters(String mapid, Map<String, Object> map)
     {
         ArrayList<Lodging> filters = filterRooms(map);
         Map(mapid, filters);
     }
 
+    /**
+     * Creates a Map with the following format: {roomName: frequency}  
+     * Sends it to the MapReducer class
+     * @param mapid -> the name of the user 
+     * @param filter -> arraylist of the filtered room(s)
+     */ 
     public void Map(String mapid, ArrayList<Lodging> filter)
     {
         HashMap<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}

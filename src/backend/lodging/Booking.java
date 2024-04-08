@@ -2,12 +2,15 @@ package src.backend.lodging;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Booking {
     private DateRange dateRange;
     private String userName;
     private Lodging lodgeName;
     private static List<Booking> bookings = new ArrayList<>();
+
+    public Booking(){}
 
     public Booking(DateRange dateRange, String userName, Lodging lodgeName) {
         this.dateRange = dateRange;
@@ -29,6 +32,16 @@ public class Booking {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public ArrayList<Lodging> getBookings(String manager)
+    {
+        List<Lodging> managerBookings = bookings.stream()
+                .filter(booking -> booking.getLodgeName().getManager().equals(manager))
+                .map(Booking::getLodgeName)
+                .collect(Collectors.toList());
+
+        return (ArrayList<Lodging>) managerBookings;
     }
 
     public Lodging getLodgeName() {
