@@ -6,14 +6,14 @@ import src.backend.lodging.Lodging;
 public class Booking {
     private DateRange dateRange;
     private String userName;
-    private Lodging lodgeName;
+    private Lodging lodge;
 
     public Booking(){}
 
-    public Booking(DateRange dateRange, String userName, Lodging lodgeName) {
+    public Booking(DateRange dateRange, String userName, Lodging lodge) {
         this.dateRange = dateRange;
         this.userName = userName;
-        this.lodgeName = lodgeName;
+        this.lodge = lodge;
     }
 
     public DateRange getDateRange() {
@@ -32,12 +32,12 @@ public class Booking {
         this.userName = userName;
     }
 
-    public Lodging getLodgeName() {
-        return lodgeName;
+    public Lodging getLodge() {
+        return lodge;
     }
 
-    public void setLodgeName(Lodging lodgeName) {
-        this.lodgeName = lodgeName;
+    public void setLodge(Lodging lodge) {
+        this.lodge = lodge;
     }
 
 }

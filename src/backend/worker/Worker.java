@@ -159,15 +159,15 @@ public class Worker {
      * @param userName ->
      * @param lodgeName -> the name of the lodge to be booked
      */ 
-    public boolean addBooking(DateRange dateRange, String userName, Lodging lodgeName) {
+    public boolean addBooking(DateRange dateRange, String userName, Lodging lodge) {
         for (Booking booking : bookings) {
-            if (booking.getLodgeName().equals(lodgeName) && booking.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo())) {
+            if (booking.getLodge().equals(lodge) && booking.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo())) {
                 System.out.println("Booking conflict! The lodge is already booked for the specified date range.");
                 return false;
             }
         }
 
-        Booking newBooking = new Booking(dateRange, userName, lodgeName);
+        Booking newBooking = new Booking(dateRange, userName, lodge);
         bookings.add(newBooking);
         System.out.println("Booking successful!");
         return true;
@@ -180,8 +180,8 @@ public class Worker {
     public ArrayList<Lodging> getBookings(String manager)
     {
         List<Lodging> managerBookings = bookings.stream()
-                .filter(booking -> booking.getLodgeName().getManager().equals(manager))
-                .map(Booking::getLodgeName)
+                .filter(booking -> booking.getLodge().getManager().equals(manager))
+                .map(Booking::getLodge)
                 .collect(Collectors.toList());
 
         return (ArrayList<Lodging>) managerBookings;
