@@ -37,8 +37,8 @@ public class DateRange {
         this.locked = false;
     }
 
-    public boolean isWithinRange(Calendar datefrom, Calendar dateto) {
-        return ((from.compareTo(datefrom) < 0) && (to.compareTo(dateto)>=0));
+    public boolean isWithinRange(Calendar dateFrom, Calendar dateTo) {
+        return ((from.compareTo(dateFrom) <= 0) && (to.compareTo(dateTo) >= 0));
     }
     
 }

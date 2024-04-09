@@ -60,6 +60,9 @@ public class DummyApp {
                         {
                             user = new Guest(username, password);
                             user.addUser(user);
+
+                            System.out.println("Account succesfully created!");
+
                             creating_account = false;
                         }
                     }
@@ -402,7 +405,6 @@ public class DummyApp {
         System.out.println("3. Number of people");
         System.out.println("4. Name of room");
         System.out.println("5. Clear all filters");
-        
     }
 
 }

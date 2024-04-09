@@ -125,7 +125,7 @@ public class Worker {
     public void makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
-        if (lodge!=null)
+        if (lodge != null)
         {
             // Create calendar instances
             Calendar from = Calendar.getInstance();
@@ -140,12 +140,16 @@ public class Worker {
             DateRange dateRange = new DateRange(from, to);
             if (this.addBooking(dateRange, username, lodge))
             {
-                System.out.println("Booking successfully made");
+                System.out.println("Booking successfully made!");
             }
             else 
             {
-                System.out.println("The booking failed");
+                System.out.println("The booking failed.");
             }
+        }
+        else 
+        {
+            System.out.println("Couldn't find the specified lodging!");
         }
     }
     
@@ -256,7 +260,7 @@ public class Worker {
     {
         HashMap<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
         Set<Lodging> filtereredUniques = new HashSet<Lodging>(filter);
-        for (Lodging lodge : filter)
+        for (Lodging lodge : filtereredUniques)
         {
             count.put(lodge, 1);
         }
