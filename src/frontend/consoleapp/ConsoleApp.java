@@ -8,8 +8,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Scanner;
-import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -29,8 +29,7 @@ public class ConsoleApp {
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 
-    ConsoleApp() {
-    }
+    ConsoleApp() {}
 
     public static void main(String[] args) throws IOException, ParseException {
 
@@ -216,31 +215,35 @@ public class ConsoleApp {
                         break;
 
                     case 3:
-                        System.out.print("Here are the bookings made for your room(s)!!!");
-
-                        connection = new Socket(HOST, SERVERPORT);
-
-                        out = new ObjectOutputStream(connection.getOutputStream());
-                        in = new ObjectInputStream(connection.getInputStream());
-
-                        out.writeObject(VIEW_BOOKINGS);
-                        out.flush();
-
+                    
+                    connection = new Socket(HOST, SERVERPORT);
+                    
+                    out = new ObjectOutputStream(connection.getOutputStream());
+                    in = new ObjectInputStream(connection.getInputStream());
+                    
+                    out.writeObject(VIEW_BOOKINGS);
+                    out.flush();
+                    
+                    out.writeObject(user.getUsername());
+                    out.flush();
+                    
+                    System.out.print("Awaiting for a response...");
+                        // TODO:
                         /////////////////////////////////////////////////////////////////////////
                         /////////////////////////// SYNCHRONIZED CODE ///////////////////////////
-                        ////////////////////////////////////////////////////////////////////////
+                        /////////////////////////////////////////////////////////////////////////
 
-                        Map<String, Object> filtered_rooms = null;
+                        HashMap<String, Object> filtered_rooms = null;
                         try {
-                            filtered_rooms = (Map<String, Object>) in.readObject();
+                            filtered_rooms = (HashMap<String, Object>) in.readObject();
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
                         }
 
                         String firstKey = filtered_rooms.keySet().iterator().next();
-                        Map<Lodging, Integer> room_list = (Map<Lodging, Integer>) filtered_rooms.get(firstKey);
-                        System.out.println("Here are the rooms that match your preferences!!!");
-                        for (Map.Entry<Lodging, Integer> item : room_list.entrySet()) {
+                        HashMap<Lodging, Integer> room_list = (HashMap<Lodging, Integer>) filtered_rooms.get(firstKey);
+                        System.out.println("Found the following bookings:");
+                        for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet()) {
                             System.out.println(item.getKey());
                         }
                         break;
@@ -255,13 +258,13 @@ public class ConsoleApp {
         }
     }
 
-    public static void Menu() {
+    public static void Menu()
+    {
         System.out.println("\n////////////////////// MENU //////////////////////\n");
         System.out.println("Please select from the following options (1-4)");
         System.out.println("1. Add a room");
         System.out.println("2. Update dates");
         System.out.println("3. View bookings");
         System.out.println("4. Exit");
-
     }
 }

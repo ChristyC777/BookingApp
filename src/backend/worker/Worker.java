@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 import java.util.Calendar;
 
 import src.backend.booking.Booking;
-import src.backend.lodging.DateRange;
 import src.backend.lodging.Lodging;
-import src.backend.mapreducer.FilterData;
+import src.backend.utility.daterange.DateRange;
+import src.backend.utility.filterdata.FilterData;
 
 public class Worker {
 
@@ -74,7 +74,7 @@ public class Worker {
      * @param startPeriod -> first day of availability
      * @param endPeriod -> last day of availability
      */ 
-    public void addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
+    public synchronized void addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
         if (lodge != null)
@@ -159,7 +159,16 @@ public class Worker {
      * @param userName ->
      * @param lodgeName -> the name of the lodge to be booked
      */ 
-    public boolean addBooking(DateRange dateRange, String userName, Lodging lodge) {
+    public synchronized boolean addBooking(DateRange dateRange, String userName, Lodging lodge) {
+
+        // Check whether the booking is within the lodging's availability.
+        if (!lodge.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo()))
+        {
+            System.out.println("The specified date range is not within the lodge's availability dates!");
+            return false;
+        }       
+
+        // Check whether the booking conflicts with another booking.
         for (Booking booking : bookings) {
             if (booking.getLodge().equals(lodge) && booking.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo())) {
                 System.out.println("Booking conflict! The lodge is already booked for the specified date range.");
@@ -167,6 +176,7 @@ public class Worker {
             }
         }
 
+        // Add a new booking.
         Booking newBooking = new Booking(dateRange, userName, lodge);
         bookings.add(newBooking);
         System.out.println("Booking successful!");

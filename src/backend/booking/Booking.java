@@ -1,7 +1,7 @@
 package src.backend.booking;
 
-import src.backend.lodging.DateRange;
 import src.backend.lodging.Lodging;
+import src.backend.utility.daterange.DateRange;
 
 public class Booking {
     private DateRange dateRange;

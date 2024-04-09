@@ -11,8 +11,8 @@ public class Master {
 
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
-    private ArrayList<Thread> masterThreads = new ArrayList<>();
-    private ArrayList<WorkerNode> workerNodes = new ArrayList<WorkerNode>(); // "<IP: Port>"
+    private ArrayList<Thread> masterThreads;
+    private ArrayList<WorkerNode> workerNodes; // "<IP: Port>"
     private ServerSocket providerSocket;
 	private Socket connection = null;
     private ObjectInputStream in;
@@ -20,6 +20,8 @@ public class Master {
   
     public Master()
     {
+        masterThreads = new ArrayList<Thread>();
+        workerNodes = new ArrayList<WorkerNode>();
     }
 
     public void setWorkers(int workers)
@@ -49,7 +51,6 @@ public class Master {
 			ioException.printStackTrace();
 		}
 	}
-
 
     public void assignRoom(Lodging room) 
     {
@@ -199,12 +200,24 @@ public class Master {
                 out.flush();
             }
 
-
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }   
+    }
+
+    public void notifyOfResults(HashMap<String, Object> filters)
+    {
+        // TODO: get the mapid, wake up the thread belonging to it
+        // this DOES NOT work as is
+        for (Thread thread : masterThreads)
+        {
+            if (filters.containsKey(thread.getName()))
+            {
+                thread.notify();
+            } 
+        }
     }
 
     public int getNumberOfWorkers()

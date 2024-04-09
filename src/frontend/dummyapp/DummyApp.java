@@ -167,11 +167,11 @@ public class DummyApp {
                                 toInput = input.nextLine();
                                 to.setTime(dateFormat.parse(toInput));
                                 
-                                // Compare then so that the date of from is always smaller than the date of to
+                                // Compare then so that the check-in is always smaller than the check-out date
                                 if (from.compareTo(to) < 0) {
                                     input_wrong = false;
                                 } else {
-                                    System.out.println("Wrong dates please try again");
+                                    System.out.println("Check-in date was after check-out date, please try again.");
                                 }
                             }
                             
@@ -206,8 +206,6 @@ public class DummyApp {
                             // Send ending date of availability
                             out.writeObject(toInput);
                             out.flush();
-
-                            System.out.println("Room successfully booked!!!");
                             break;
 
                         case 2:

@@ -2,6 +2,8 @@ package src.backend.lodging;
 
 import java.io.Serializable;
 
+import src.backend.utility.daterange.DateRange;
+
 public class Lodging implements LodgingInterface, Serializable {
 
     private String roomImage;

@@ -1,4 +1,4 @@
-package src.backend.lodging;
+package src.backend.utility.daterange;
 
 import java.io.Serializable;
 import java.util.Calendar;

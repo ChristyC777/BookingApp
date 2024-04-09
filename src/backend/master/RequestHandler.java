@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 import src.shared.ClientActions;
@@ -57,6 +58,11 @@ public class RequestHandler implements Runnable {
                     String mapid = (String) in.readObject(); 
                     Map<String, Object> map = (Map<String, Object>) in.readObject();
                     master.filterRooms(mapid, map);
+
+                    synchronized(master)
+                    {
+                        out.writeObject("Your results are: Bob Marley!");
+                    }
                     break;
                 case BOOK:
                     String roomName = (String) in.readObject();
@@ -66,6 +72,11 @@ public class RequestHandler implements Runnable {
                     master.makeBooking(roomName, username, from, to);
                     break;
                 case VIEW:
+                    break;
+                case FINAL_FILTERS:
+                    // TODO: Properly implement this
+                    HashMap<String, Object> final_filters = (HashMap<String, Object>) in.readObject();
+                    master.notifyOfResults(final_filters);
                     break;
                 default:
                     System.err.println("Invalid request.");

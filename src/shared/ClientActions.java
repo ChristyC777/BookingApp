@@ -12,5 +12,8 @@ public enum ClientActions
     // Guest actions
     FILTER,
     BOOK,
-    VIEW    
+    VIEW,
+
+    // Reducer actions
+    FINAL_FILTERS
 }

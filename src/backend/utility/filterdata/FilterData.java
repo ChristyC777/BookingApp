@@ -1,4 +1,4 @@
-package src.backend.mapreducer;
+package src.backend.utility.filterdata;
 
 import java.io.Serializable;
 import java.util.HashMap;

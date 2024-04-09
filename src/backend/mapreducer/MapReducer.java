@@ -1,16 +1,23 @@
 package src.backend.mapreducer;
 
+import static src.shared.ClientActions.FINAL_FILTERS;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.filterdata.FilterData;
 
 public class MapReducer {
   
+    private final static String MASTERIP = "localhost";
+    private final static int MASTERPORT = 7777;
+    
     private final static int SERVERPORT = 7778;
     private ServerSocket providerSocket;
 	private Socket connection = null;
@@ -24,26 +31,47 @@ public class MapReducer {
      * @param mapid -> the ID of the specific request.
      * @param filter_results -> the filters to apply the reduction on.
      */
-    public void Reduce(String mapid, Map<Lodging, Integer> filter_results)
+    public synchronized void Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
 
         // TODO: lock the function and allow threads with the current mapid to get in
-        Map<Lodging, Integer> counts = new HashMap<>(); // Creates {"room1":3, "room5":10}
-        Map<String, Object> final_results = new HashMap<String, Object>(); 
+        HashMap<Lodging, Integer> counts = new HashMap<Lodging, Integer>(); // Creates {"room1":3, "room5":10}
+        HashMap<String, Object> final_results = new HashMap<String, Object>(); 
         for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
             Lodging lodge = item.getKey();
             int count = item.getValue();
             counts.put(lodge, counts.getOrDefault(lodge, 0) + count);
         }
         final_results.put(mapid, counts);
-        System.out.println("MapID and the rooms found");
-        System.out.println(mapid);
-        System.out.println(counts);
+
+        // TODO: Have these be sent to ConsoleApp
+        System.out.println("MapID: " + mapid);
+        System.out.println("Rooms found: \n\n" + counts);
 
         //{mapid: {"room1":5, "room2": 3, "room7": 2}} -> <mapid, final_results>
 
         // TODO: When all the workers have send results for this mapid release the lock 
-        // Create a socket to send the reults back to the master
+
+        // Create a socket to send the results back to the master
+        try {
+            Socket masterSocket = new Socket(MASTERIP, MASTERPORT);
+            
+            out = new ObjectOutputStream(masterSocket.getOutputStream());
+            in = new ObjectInputStream(masterSocket.getInputStream());
+
+            out.writeObject(FINAL_FILTERS);
+            out.flush();
+
+            out.writeObject(final_results);
+            out.flush();
+
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         // Unlock the function
     }
 
@@ -76,6 +104,7 @@ public class MapReducer {
 
     public static void main(String[] args) {
         new MapReducer().openServer();
+        System.out.printf("Reducer listening to port %d%n.", SERVERPORT);
     }
         
 

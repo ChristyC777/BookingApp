@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.ParseException;
-import java.util.Map;
+import java.util.HashMap;
 
 import src.backend.lodging.Lodging;
 import src.shared.ClientActions;
@@ -62,7 +62,7 @@ public class WorkerHandler implements Runnable {
                     break;
                 case FILTER:
                     String mapid = (String) in.readObject();
-                    Map<String, Object> map = (Map<String, Object>) in.readObject();
+                    HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     
                     worker.manageFilters(mapid, map);
                     break;
