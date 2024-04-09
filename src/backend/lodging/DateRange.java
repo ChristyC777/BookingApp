@@ -1,8 +1,9 @@
 package src.backend.lodging;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
-public class DateRange {
+public class DateRange implements Serializable{
 
     private Calendar from;
     private Calendar to; 
