@@ -85,13 +85,12 @@ public class MapReducer {
                 while(true)
                 {
                     connection = providerSocket.accept();
-                    out = new ObjectOutputStream(connection.getOutputStream());
-                    in = new ObjectInputStream(connection.getInputStream());
-                    FilterData filter_results = (FilterData) in.readObject();
-                    Reduce(filter_results.getMapid(), filter_results.getFilters());
+                    Thread reduceThread = new Thread(new MapReducerHandler(connection, this));
+                    
+                    reduceThread.start();
                 }
 
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 try {

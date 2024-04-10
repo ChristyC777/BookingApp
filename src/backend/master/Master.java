@@ -17,6 +17,7 @@ public class Master {
 	private Socket connection = null;
     private ObjectInputStream in;
     private ObjectOutputStream out;
+    private HashMap<String, RequestHandler> waiting_threads = new HashMap<>();
   
     public Master()
     {

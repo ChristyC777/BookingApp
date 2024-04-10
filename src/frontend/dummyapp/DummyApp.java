@@ -206,6 +206,9 @@ public class DummyApp {
                             // Send ending date of availability
                             out.writeObject(toInput);
                             out.flush();
+
+                            // TODO: Message for room successfully or failed to book
+
                             break;
 
                         case 2:
@@ -356,6 +359,8 @@ public class DummyApp {
 
                             out.writeObject(map);
                             out.flush();
+
+                            // TODO: wait
             
                             /////////////////////////////////////////////////////////////////////////
                             /////////////////////////// SYNCHRONIZED CODE ///////////////////////////

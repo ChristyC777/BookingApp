@@ -149,6 +149,7 @@ public class ConsoleApp {
                         out.writeObject(lodge);
                         out.flush();
 
+                        // TODO: WAIT FOR STRING MESSAGE WITH SUCCESS OR FAILURE NOTIFICATION
                         System.out.println("Room successfully added!!!");
                         break;
 
@@ -211,6 +212,8 @@ public class ConsoleApp {
                         // Send ending date of availability
                         out.writeObject(toInput);
                         out.flush();
+
+                        // TODO: waiting for string message 
 
                         break;
 
