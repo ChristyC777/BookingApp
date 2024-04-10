@@ -18,4 +18,13 @@ public class Response {
         this.obj = obj;
     }
 
+    public synchronized boolean hasResponse()
+    {
+        if (obj==null)
+        {
+            return false;
+        }
+        return true;
+    }
+
 }
