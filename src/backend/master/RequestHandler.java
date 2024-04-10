@@ -61,7 +61,13 @@ public class RequestHandler implements Runnable {
 
                     synchronized(master)
                     {
-                        out.writeObject("Your results are: Bob Marley!");
+                        try {
+                            wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Object obj = master.getResponse();
+                        out.writeObject(obj);
                     }
                     break;
                 case BOOK:

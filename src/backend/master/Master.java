@@ -5,12 +5,15 @@ import java.net.*;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
+import src.backend.response.Response;
+
 import static src.shared.ClientActions.*;
 
 public class Master {
 
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
+    private Response response;
     private ArrayList<Thread> masterThreads;
     private ArrayList<WorkerNode> workerNodes; // "<IP: Port>"
     private ServerSocket providerSocket;
@@ -18,6 +21,16 @@ public class Master {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private HashMap<String, RequestHandler> waiting_threads = new HashMap<>();
+
+    public void setResponse (Object response)
+    {
+        this.response.setResponse(response);
+    }
+
+    public Object getResponse()
+    {
+        return response.getResponse();
+    }
   
     public Master()
     {
@@ -216,6 +229,7 @@ public class Master {
         {
             if (filters.containsKey(thread.getName()))
             {
+                response.setResponse(filters);
                 thread.notify();
             } 
         }
