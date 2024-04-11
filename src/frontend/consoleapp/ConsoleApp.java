@@ -35,7 +35,7 @@ public class ConsoleApp {
     public static void main(String[] args) throws IOException, ParseException {
 
         Scanner input = new Scanner(System.in);
-        System.out.println("Are you a user of this App? (Y/N)");
+        System.out.println("Are you a user of this App? (Y/N)\n>> ");
         String id = input.nextLine().trim().toLowerCase();
         User user = null;
         if (id.equals("y")) {
@@ -50,7 +50,7 @@ public class ConsoleApp {
             if (flag == false) {
                 System.out.println("Sorry, no account was found with the provided credentials.");
                 System.out.println("It is important for you as a manager to create an account.");
-                System.out.println("Would you like to create a new account? (Y/N)");
+                System.out.println("Would you like to create a new account? (Y/N)\n>> ");
                 String decision = input.nextLine().trim().toLowerCase();
                 // New Account creation
                 if (decision.equals("y")) {
@@ -76,7 +76,7 @@ public class ConsoleApp {
                 }
             } // esle if the account exist we proceed
         } else {
-            System.out.println("Would you like to create a new account? (Y/N)");
+            System.out.println("Would you like to create a new account? (Y/N)\n>> ");
             String decision = input.nextLine().trim().toLowerCase();
             // New Account creation
             if (decision.equals("y")) {
@@ -126,7 +126,7 @@ public class ConsoleApp {
 
                 switch (option) {
                     case 1:
-                        System.out.println("Please enter the file path for your json file: ");
+                        System.out.print("Please enter the file path for your json file: ");
                         String fileName = input.nextLine();
 
                         // Reading file
@@ -175,11 +175,11 @@ public class ConsoleApp {
                             // Ask for the dates of availability
                             System.out.print("Add available dates for booking!!!\n");
 
-                            System.out.print("Input starting date of availability (DD/MM/YYYY): \n");
+                            System.out.print("Input starting date of availability (DD/MM/YYYY):\n>> ");
                             fromInput = input.nextLine();
                             from.setTime(dateFormat.parse(fromInput));
 
-                            System.out.println("Input ending date of availability (DD/MM/YYYY)");
+                            System.out.print("Input ending date of availability (DD/MM/YYYY):\n>> ");
                             toInput = input.nextLine();
                             to.setTime(dateFormat.parse(toInput));
                             
@@ -187,7 +187,7 @@ public class ConsoleApp {
                             if (from.compareTo(to) < 0) {
                                 input_wrong = false;
                             } else {
-                                System.out.println("Wrong dates please try again");
+                                System.out.println("Wrong dates, please try again!");
                             }
                         }
                         connection = new Socket(HOST, SERVERPORT);
@@ -248,12 +248,24 @@ public class ConsoleApp {
 
                         String firstKey = filtered_rooms.keySet().iterator().next();
                         HashMap<Lodging, Integer> room_list = (HashMap<Lodging, Integer>) filtered_rooms.get(firstKey);
-                        System.out.println("Found the following bookings:");
-                        for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet()) {
-                            System.out.println(item.getKey());
-                        }
-                        break;
 
+                        if (room_list.size() > 0)
+                        {
+                            System.out.println("Found the following bookings:");
+                            for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet()) {
+                                System.out.println("\n" + item.getKey());
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("No bookings found.");
+                        }
+                        
+                        // Stop the output and await a keypress so the results don't scroll up too far
+                        System.out.print("\nPress 'Enter' to continue...");
+                        input.nextLine();
+
+                        break;                        
                     case 4:
                         exit = true;
                         break;

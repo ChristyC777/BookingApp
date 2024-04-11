@@ -27,7 +27,7 @@ public class DummyApp {
 
         User user = null;
         Scanner input = new Scanner(System.in);
-        System.out.println("Are you a registered user of this app? (Y/N)");
+        System.out.print("Are you a registered user of this app? (Y/N)\n>> ");
         String id = input.nextLine().trim().toLowerCase();
         if (id.equals("y"))
         {     
@@ -42,7 +42,7 @@ public class DummyApp {
             if (flag == false)
             {
                 System.out.println("Sorry, we didn't find any account under those credentials.");
-                System.out.println("Would you like to create a new account? (Y/N)");
+                System.out.print("Would you like to create a new account? (Y/N)\n>> ");
                 String decision = input.nextLine().trim().toLowerCase();
                 // New Account creation
                 if (decision.equals("y"))
@@ -78,12 +78,12 @@ public class DummyApp {
         } 
         else if (id.equals("n"))
         {
-            System.out.println("Would you like to create a new account? (Y/N)");
+            System.out.print("Would you like to create a new account? (Y/N)\n>> ");
                 String decision = input.nextLine().trim().toLowerCase();
                 // New Account creation
                 if (decision.equals("y"))
                 {
-                    System.out.println("Would you like to sign up as a guest or as a user? (G - guest, U - User)");
+                    System.out.print("Would you like to sign up as a guest or as a user? (G - guest, U - User)\n>> ");
                     String ans = input.nextLine().trim().toLowerCase();
                     if (ans.equals("g"))
                     {
@@ -160,11 +160,11 @@ public class DummyApp {
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                                 dateFormat.setLenient(false);
 
-                                System.out.print("Input check-in date (DD/MM/YYYY): \n");
+                                System.out.print("Input check-in date (DD/MM/YYYY):\n>> ");
                                 fromInput = input.nextLine();
                                 from.setTime(dateFormat.parse(fromInput));
 
-                                System.out.println("Input check-out date (DD/MM/YYYY)");
+                                System.out.print("Input check-out date (DD/MM/YYYY)\n>> ");
                                 toInput = input.nextLine();
                                 to.setTime(dateFormat.parse(toInput));
                                 
@@ -218,7 +218,7 @@ public class DummyApp {
                             while (add_filter) {
                                 System.out.println("Please select from the following options (1-5)");
                                 filters();
-                                System.out.println("Enter your answer: ");
+                                System.out.print("Enter your answer: ");
                                 int answer = input.nextInt();
                                 input.nextLine(); // consume newline
                                 while (answer > 5 && answer < 1) 
@@ -310,7 +310,6 @@ public class DummyApp {
                                         {   
                                             System.out.print("Please select the name of the room: ");
                                             name = input.nextLine();
-                                            input.nextLine();
                                             map.put("roomName", name);
                                         }
                                         else
@@ -330,7 +329,7 @@ public class DummyApp {
                                         map.clear();
                                         break;
                                 }
-                                System.out.println("Would you like to add more filters? Y/N");
+                                System.out.print("Would you like to add more filters? (Y/N)\n>> ");
                                 String ans = input.nextLine().trim().toLowerCase();
                                 if (ans.equals("n"))
                                 {
@@ -369,6 +368,10 @@ public class DummyApp {
                             {
                                 System.out.println("\n" + item.getKey());
                             }
+                            
+                            // Stop the output and await a keypress so the results don't scroll up too far
+                            System.out.print("\nPress 'Enter' to continue...");
+                            input.nextLine();
                             break;
                         case 3:
                             exit = true;
