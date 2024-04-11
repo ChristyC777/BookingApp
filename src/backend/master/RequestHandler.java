@@ -10,6 +10,7 @@ import java.util.Map;
 import src.shared.ClientActions;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.response.Response;
 
 public class RequestHandler implements Runnable {
 
@@ -32,6 +33,8 @@ public class RequestHandler implements Runnable {
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
             ClientActions action = (ClientActions) in.readObject();
+            Response response = null;
+            String mapid;
 
             switch(action)
             {
@@ -48,27 +51,52 @@ public class RequestHandler implements Runnable {
                     System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
                     break;
                 case VIEW_BOOKINGS:
+                    mapid = Thread.currentThread().getName();
                     manager = (String) in.readObject();
-                    master.viewBookings(manager);
+                    master.viewBookings(mapid, manager);
+                
+                    // waits until a response is available
+                    try {
+                        synchronized(master.getResponseInstance())
+                        {
+                            while(!master.getResponseInstance().hasResponse())
+                            {
+                                wait();
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // ensures synchronization for the current thread
+                    synchronized(this)
+                    {
+                        response = master.getResponseInstance();
+                        out.writeObject(response);
+                    }
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
                     break;
                 case FILTER:
-                    String mapid = (String) in.readObject(); 
-                    Map<String, Object> map = (Map<String, Object>) in.readObject();
+                    mapid = Thread.currentThread().getName(); 
+                    HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     master.filterRooms(mapid, map);
 
-                    synchronized(master)
+                    synchronized(this)
                     {
-                        try {
-                            wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                        while(!master.getResponseInstance().hasResponse())
+                        {
+                            try {
+                                wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                         }
-                        Object obj = master.getResponse();
-                        out.writeObject(obj);
                     }
+                    
+                    response = master.getResponseInstance();
+                    out.writeObject(response);
                     break;
                 case BOOK:
                     String roomName = (String) in.readObject();

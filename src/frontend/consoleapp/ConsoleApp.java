@@ -21,6 +21,7 @@ import static src.shared.ClientActions.*;
 import src.backend.lodging.Lodging;
 import src.backend.users.Manager;
 import src.backend.users.User;
+import src.backend.utility.response.Response;
 
 public class ConsoleApp {
 
@@ -121,6 +122,7 @@ public class ConsoleApp {
                 Gson gson = new Gson();
 
                 Socket connection;
+                Response response = null;
 
                 switch (option) {
                     case 1:
@@ -219,29 +221,30 @@ public class ConsoleApp {
 
                     case 3:
                     
-                    connection = new Socket(HOST, SERVERPORT);
-                    
-                    out = new ObjectOutputStream(connection.getOutputStream());
-                    in = new ObjectInputStream(connection.getInputStream());
-                    
-                    out.writeObject(VIEW_BOOKINGS);
-                    out.flush();
-                    
-                    out.writeObject(user.getUsername());
-                    out.flush();
-                    
-                    System.out.print("Awaiting for a response...");
-                        // TODO:
-                        /////////////////////////////////////////////////////////////////////////
-                        /////////////////////////// SYNCHRONIZED CODE ///////////////////////////
-                        /////////////////////////////////////////////////////////////////////////
+                        connection = new Socket(HOST, SERVERPORT);
+                        
+                        out = new ObjectOutputStream(connection.getOutputStream());
+                        in = new ObjectInputStream(connection.getInputStream());
+                        
+                        out.writeObject(VIEW_BOOKINGS);
+                        out.flush();
 
-                        HashMap<String, Object> filtered_rooms = null;
+                        out.writeObject(user.getUsername());
+                        out.flush();
+                    
+                        System.out.println("Awaiting for a response...");
+
+                        // await for a response
                         try {
-                            filtered_rooms = (HashMap<String, Object>) in.readObject();
+                            response = (Response) in.readObject();
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
                         }
+
+                        System.out.println("Response received!");
+                        
+                        // Retrieve response
+                        HashMap<String, Object> filtered_rooms = (HashMap<String, Object>) response.getResponse();
 
                         String firstKey = filtered_rooms.keySet().iterator().next();
                         HashMap<Lodging, Integer> room_list = (HashMap<Lodging, Integer>) filtered_rooms.get(firstKey);
@@ -263,7 +266,7 @@ public class ConsoleApp {
 
     public static void Menu()
     {
-        System.out.println("\n////////////////////// MENU //////////////////////\n");
+        System.out.println("\n###################### MENU ######################\n");
         System.out.println("Please select from the following options (1-4)");
         System.out.println("1. Add a room");
         System.out.println("2. Update dates");

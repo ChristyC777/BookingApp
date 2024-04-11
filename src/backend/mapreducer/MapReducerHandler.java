@@ -28,7 +28,7 @@ public class MapReducerHandler implements Runnable{
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
             FilterData filter_results = (FilterData) in.readObject();
-            mapReducer.Reduce(filter_results.getMapid(), filter_results.getFilters());
+            mapReducer.Reduce(filter_results.getMapID(), filter_results.getFilters());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

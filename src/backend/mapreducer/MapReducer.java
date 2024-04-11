@@ -11,7 +11,6 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
-import src.backend.utility.filterdata.FilterData;
 
 public class MapReducer {
   

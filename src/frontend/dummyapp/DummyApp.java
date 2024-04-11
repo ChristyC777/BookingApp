@@ -10,6 +10,8 @@ import static src.shared.ClientActions.*;
 import src.backend.lodging.Lodging;
 import src.backend.users.Guest;
 import src.backend.users.User;
+import src.backend.utility.response.Response;
+
 import java.text.SimpleDateFormat;
 
 public class DummyApp {
@@ -138,8 +140,7 @@ public class DummyApp {
 
                     Socket connection;
 
-                    HashMap<String, Object> filtered_rooms;
-                    HashMap<Lodging, Integer> room_list;
+                    Response response = null;
 
                     switch(option)
                     {
@@ -344,44 +345,30 @@ public class DummyApp {
                             
                             out.writeObject(FILTER);
                             out.flush();
-                            
-                            if (user.getUsername() == null)
-                            {
-                                out.writeObject(user.getUUID());
-                                out.flush();
-                            }
-                            else 
-                            {
-                                out.writeObject(user.getUsername());
-                                out.flush();
-                            }
-                            System.out.print(map);
 
                             out.writeObject(map);
                             out.flush();
 
-                            // TODO: wait
-            
-                            /////////////////////////////////////////////////////////////////////////
-                            /////////////////////////// SYNCHRONIZED CODE ///////////////////////////
-                            ////////////////////////////////////////////////////////////////////////
+                            System.out.println("Awaiting for a response...");
 
-                            // filtered_rooms = null;
-                            // try {
-                            //     filtered_rooms = (Map<String, Object>) in.readObject();
-                            // } catch (ClassNotFoundException e) {
-                            //     e.printStackTrace();
-                            // }
+                            // await for a response
+                            try {
+                                response = (Response) in.readObject();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
 
-                            // String firstKey = filtered_rooms.keySet().iterator().next();
-                            // room_list = (Map<Lodging, Integer>) filtered_rooms.get(firstKey);
-                            // System.out.println("Here are the rooms that match your preferences!!!");
-                            // for (Map.Entry<Lodging, Integer> item : room_list.entrySet())
-                            // {
-                            //     System.out.println(item.getKey());
-                            // }
-                            // break;
+                            System.out.println("Response received!\nFound the following rooms: ");
 
+                            // Retrieve response
+                            HashMap<String, Object> filtered_rooms = (HashMap<String, Object>) response.getResponse();
+
+                            String firstKey = filtered_rooms.keySet().iterator().next();
+                            HashMap<Lodging, Integer> room_list = (HashMap<Lodging, Integer>) filtered_rooms.get(firstKey);
+                            for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet())
+                            {
+                                System.out.println("\n" + item.getKey());
+                            }
                             break;
                         case 3:
                             exit = true;
@@ -395,6 +382,7 @@ public class DummyApp {
 
     public static void Menu()
     {
+        System.out.println("\n###################### MENU ######################\n");
         System.out.println("Please select from the following options (1-3):");
         System.out.println("1. Book a room");
         System.out.println("2. Use filters");

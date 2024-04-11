@@ -140,11 +140,11 @@ public class Worker {
             DateRange dateRange = new DateRange(from, to);
             if (this.addBooking(dateRange, username, lodge))
             {
-                System.out.println("Booking successfully made!");
+                System.out.println("Booking successfully submitted!");
             }
             else 
             {
-                System.out.println("The booking failed.");
+                System.out.println("Booking failed.");
             }
         }
         else 
@@ -179,7 +179,7 @@ public class Worker {
         // Add a new booking.
         Booking newBooking = new Booking(dateRange, userName, lodge);
         bookings.add(newBooking);
-        System.out.println("Booking successful!");
+        System.out.println("Booking has been confirmed!");
         return true;
     }
 
@@ -218,11 +218,11 @@ public class Worker {
      * Views all bookings of manager.
      * @param manager -> the name of the manager
      */ 
-    public void viewBookings(String manager)
+    public synchronized void viewBookings(String mapid, String manager)
     {
         // TODO: lock
        ArrayList<Lodging> filteredLodges = this.getBookings(manager);
-       Map(manager, filteredLodges);
+       Map(mapid, filteredLodges);
     }
 
     /**

@@ -39,29 +39,31 @@ public class WorkerHandler implements Runnable {
                 System.out.println("Action: " + action);
                 // Lodge
                 Lodging lodge;
+                String mapid;
 
             switch(action)
             {
                 case ADD_DATES:
-                    String namelodge = (String) in.readObject();
+                    String lodgeName = (String) in.readObject();
                     String manager = (String) in.readObject();
                     String from = (String) in.readObject();
                     String to = (String) in.readObject();
-                    worker.addDates(namelodge, manager, from, to);
+                    worker.addDates(lodgeName, manager, from, to);
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
                     worker.addLodge(lodge);
                     break;
                 case VIEW_BOOKINGS:
+                    mapid = (String) in.readObject();
                     String managerName = (String) in.readObject();
-                    worker.viewBookings(managerName);
+                    worker.viewBookings(mapid, managerName);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
                     break;
                 case FILTER:
-                    String mapid = (String) in.readObject();
+                    mapid = (String) in.readObject();
                     HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     
                     worker.manageFilters(mapid, map);

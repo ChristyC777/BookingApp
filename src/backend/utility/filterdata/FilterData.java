@@ -16,7 +16,7 @@ public class FilterData implements Serializable {
         this.filters = filters;
     }
 
-    public String getMapid() {
+    public String getMapID() {
         return this.mapid;
     }
 

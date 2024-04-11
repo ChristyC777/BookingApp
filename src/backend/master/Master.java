@@ -5,7 +5,7 @@ import java.net.*;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
-import src.backend.response.Response;
+import src.backend.utility.response.Response;
 
 import static src.shared.ClientActions.*;
 
@@ -13,34 +13,19 @@ public class Master {
 
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
-    private Response response;
     private ArrayList<Thread> masterThreads;
     private ArrayList<WorkerNode> workerNodes; // "<IP: Port>"
     private ServerSocket providerSocket;
 	private Socket connection = null;
+    private Response response;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private HashMap<String, RequestHandler> waiting_threads = new HashMap<>();
-
-    public void setResponse (Object response)
-    {
-        this.response.setResponse(response);
-    }
-
-    public Object getResponse()
-    {
-        return response.getResponse();
-    }
   
     public Master()
     {
         masterThreads = new ArrayList<Thread>();
         workerNodes = new ArrayList<WorkerNode>();
-    }
-
-    public void setWorkers(int workers)
-    {
-        numberOfWorkers = workers;
+        response = new Response(null, null);
     }
 
     void openServer() {
@@ -91,7 +76,7 @@ public class Master {
         }
     }
 
-    public void makeBooking(String roomName, String username, String from, String to)
+    public synchronized void makeBooking(String roomName, String username, String from, String to)
     {
         int workerID = selectWorker(roomName);
         try 
@@ -126,7 +111,7 @@ public class Master {
         }
     }
 
-    public void viewBookings(String manager)
+    public void viewBookings(String mapid, String manager)
     {
         try {
 
@@ -139,6 +124,9 @@ public class Master {
 
                 // Write the action taking place
                 out.writeObject(VIEW_BOOKINGS);
+                out.flush();
+
+                out.writeObject(mapid);
                 out.flush();
     
                 // Write the manager that wants to see the bookings
@@ -153,7 +141,7 @@ public class Master {
         }
     }
 
-    public void updateDates(String roomName, String manager, String startPeriod, String endPeriod)
+    public synchronized void updateDates(String roomName, String manager, String startPeriod, String endPeriod)
     {
         int workerID = selectWorker(roomName);
         try {
@@ -221,23 +209,40 @@ public class Master {
         }   
     }
 
-    public void notifyOfResults(HashMap<String, Object> filters)
+    public synchronized void notifyOfResults(HashMap<String, Object> filters)
     {
         // TODO: get the mapid, wake up the thread belonging to it
-        // this DOES NOT work as is
         for (Thread thread : masterThreads)
         {
+            System.out.println("Now checking: " + thread.getName());
             if (filters.containsKey(thread.getName()))
             {
-                response.setResponse(filters);
-                thread.notify();
+                System.out.println("MapID found! It belongs to " + thread.getName() + ".");
+
+                response = new Response(thread.getName(), filters);
+
+                synchronized(thread)
+                {
+                    thread.notify();
+                }
+                return;
             } 
         }
+    }
+
+    public synchronized Response getResponseInstance()
+    {
+        return this.response;
     }
 
     public int getNumberOfWorkers()
     {
         return this.numberOfWorkers;
+    }
+
+    public void setWorkers(int workers)
+    {
+        numberOfWorkers = workers;
     }
 
     public void addWorkerNode(WorkerNode worker)
