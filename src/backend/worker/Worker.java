@@ -201,9 +201,8 @@ public class Worker {
      * Adds a lodge.
      * @param lodge -> the lodge the manager wants to add
      */ 
-    public void addLodge(Lodging lodge)
+    public synchronized void addLodge(Lodging lodge)
     {
-        // TODO: lock
         this.lodges.add(lodge);
         System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
         System.out.println(lodges.size());
@@ -268,9 +267,8 @@ public class Worker {
      * @param mapid -> the name of the user 
      * @param filter -> arraylist of the filtered room(s)
      */ 
-    public void Map(String mapid, ArrayList<Lodging> filter)
+    public synchronized void Map(String mapid, ArrayList<Lodging> filter)
     {
-        // TODO: lock
         HashMap<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
         Set<Lodging> filtereredUniques = new HashSet<Lodging>(filter);
         for (Lodging lodge : filtereredUniques)

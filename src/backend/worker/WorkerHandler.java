@@ -48,11 +48,25 @@ public class WorkerHandler implements Runnable {
                     String manager = (String) in.readObject();
                     String from = (String) in.readObject();
                     String to = (String) in.readObject();
+                    
                     worker.addDates(lodgeName, manager, from, to);
+                    
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
+                    int prev = worker.getLodges().size();
                     worker.addLodge(lodge);
+                    int now = worker.getLodges().size();
+                    if (now == prev + 1)
+                    {
+                        out.writeObject("Successfully added room!");
+                        out.flush();
+                    }
+                    else 
+                    {
+                        out.writeObject("Failed to add room!");
+                        out.flush();
+                    }
                     break;
                 case VIEW_BOOKINGS:
                     mapid = (String) in.readObject();

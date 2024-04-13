@@ -151,8 +151,13 @@ public class ConsoleApp {
                         out.writeObject(lodge);
                         out.flush();
 
-                        // TODO: WAIT FOR STRING MESSAGE WITH SUCCESS OR FAILURE NOTIFICATION
-                        System.out.println("Room successfully added!!!");
+                        try {
+                            String message = (String) in.readObject();
+                            System.out.println(message);
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
                         break;
 
                     case 2: // Manager wants to add dates of availability for a lodge
