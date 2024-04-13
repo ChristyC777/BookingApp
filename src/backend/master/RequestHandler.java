@@ -105,8 +105,6 @@ public class RequestHandler implements Runnable {
                     String to = (String) in.readObject();
                     master.makeBooking(roomName, username, from, to);
                     break;
-                case VIEW:
-                    break;
                 case FINAL_FILTERS:
                     // TODO: Properly implement this
                     HashMap<String, Object> final_filters = (HashMap<String, Object>) in.readObject();

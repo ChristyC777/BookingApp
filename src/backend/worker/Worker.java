@@ -122,7 +122,7 @@ public class Worker {
      * @param startPeriod -> check-in date
      * @param endPeriod -> check-out date
      */ 
-    public void makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
+    public synchronized void makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
         if (lodge != null)
@@ -187,7 +187,7 @@ public class Worker {
      * Returns a list of bookings belonging to the currently connected manager.
      * @return the list of bookings.
      */ 
-    public ArrayList<Lodging> getBookings(String manager)
+    public synchronized ArrayList<Lodging> getBookings(String manager)
     {
         List<Lodging> managerBookings = bookings.stream()
                 .filter(booking -> booking.getLodge().getManager().equals(manager))
@@ -209,7 +209,7 @@ public class Worker {
         System.out.println(lodges.size());
     }
 
-    public ArrayList<Lodging> getLodges()
+    public synchronized ArrayList<Lodging> getLodges()
     {
         return this.lodges;
     }
@@ -229,7 +229,7 @@ public class Worker {
      * Filters rooms according to the characteristics given.
      * @param map -> includes the characteristics of the desired room(s)
      */ 
-    public ArrayList<Lodging> filterRooms(Map<String, Object> map) 
+    public synchronized ArrayList<Lodging> filterRooms(Map<String, Object> map) 
     {
         return (ArrayList<Lodging>) lodges.stream().filter(room -> map.entrySet().stream().allMatch(entry -> 
                                     {
@@ -256,9 +256,8 @@ public class Worker {
      * @param mapid -> the name of the user 
      * @param map -> includes the characteristics of the desired room(s)
      */ 
-    public void manageFilters(String mapid, Map<String, Object> map)
+    public synchronized void manageFilters(String mapid, Map<String, Object> map)
     {
-        // TODO: lock
         ArrayList<Lodging> filters = filterRooms(map);
         Map(mapid, filters);
     }

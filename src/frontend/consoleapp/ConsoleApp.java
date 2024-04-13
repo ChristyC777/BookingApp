@@ -35,7 +35,7 @@ public class ConsoleApp {
     public static void main(String[] args) throws IOException, ParseException {
 
         Scanner input = new Scanner(System.in);
-        System.out.println("Are you a user of this App? (Y/N)\n>> ");
+        System.out.print("Are you a user of this App? (Y/N)\n>> ");
         String id = input.nextLine().trim().toLowerCase();
         User user = null;
         if (id.equals("y")) {
@@ -76,7 +76,7 @@ public class ConsoleApp {
                 }
             } // esle if the account exist we proceed
         } else {
-            System.out.println("Would you like to create a new account? (Y/N)\n>> ");
+            System.out.print("Would you like to create a new account? (Y/N)\n>> ");
             String decision = input.nextLine().trim().toLowerCase();
             // New Account creation
             if (decision.equals("y")) {
@@ -176,7 +176,7 @@ public class ConsoleApp {
                             System.out.print("Add available dates for booking!!!\n");
 
                             System.out.print("Input starting date of availability (DD/MM/YYYY):\n>> ");
-                            fromInput = input.nextLine();
+                            fromInput = input.nextLine(); 
                             from.setTime(dateFormat.parse(fromInput));
 
                             System.out.print("Input ending date of availability (DD/MM/YYYY):\n>> ");
@@ -243,7 +243,7 @@ public class ConsoleApp {
 
                         System.out.println("Response received!");
                         
-                        // Retrieve response
+                        // Retrieve response 
                         HashMap<String, Object> filtered_rooms = (HashMap<String, Object>) response.getResponse();
 
                         String firstKey = filtered_rooms.keySet().iterator().next();
@@ -251,8 +251,8 @@ public class ConsoleApp {
 
                         if (room_list.size() > 0)
                         {
-                            System.out.println("Found the following bookings:");
-                            for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet()) {
+                            System.out.println("Found the following bookings:"); 
+                            for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet()) { // {"lodge1":2, "lodge5":6}
                                 System.out.println("\n" + item.getKey());
                             }
                         }
