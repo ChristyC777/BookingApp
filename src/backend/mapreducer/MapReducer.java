@@ -14,7 +14,7 @@ import src.backend.lodging.Lodging;
 
 public class MapReducer {
   
-    private final static String MASTERIP = "localhost";
+    private static String MASTERIP;
     private final static int MASTERPORT = 7777;
     
     private final static int SERVERPORT = 7778;
@@ -101,6 +101,12 @@ public class MapReducer {
         }
 
     public static void main(String[] args) {
+        
+        Scanner input = new Scanner(System.in);
+        
+        System.out.print("Enter the Master's IP address: ");
+        MASTERIP = input.nextLine();
+        
         new MapReducer().openServer();
         System.out.printf("Reducer listening to port %d%n.", SERVERPORT);
     }

@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 
 public class DummyApp {
 
-    private final Object lock = new Object();
     private final static int SERVERPORT = 7777;
     private final static String HOST = "localhost";
 	private static ObjectInputStream in;

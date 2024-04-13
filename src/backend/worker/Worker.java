@@ -25,6 +25,7 @@ import src.backend.utility.filterdata.FilterData;
 
 public class Worker {
 
+    private static String REDUCERIP;
     private int port;
     private ServerSocket providerSocket;
 	private Socket connection = null;
@@ -278,7 +279,7 @@ public class Worker {
         FilterData filterData = new FilterData(mapid, count);
         try
         {
-            Socket reducer = new Socket("localhost", 7778);
+            Socket reducer = new Socket(REDUCERIP, 7778);
 
             ObjectOutputStream output = new ObjectOutputStream(reducer.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(reducer.getInputStream());
@@ -293,8 +294,16 @@ public class Worker {
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
+        
         System.out.printf("Please enter the desired port for the worker to run on: ");
         int port = input.nextInt();
+        input.nextLine(); // consume new line
+
+        System.out.printf("Please enter the IP address that the Reducer is running on: ");
+        REDUCERIP = input.nextLine();
+        input.nextLine(); // consume new line
+
+
         new Worker(port).openServer();
     }
 }

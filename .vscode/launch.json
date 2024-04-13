@@ -5,6 +5,30 @@
             "name": "MapReducer",
             "request": "launch",
             "mainClass": "src.backend.mapreducer.MapReducer",
+            "projectName": "BookingApp_e931b733"
+        },
+        {
+            "type": "java",
+            "name": "Master",
+            "request": "launch",
+            "mainClass": "src.backend.master.Master",
+            "args": [
+                1
+            ],
+            "projectName": "BookingApp_e931b733"
+        },
+        {
+            "type": "java",
+            "name": "Worker",
+            "request": "launch",
+            "mainClass": "src.backend.worker.Worker",
+            "projectName": "BookingApp_e931b733"
+        },
+        {
+            "type": "java",
+            "name": "MapReducer",
+            "request": "launch",
+            "mainClass": "src.backend.mapreducer.MapReducer",
             "projectName": "BookingApp_b76e75fa"
         },
         {
