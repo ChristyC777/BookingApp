@@ -37,6 +37,10 @@ public class MapReducerHandler implements Runnable{
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
             FilterData filter_results = (FilterData) in.readObject();
+            if(mapReducer.getCurrentMapid()==null)
+            {
+                mapReducer.setCurrentMapid(filter_results.getMapID());
+            }
             synchronized(mapReducer.getCurrentMapid())
             {
                 while(differentMapid(filter_results))

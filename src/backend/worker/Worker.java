@@ -35,7 +35,6 @@ public class Worker {
     private ArrayList<Lodging> lodges;
     private ArrayList<Booking> bookings;
     private ArrayList<Thread> workerThreads;
-    private Stack<ArrayList<Thread>> workerGroup;
 
     public Worker(int port)
     {
@@ -220,32 +219,6 @@ public class Worker {
     public synchronized ArrayList<Lodging> getLodges()
     {
         return this.lodges;
-    }
-
-    /**
-     * Creates a new worker group to bundle threads that are intended for mapping.
-     */
-    public synchronized void createWorkerGroup()
-    {
-        this.workerGroup.add(new ArrayList<Thread>());
-    }
-
-    /**
-     * Adds thread to latest group of threads.
-     * @param thread
-     */
-    public synchronized void addThreadToWorkerGroup(Thread thread)
-    {
-        this.workerGroup.getLast().add(thread);
-    }
-
-    /**
-     * Pops and returns the latest worker group.
-     * @return
-     */
-    public synchronized ArrayList<Thread> getLatestWorkerGroup()
-    {
-        return this.workerGroup.pop();
     }
 
     /**

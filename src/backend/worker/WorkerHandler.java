@@ -78,7 +78,6 @@ public class WorkerHandler implements Runnable {
                 case VIEW_BOOKINGS:
                     mapid = (String) in.readObject();
                     String managerName = (String) in.readObject();
-                    worker.addThreadToWorkerGroup(Thread.currentThread());
                     worker.viewBookings(mapid, managerName);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
