@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
 import java.util.Calendar;
@@ -34,6 +35,7 @@ public class Worker {
     private ArrayList<Lodging> lodges;
     private ArrayList<Booking> bookings;
     private ArrayList<Thread> workerThreads;
+    private Stack<ArrayList<Thread>> workerGroup;
 
     public Worker(int port)
     {
@@ -215,6 +217,32 @@ public class Worker {
     }
 
     /**
+     * Creates a new worker group to bundle threads that are intended for mapping.
+     */
+    public synchronized void createWorkerGroup()
+    {
+        this.workerGroup.add(new ArrayList<Thread>());
+    }
+
+    /**
+     * Adds thread to latest group of threads.
+     * @param thread
+     */
+    public synchronized void addThreadToWorkerGroup(Thread thread)
+    {
+        this.workerGroup.getLast().add(thread);
+    }
+
+    /**
+     * Pops and returns the latest worker group.
+     * @return
+     */
+    public synchronized ArrayList<Thread> getLatestWorkerGroup()
+    {
+        return this.workerGroup.pop();
+    }
+
+    /**
      * Views all bookings of manager.
      * @param manager -> the name of the manager
      */ 
@@ -301,8 +329,6 @@ public class Worker {
 
         System.out.printf("Please enter the IP address that the Reducer is running on: ");
         REDUCERIP = input.nextLine();
-        input.nextLine(); // consume new line
-
 
         new Worker(port).openServer();
     }

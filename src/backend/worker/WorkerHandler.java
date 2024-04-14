@@ -54,32 +54,31 @@ public class WorkerHandler implements Runnable {
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
-                    // int prev = worker.getLodges().size();
-                    // int now = -1;
-                    // synchronized(this)
-                    // {
-                    //     try {
-                    //         wait();
-                    //     } catch (InterruptedException e) {
-                    //         e.printStackTrace();
-                    //     }
+                    int prev = worker.getLodges().size();
+                    synchronized(this)
+                    {
+                        try {
+                            wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         worker.addLodge(lodge);
-                    //     now = worker.getLodges().size();
-                    // }
-                    // if (now == prev + 1)
-                    // {
-                    //     out.writeObject("Successfully added room!");
-                    //     out.flush();
-                    // }
-                    // else 
-                    // {
-                    //     out.writeObject("Failed to add room!");
-                    //     out.flush();
-                    // }
+                        if (worker.getLodges().size() == prev + 1)
+                        {
+                            out.writeObject("Successfully added room!");
+                            out.flush();
+                        }
+                        else 
+                        {
+                            out.writeObject("Failed to add room!");
+                            out.flush();
+                        }
+                    }
                     break;
                 case VIEW_BOOKINGS:
                     mapid = (String) in.readObject();
                     String managerName = (String) in.readObject();
+                    worker.addThreadToWorkerGroup(Thread.currentThread());
                     worker.viewBookings(mapid, managerName);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
