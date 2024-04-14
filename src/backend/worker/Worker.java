@@ -248,7 +248,6 @@ public class Worker {
      */ 
     public synchronized void viewBookings(String mapid, String manager)
     {
-        // TODO: lock
        ArrayList<Lodging> filteredLodges = this.getBookings(manager);
        Map(mapid, filteredLodges);
     }
