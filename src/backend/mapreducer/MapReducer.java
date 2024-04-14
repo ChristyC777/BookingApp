@@ -25,7 +25,9 @@ public class MapReducer {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private String currentMapid;
-    HashMap<String, Object> final_results;
+    HashMap<String, Object> final_results = new HashMap<String, Object>();
+    HashMap<Lodging, Integer> total_answers = new HashMap<Lodging, Integer>(); // Creates {"room1":3, "room5":10} 
+
 
     MapReducer(int num_of_workers)
     {
@@ -72,7 +74,7 @@ public class MapReducer {
         return count;
     }
 
-    
+
 
     /**
      * Reducer function that takes a mapping and produces an aggregated mapping.
@@ -92,16 +94,23 @@ public class MapReducer {
                     e.printStackTrace();
                 }
             }
-            HashMap<Lodging, Integer> counts = new HashMap<Lodging, Integer>(); // Creates {"room1":3, "room5":10} 
             for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
                 Lodging lodge = item.getKey();
                 int count = item.getValue();
-                counts.put(lodge, counts.getOrDefault(lodge, 0) + count);
+                if (total_answers.containsKey(lodge))
+                {
+                    int updatedValue = total_answers.get(lodge) + count;
+                    total_answers.put(lodge, updatedValue);
+                }
+                else 
+                {
+                    total_answers.put(lodge, count);
+                }
             }
-            final_results.put(mapid, counts);
+            final_results.put(mapid, total_answers);
             // TODO: Have these be sent to ConsoleApp
             System.out.println("MapID: " + mapid);
-            System.out.println("Rooms found: \n\n" + counts);
+            System.out.println("Rooms found: \n\n" + total_answers);
         
 
         // Create a socket to send the results back to the master
@@ -125,8 +134,9 @@ public class MapReducer {
             e.printStackTrace();
         }
     }
+        total_answers.clear();
         reset();
-        notifyAll();
+        currentMapid.notifyAll();
     }
 
     void openServer() 

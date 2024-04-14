@@ -20,6 +20,15 @@ public class MapReducerHandler implements Runnable{
         this.mapReducer = mapReducer;
     }
 
+    public boolean differentMapid(FilterData filter_results)
+    {
+        if (!filter_results.getMapID().equals(mapReducer.getCurrentMapid()))
+        {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void run()
     {
@@ -28,6 +37,18 @@ public class MapReducerHandler implements Runnable{
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
             FilterData filter_results = (FilterData) in.readObject();
+            synchronized(mapReducer.getCurrentMapid())
+            {
+                while(differentMapid(filter_results))
+                {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                mapReducer.setCurrentMapid(filter_results.getMapID());
+            }
             mapReducer.Reduce(filter_results.getMapID(), filter_results.getFilters());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
