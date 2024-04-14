@@ -344,6 +344,18 @@ public class DummyApp {
                             out.writeObject(FILTER);
                             out.flush();
 
+                            // Send the name of the user
+                            if (user.getUsername() == null)
+                            {
+                                out.writeObject(user.getUUID());
+                                out.flush();
+                            }
+                            else 
+                            {
+                                out.writeObject(user.getUsername());
+                                out.flush();
+                            }
+
                             out.writeObject(map);
                             out.flush();
 
