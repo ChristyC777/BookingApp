@@ -220,7 +220,6 @@ public class Worker {
      */ 
     public synchronized void viewBookings(String mapid, String manager)
     {
-        // TODO: lock
        ArrayList<Lodging> filteredLodges = this.getBookings(manager);
        Map(mapid, filteredLodges);
     }
@@ -301,8 +300,6 @@ public class Worker {
 
         System.out.printf("Please enter the IP address that the Reducer is running on: ");
         REDUCERIP = input.nextLine();
-        input.nextLine(); // consume new line
-
 
         new Worker(port).openServer();
     }
