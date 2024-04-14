@@ -24,7 +24,7 @@ public class MapReducer {
     private int num_of_workers;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-    private String mapid;
+    private String currentMapid;
     HashMap<String, Object> final_results;
 
     MapReducer(int num_of_workers)
@@ -32,12 +32,23 @@ public class MapReducer {
         this.num_of_workers = num_of_workers;
     }
 
-    public void setMapid(String mapid)
+    public void setCurrentMapid(String currentMapid)
     {
-        this.mapid = mapid;
+        this.currentMapid = currentMapid;
     }
 
-    public boolean allAnswers(int count, int num_of_workers, String mapid)
+    public String getCurrentMapid()
+    {
+        return this.currentMapid;
+    }
+
+    public void reset()
+    {
+        this.currentMapid = null;
+        this.count = 0;
+    }
+
+    public boolean allAnswers()
     {
         if (getCounter()==getNumberOfWorkers())
         {
@@ -46,14 +57,9 @@ public class MapReducer {
         return false;
     }
 
-    public synchronized void  increaseCount()
+    public synchronized void increaseCount()
     {
-        this.count += 1;
-    }
-
-    public synchronized void waitThreads(String mapid)
-    {
-
+        this.count++;
     }
 
     public int getNumberOfWorkers()
@@ -66,6 +72,8 @@ public class MapReducer {
         return count;
     }
 
+    
+
     /**
      * Reducer function that takes a mapping and produces an aggregated mapping.
      * @param mapid -> the ID of the specific request.
@@ -74,9 +82,9 @@ public class MapReducer {
     public void Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
 
-        synchronized(this)
+        synchronized(getCurrentMapid())
         {
-            while(!allAnswers(count, num_of_workers, mapid))
+            while(!allAnswers())
             {
                 try {
                     wait();
@@ -94,14 +102,7 @@ public class MapReducer {
             // TODO: Have these be sent to ConsoleApp
             System.out.println("MapID: " + mapid);
             System.out.println("Rooms found: \n\n" + counts);
-        }
-        notifyAll();
-
         
-
-        //{mapid: {"room1":5, "room2": 3, "room7": 2}} -> <mapid, final_results>
-
-        // TODO: When all the workers have send results for this mapid release the lock 
 
         // Create a socket to send the results back to the master
         try {
@@ -123,7 +124,9 @@ public class MapReducer {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        // Unlock the function
+    }
+        reset();
+        notifyAll();
     }
 
     void openServer() 
