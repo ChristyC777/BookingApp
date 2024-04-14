@@ -99,4 +99,56 @@ public class Lodging implements LodgingInterface, Serializable {
             toFormattedDate
         );
     }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if (other == this) {
+            return true;
+        }
+ 
+        if (!(other instanceof Lodging)) {
+            return false;
+        }
+
+        // Cast 'other' to Lodging so that we can call Lodging's methods
+        Lodging otherLodge = (Lodging) other;
+
+        if (!this.roomImage.equals(otherLodge.roomImage))
+        {
+            return false;
+        }
+
+        if (!this.roomName.equals(otherLodge.roomName))
+        {
+            return false;
+        }
+
+        if (!this.area.equals(otherLodge.area))
+        {
+            return false;
+        }
+
+        if (!(this.noOfPersons == otherLodge.noOfPersons))
+        {
+            return false;
+        }
+
+        if (!(this.noOfReviews == otherLodge.noOfReviews))
+        {
+            return false;
+        }
+
+        if (!(this.stars == otherLodge.stars))
+        {
+            return false;
+        }
+        
+        if (!this.manager.equals(otherLodge.manager))
+        {
+            return false;
+        }
+
+        return true;
+    }
 }  

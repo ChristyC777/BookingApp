@@ -204,9 +204,15 @@ public class Worker {
      */ 
     public synchronized void addLodge(Lodging lodge)
     {
+        if (this.lodges.contains(lodge))
+        {
+            System.out.printf("Lodging \"%s\" already exists!%n", lodge.getRoomName());
+            System.out.println(lodges.size()); // TODO: remove this debug message
+            return;
+        }
         this.lodges.add(lodge);
         System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
-        System.out.println(lodges.size());
+        System.out.println(lodges.size()); // TODO: remove this debug message
     }
 
     public synchronized ArrayList<Lodging> getLodges()

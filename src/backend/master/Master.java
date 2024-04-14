@@ -212,8 +212,9 @@ public class Master {
     public synchronized void notifyOfResults(HashMap<String, Object> filters)
     {
         // TODO: get the mapid, wake up the thread belonging to it
-        for (Thread thread : masterThreads)
+        for (int i = masterThreads.size() - 1; i > 0; i--)
         {
+            Thread thread = masterThreads.get(i);
             System.out.println("Now checking: " + thread.getName());
             if (filters.containsKey(thread.getName()))
             {

@@ -150,14 +150,16 @@ public class ConsoleApp {
 
                         out.writeObject(lodge);
                         out.flush();
-                        System.out.println("Successfuflly added lodge!");
+                        System.out.println("Successfully added lodge!");
 
-                        try {
-                            String message = (String) in.readObject();
-                            System.out.println(message);
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                        // TODO: implement an incoming message response
+
+                        // try {
+                        //     String message = (String) in.readObject();
+                        //     System.out.println(message);
+                        // } catch (ClassNotFoundException e) {
+                        //     e.printStackTrace();
+                        // }
 
                         break;
 

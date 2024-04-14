@@ -63,7 +63,7 @@ public class WorkerHandler implements Runnable {
                     //     } catch (InterruptedException e) {
                     //         e.printStackTrace();
                     //     }
-                        worker.addLodge(lodge);
+                    worker.addLodge(lodge);
                     //     now = worker.getLodges().size();
                     // }
                     // if (now == prev + 1)

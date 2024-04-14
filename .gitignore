@@ -1,7 +1,7 @@
-# Compiled class file
+# Compiled class files #
 *.class
 
-# Log file
+# Log file #
 *.log
 
 # Package Files #
@@ -17,4 +17,4 @@
 bin/
 
 # VSCode Files #
-.vscode/*
+.vscode/
