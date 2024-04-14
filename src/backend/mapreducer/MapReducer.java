@@ -74,8 +74,6 @@ public class MapReducer {
         return count;
     }
 
-
-
     /**
      * Reducer function that takes a mapping and produces an aggregated mapping.
      * @param mapid -> the ID of the specific request.
@@ -86,14 +84,6 @@ public class MapReducer {
 
         synchronized(currentMapid)
         {
-            while(!allAnswers())
-            {
-                try {
-                    currentMapid.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
             for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
                 Lodging lodge = item.getKey();
                 int count = item.getValue();
@@ -107,33 +97,46 @@ public class MapReducer {
                     total_answers.put(lodge, count);
                 }
             }
+
+            synchronized(this)
+            {
+                while(!allAnswers())
+                {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
             final_results.put(mapid, total_answers);
             // TODO: Have these be sent to ConsoleApp
             System.out.println("MapID: " + mapid);
             System.out.println("Rooms found: \n\n" + total_answers);
         
 
-        // Create a socket to send the results back to the master
-        try {
-            Socket masterSocket = new Socket(MASTERIP, MASTERPORT);
-            
-            out = new ObjectOutputStream(masterSocket.getOutputStream());
-            in = new ObjectInputStream(masterSocket.getInputStream());
+            // Create a socket to send the results back to the master
+            try {
+                Socket masterSocket = new Socket(MASTERIP, MASTERPORT);
+                
+                out = new ObjectOutputStream(masterSocket.getOutputStream());
+                in = new ObjectInputStream(masterSocket.getInputStream());
 
-            out.writeObject(FINAL_FILTERS);
-            out.flush();
+                out.writeObject(FINAL_FILTERS);
+                out.flush();
 
-            out.writeObject(final_results);
-            out.flush();
+                out.writeObject(final_results);
+                out.flush();
 
-        } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            } catch (UnknownHostException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-    }
         total_answers.clear();
         reset();
         currentMapid.notifyAll();
