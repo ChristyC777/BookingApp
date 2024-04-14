@@ -27,6 +27,7 @@ public class Master {
         masterThreads = new ArrayList<Thread>();
         workerNodes = new ArrayList<WorkerNode>();
         response = new Response(null, null);
+        handlers = new ArrayList<RequestHandler>();
     }
 
     public void addHandler(RequestHandler handler)
