@@ -54,26 +54,26 @@ public class WorkerHandler implements Runnable {
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
-                    int prev = worker.getLodges().size();
-                    synchronized(this)
-                    {
-                        try {
-                            wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        worker.addLodge(lodge);
-                        if (worker.getLodges().size() == prev + 1)
-                        {
-                            out.writeObject("Successfully added room!");
-                            out.flush();
-                        }
-                        else 
-                        {
-                            out.writeObject("Failed to add room!");
-                            out.flush();
-                        }
-                    }
+                    // int prev = worker.getLodges().size();
+                    // synchronized(this)
+                    // {
+                    //     try {
+                    //         wait();
+                    //     } catch (InterruptedException e) {
+                    //         e.printStackTrace();
+                    //     }
+                    worker.addLodge(lodge);
+                    //     if (worker.getLodges().size() == prev + 1)
+                    //     {
+                    //         out.writeObject("Successfully added room!");
+                    //         out.flush();
+                    //     }
+                    //     else 
+                    //     {
+                    //         out.writeObject("Failed to add room!");
+                    //         out.flush();
+                    //     }
+                    // }
                     break;
                 case VIEW_BOOKINGS:
                     mapid = (String) in.readObject();
