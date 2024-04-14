@@ -17,11 +17,22 @@ public class RequestHandler implements Runnable {
     private ObjectInputStream in;
     private Socket requestSocket;
     private Master master;
+    private String username;
 
     public RequestHandler(Socket request, Master master)
     {
         this.requestSocket = request;
         this.master = master;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public String getUsername()
+    {
+        return username;
     }
 
     @Override
@@ -52,6 +63,8 @@ public class RequestHandler implements Runnable {
                 case VIEW_BOOKINGS:
                     mapid = Thread.currentThread().getName();
                     manager = (String) in.readObject();
+                    setUsername(manager);
+                    master.addHandler(this);
                     master.viewBookings(mapid, manager);
                 
                     // waits until a response is available
@@ -78,7 +91,9 @@ public class RequestHandler implements Runnable {
                     // TODO: Implement this for part B!
                     break;
                 case FILTER:
-                    mapid = Thread.currentThread().getName(); 
+                    mapid = (String) in.readObject(); 
+                    setUsername(mapid);
+                    master.addHandler(this);
                     HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     master.filterRooms(mapid, map);
 

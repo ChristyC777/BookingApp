@@ -14,6 +14,7 @@ public class Master {
     private final static int SERVERPORT = 7777;
     private int numberOfWorkers;
     private ArrayList<Thread> masterThreads;
+    private ArrayList<RequestHandler> handlers;
     private ArrayList<WorkerNode> workerNodes; // "<IP: Port>"
     private ServerSocket providerSocket;
 	private Socket connection = null;
@@ -26,6 +27,11 @@ public class Master {
         masterThreads = new ArrayList<Thread>();
         workerNodes = new ArrayList<WorkerNode>();
         response = new Response(null, null);
+    }
+
+    public void addHandler(RequestHandler handler)
+    {
+        handlers.add(handler);
     }
 
     void openServer() {
@@ -211,23 +217,19 @@ public class Master {
 
     public synchronized void notifyOfResults(HashMap<String, Object> filters)
     {
-        // TODO: get the mapid, wake up the thread belonging to it
-        for (Thread thread : masterThreads)
+        boolean found = handlers.stream().anyMatch(thread -> thread.getUsername().equals(filters.keySet().iterator().next()));
+        if (found)
         {
-            System.out.println("Now checking: " + thread.getName());
-            if (filters.containsKey(thread.getName()))
+            RequestHandler requestHandler = handlers.stream().filter(thread -> thread.getUsername().equals(filters.keySet().iterator().next())).findFirst().orElseThrow();
+            System.out.println("MapID found! It belongs to " + requestHandler.getUsername() + ".");
+
+            response = new Response(requestHandler.getUsername(), filters);
+
+            synchronized(requestHandler)
             {
-                System.out.println("MapID found! It belongs to " + thread.getName() + ".");
-
-                response = new Response(thread.getName(), filters);
-
-                synchronized(thread)
-                {
-                    thread.notify();
-                }
-                return;
-            } 
-        }
+                requestHandler.notify();
+            }  
+        }      
     }
 
     public synchronized Response getResponseInstance()
