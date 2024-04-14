@@ -84,12 +84,12 @@ public class MapReducer {
     public void Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
 
-        synchronized(getCurrentMapid())
+        synchronized(currentMapid)
         {
             while(!allAnswers())
             {
                 try {
-                    wait();
+                    currentMapid.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

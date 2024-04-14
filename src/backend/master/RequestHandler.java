@@ -73,7 +73,7 @@ public class RequestHandler implements Runnable {
                         {
                             while(!master.getResponseInstance().hasResponse())
                             {
-                                wait();
+                                master.getResponseInstance().wait();
                             }
                         }
                     } catch (InterruptedException e) {
