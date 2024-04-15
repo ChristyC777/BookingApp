@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.filterdata.FilterData;
 
 public class MapReducer {
   
@@ -25,13 +26,15 @@ public class MapReducer {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private String currentMapid;
-    HashMap<String, Object> final_results = new HashMap<String, Object>();
-    HashMap<Lodging, Integer> total_answers = new HashMap<Lodging, Integer>(); // Creates {"room1":3, "room5":10} 
+    FilterData final_results;
+    HashMap<Lodging, Integer> total_answers; // Creates {"room1":3, "room5":10} 
 
 
     MapReducer(int num_of_workers)
     {
         this.num_of_workers = num_of_workers;
+        this.final_results = null;
+        this.total_answers = new HashMap<Lodging, Integer>();
     }
 
     public void setCurrentMapid(String currentMapid)
@@ -48,6 +51,8 @@ public class MapReducer {
     {
         this.currentMapid = null;
         this.count = 0;
+        this.total_answers.clear();
+        this.final_results = null;
     }
 
     public boolean allAnswers()
@@ -79,94 +84,90 @@ public class MapReducer {
      * @param mapid -> the ID of the specific request.
      * @param filter_results -> the filters to apply the reduction on.
      */
-    public void Reduce(String mapid, Map<Lodging, Integer> filter_results)
+    public synchronized void Reduce(String mapid, Map<Lodging, Integer> filter_results)
     {
-
-        synchronized(currentMapid)
-        {
-            for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
-                Lodging lodge = item.getKey();
-                int count = item.getValue();
-                if (total_answers.containsKey(lodge))
-                {
-                    int updatedValue = total_answers.get(lodge) + count;
-                    total_answers.put(lodge, updatedValue);
-                }
-                else 
-                {
-                    total_answers.put(lodge, count);
-                }
-            }
-
-            synchronized(this)
+        for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
+            Lodging lodge = item.getKey();
+            int count = item.getValue();
+            if (total_answers.containsKey(lodge))
             {
-                while(!allAnswers())
-                {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                int updatedValue = total_answers.get(lodge) + count;
+                total_answers.put(lodge, updatedValue);
             }
-
-            final_results.put(mapid, total_answers);
-            // TODO: Have these be sent to ConsoleApp
-            System.out.println("MapID: " + mapid);
-            System.out.println("Rooms found: \n\n" + total_answers);
-        
-
-            // Create a socket to send the results back to the master
-            try {
-                Socket masterSocket = new Socket(MASTERIP, MASTERPORT);
-                
-                out = new ObjectOutputStream(masterSocket.getOutputStream());
-                in = new ObjectInputStream(masterSocket.getInputStream());
-
-                out.writeObject(FINAL_FILTERS);
-                out.flush();
-
-                out.writeObject(final_results);
-                out.flush();
-
-            } catch (UnknownHostException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            else 
+            {
+                total_answers.put(lodge, count);
             }
         }
-        total_answers.clear();
-        reset();
-        currentMapid.notifyAll();
+
+        increaseCount();
+
+        // TODO: Have these be sent to ConsoleApp
+        System.out.println("MapID: " + mapid);
+        System.out.println("Rooms found: \n\n" + total_answers);
+    
+        if (allAnswers())
+        {
+            sendResults();
+        }
     }
 
     void openServer() 
     {
-            try {
-                providerSocket = new ServerSocket(SERVERPORT, 10);
+        try {
+            providerSocket = new ServerSocket(SERVERPORT, 10);
+            
+            System.out.printf("Reducer now listening to port %d.%n", SERVERPORT);
+
+            while(true)
+            {
+                connection = providerSocket.accept();
+                Thread reduceThread = new Thread(new MapReducerHandler(connection, this));
                 
-                System.out.printf("Reducer now listening to port %d.%n", SERVERPORT);
+                reduceThread.start();
+            }
 
-                while(true)
-                {
-                    connection = providerSocket.accept();
-                    Thread reduceThread = new Thread(new MapReducerHandler(connection, this));
-                    
-                    reduceThread.start();
-                }
-
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                providerSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    providerSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         }
+    }
+
+    
+    public synchronized void sendResults()
+    {
+        final_results = new FilterData(currentMapid, total_answers);
+        // Create a socket to send the results back to the master
+        try {
+            Socket masterSocket = new Socket(MASTERIP, MASTERPORT);
+            
+            out = new ObjectOutputStream(masterSocket.getOutputStream());
+            in = new ObjectInputStream(masterSocket.getInputStream());
+
+            out.writeObject(FINAL_FILTERS);
+            out.flush();
+
+            out.writeObject(final_results);
+            out.flush();
+
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        synchronized(this)
+        {
+            this.notifyAll();
+        }
+        reset();
+    }
 
     public static void main(String[] args) {
         
