@@ -262,7 +262,6 @@ public class DummyApp {
                                         {   
                                             System.out.print("Please select the area you want to go to: ");
                                             String area = input.nextLine();
-                                            input.nextLine();
                                             map.put("area", area);
                                         }
                                         else 
@@ -361,6 +360,8 @@ public class DummyApp {
 
                             System.out.println("Awaiting for a response...");
 
+                            response = null;
+
                             // await for a response
                             try {
                                 response = (Response) in.readObject();
@@ -368,14 +369,14 @@ public class DummyApp {
                                 e.printStackTrace();
                             }
 
-                            System.out.println("Response received!\nFound the following rooms: ");
+                            // System.out.println("Response received!\nFound the following rooms: ");
 
                             // Retrieve response
-                            HashMap<String, Object> filtered_rooms = (HashMap<String, Object>) response.getResponse();
+                            HashMap<Lodging, Integer> filtered_rooms = (HashMap<Lodging, Integer>) response.getResponse();
+                            
+                            System.err.println("\n\n\nThese are the filtered rooms that I received: " + filtered_rooms.toString() + "\n\n\n");
 
-                            String firstKey = filtered_rooms.keySet().iterator().next();
-                            HashMap<Lodging, Integer> room_list = (HashMap<Lodging, Integer>) filtered_rooms.get(firstKey);
-                            for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet())
+                            for (HashMap.Entry<Lodging, Integer> item : filtered_rooms.entrySet())
                             {
                                 System.out.println("\n" + item.getKey());
                             }

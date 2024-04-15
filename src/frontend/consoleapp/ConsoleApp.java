@@ -242,6 +242,8 @@ public class ConsoleApp {
                     
                         System.out.println("Awaiting for a response...");
 
+                        response = null;
+
                         // await for a response
                         try {
                             response = (Response) in.readObject();
@@ -252,15 +254,12 @@ public class ConsoleApp {
                         System.out.println("Response received!");
                         
                         // Retrieve response 
-                        HashMap<String, Object> filtered_rooms = (HashMap<String, Object>) response.getResponse();
+                        HashMap<Lodging, Integer> filtered_rooms = (HashMap<Lodging, Integer>) response.getResponse();
 
-                        String firstKey = filtered_rooms.keySet().iterator().next();
-                        HashMap<Lodging, Integer> room_list = (HashMap<Lodging, Integer>) filtered_rooms.get(firstKey);
-
-                        if (room_list.size() > 0)
+                        if (filtered_rooms.size() > 0)
                         {
                             System.out.println("Found the following bookings:"); 
-                            for (HashMap.Entry<Lodging, Integer> item : room_list.entrySet()) { // {"lodge1":2, "lodge5":6}
+                            for (HashMap.Entry<Lodging, Integer> item : filtered_rooms.entrySet()) { // {"lodge1":2, "lodge5":6}
                                 System.out.println("\n" + item.getKey());
                             }
                         }
@@ -273,6 +272,8 @@ public class ConsoleApp {
                         System.out.print("\nPress 'Enter' to continue...");
                         input.nextLine();
 
+                        // TODO: check if this resolves the issue
+                        connection.close();
                         break;                        
                     case 4:
                         exit = true;

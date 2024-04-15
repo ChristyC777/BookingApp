@@ -283,6 +283,9 @@ public class Worker {
             count.put(lodge, 1);
         }
         FilterData filterData = new FilterData(mapid, count);
+
+        System.out.println("MapID: " + filterData.getMapID() + "\nData:\n" + filterData.getFilters().toString());
+
         try
         {
             Socket reducer = new Socket(REDUCERIP, 7778);
