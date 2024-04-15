@@ -9,6 +9,7 @@ import java.util.HashMap;
 import src.shared.ClientActions;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.filterdata.FilterData;
 import src.backend.utility.response.Response;
 
 public class RequestHandler implements Runnable {
@@ -68,24 +69,21 @@ public class RequestHandler implements Runnable {
                     master.viewBookings(mapid, manager);
                 
                     // waits until a response is available
-                    try {
-                        synchronized(master.getResponseInstance())
+                    synchronized(this)
+                    {
+                        while(!master.getResponseInstance().hasResponse())
                         {
-                            while(!master.getResponseInstance().hasResponse())
-                            {
-                                master.getResponseInstance().wait();
+                            try {
+                                wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
 
                     // ensures synchronization for the current thread
-                    synchronized(this)
-                    {
-                        response = master.getResponseInstance();
-                        out.writeObject(response);
-                    }
+                    response = master.getResponseInstance();
+                    out.writeObject(response);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
@@ -121,7 +119,7 @@ public class RequestHandler implements Runnable {
                     break;
                 case FINAL_FILTERS:
                     // TODO: Properly implement this
-                    HashMap<String, Object> final_filters = (HashMap<String, Object>) in.readObject();
+                    FilterData final_filters = (FilterData) in.readObject();
                     master.notifyOfResults(final_filters);
                     break;
                 default:
