@@ -5,6 +5,7 @@ import java.net.*;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.filterdata.FilterData;
 import src.backend.utility.response.Response;
 
 import static src.shared.ClientActions.*;
@@ -216,21 +217,17 @@ public class Master {
         }   
     }
 
-    public synchronized void notifyOfResults(HashMap<String, Object> filters)
+    public synchronized void notifyOfResults(FilterData filters)
     {
-        boolean found = handlers.stream().anyMatch(thread -> thread.getUsername().equals(filters.keySet().iterator().next()));
-        if (found)
+        System.out.println("\n\n\nThese are the filters I received: \n" + filters.getFilters().toString() + "\n\n\n"); // TODO: remove this
+        System.out.println("MapID found! It belongs to " + filters.getMapID() + ".");
+        
+        response = new Response(filters.getMapID(), filters.getFilters());
+
+        synchronized(response)
         {
-            RequestHandler requestHandler = handlers.stream().filter(thread -> thread.getUsername().equals(filters.keySet().iterator().next())).findFirst().orElseThrow();
-            System.out.println("MapID found! It belongs to " + requestHandler.getUsername() + ".");
-
-            response = new Response(requestHandler.getUsername(), filters);
-
-            synchronized(requestHandler)
-            {
-                requestHandler.notify();
-            }  
-        }      
+            response.notify();
+        }     
     }
 
     public synchronized Response getResponseInstance()
