@@ -6,11 +6,18 @@ public class Response implements Serializable {
     
     private String mapid;
     private Object obj;
+    private String message;
 
     public Response(String mapid, Object obj)
     {
         this.mapid = mapid;
         this.obj = obj;
+    }
+
+    public Response(String mapid, String message)
+    {
+        this.mapid = mapid;
+        this.message = message;
     }
 
 
@@ -22,6 +29,16 @@ public class Response implements Serializable {
     public Object getResponse()
     {
         return this.obj;
+    }
+
+    public String getMessage()
+    {
+        return this.message;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
     }
 
     public void setResponse(Object obj)
