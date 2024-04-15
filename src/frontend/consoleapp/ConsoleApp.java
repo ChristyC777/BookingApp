@@ -271,9 +271,6 @@ public class ConsoleApp {
                         // Stop the output and await a keypress so the results don't scroll up too far
                         System.out.print("\nPress 'Enter' to continue...");
                         input.nextLine();
-
-                        // TODO: check if this resolves the issue
-                        connection.close();
                         break;                        
                     case 4:
                         exit = true;
