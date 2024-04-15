@@ -37,26 +37,33 @@ public class MapReducerHandler implements Runnable{
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
             FilterData filter_results = (FilterData) in.readObject();
+            
             if(mapReducer.getCurrentMapid() == null)
             {
                 mapReducer.setCurrentMapid(filter_results.getMapID());
             }
-            synchronized(mapReducer.getCurrentMapid())
+
+            synchronized(this)
             {
                 while(differentMapid(filter_results))
                 {
                     try {
-                        mapReducer.getCurrentMapid().wait();
+                        wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
                 mapReducer.setCurrentMapid(filter_results.getMapID());
             }
+
+            if(mapReducer.getCurrentMapid() == null)
+            {
+                mapReducer.setCurrentMapid(filter_results.getMapID());
+            }
+            
             mapReducer.Reduce(filter_results.getMapID(), filter_results.getFilters());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        
     }
 }
