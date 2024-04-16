@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.Stack;
 import java.util.stream.Collectors;
 
 import java.util.Calendar;
@@ -23,6 +22,7 @@ import src.backend.booking.Booking;
 import src.backend.lodging.Lodging;
 import src.backend.utility.daterange.DateRange;
 import src.backend.utility.filterdata.FilterData;
+import src.shared.BookingResponse;
 
 public class Worker {
 
@@ -98,18 +98,16 @@ public class Worker {
                 DateRange dateRange = new DateRange(from, to);
                 lodge.setDateRange(dateRange);
 
-
-                
-                return "Successfully updated dates";
+                return "#### Successfully updated dates! ####";
             }
             else
             {
-                return "You're not the manager of this room so you can't add dates";
+                return "#### You're not the manager so you can't add dates for this lodge! ####";
             }
         }
         else 
         {   
-            return "Room does not exist"; 
+            return " #### Room does not exist. ####"; 
         }
     }
 
@@ -120,7 +118,7 @@ public class Worker {
      * @param startPeriod -> check-in date
      * @param endPeriod -> check-out date
      */ 
-    public synchronized void makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
+    public synchronized String makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
         if (lodge != null)
@@ -136,18 +134,22 @@ public class Worker {
             from.setTime(dateFormat.parse(startPeriod));
             to.setTime(dateFormat.parse(endPeriod));
             DateRange dateRange = new DateRange(from, to);
-            if (this.addBooking(dateRange, username, lodge))
+            BookingResponse bookingResult = this.addBooking(dateRange, username, lodge);
+            switch(bookingResult)
             {
-                System.out.println("Booking successfully submitted!");
-            }
-            else 
-            {
-                System.out.println("Booking failed.");
+                case BOOKING_NOT_WITHIN_AVAILABILITY:
+                    return String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName());
+                case BOOKING_CONFLICT:
+                    return String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName());
+                case BOOKING_SUCCESS:
+                    return String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName());
+                default:
+                    return "%n#### An unexpected error while processing this booking has occurred. ####";
             }
         }
         else 
         {
-            System.out.println("Couldn't find the specified lodging!");
+            return "\nBooking failed!\nReason: Couldn't find the specified lodging!";
         }
     }
     
@@ -156,21 +158,21 @@ public class Worker {
      * @param dateRange -> the lodge the manager wants to add
      * @param userName ->
      * @param lodgeName -> the name of the lodge to be booked
+     * @returns 
      */ 
-    public synchronized boolean addBooking(DateRange dateRange, String userName, Lodging lodge) {
+    public synchronized BookingResponse addBooking(DateRange dateRange, String userName, Lodging lodge) {
 
         // Check whether the booking is within the lodging's availability.
         if (!lodge.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo()))
         {
-            System.out.println("The specified date range is not within the lodge's availability dates!");
-            return false;
+            
+            return BookingResponse.BOOKING_NOT_WITHIN_AVAILABILITY;
         }       
 
         // Check whether the booking conflicts with another booking.
         for (Booking booking : bookings) {
             if (booking.getLodge().equals(lodge) && booking.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo())) {
-                System.out.println("Booking conflict! The lodge is already booked for the specified date range.");
-                return false;
+                return BookingResponse.BOOKING_CONFLICT;
             }
         }
 
@@ -178,7 +180,7 @@ public class Worker {
         Booking newBooking = new Booking(dateRange, userName, lodge);
         bookings.add(newBooking);
         System.out.println("Booking has been confirmed!");
-        return true;
+        return BookingResponse.BOOKING_SUCCESS;
     }
 
     /**
@@ -203,11 +205,11 @@ public class Worker {
     {
         if (this.lodges.contains(lodge))
         {
-            return String.format("Lodging \"%s\" already exists!%n", lodge.getRoomName());
+            return String.format("#### Lodging \"%s\" already exists! ####%n", lodge.getRoomName());
            
         }
         this.lodges.add(lodge);
-        return String.format("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
+        return String.format("#### Lodging \"%s\" has been added succesfully! ####", lodge.getRoomName());
     }
 
     public synchronized ArrayList<Lodging> getLodges()

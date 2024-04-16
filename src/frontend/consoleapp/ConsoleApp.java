@@ -26,7 +26,7 @@ import src.backend.utility.response.Response;
 public class ConsoleApp {
 
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "192.168.1.8";
+    private final static String HOST = "localhost"; // TODO: have this be inputted instead!
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 
@@ -50,7 +50,7 @@ public class ConsoleApp {
             if (flag == false) {
                 System.out.println("Sorry, no account was found with the provided credentials.");
                 System.out.println("It is important for you as a manager to create an account.");
-                System.out.println("Would you like to create a new account? (Y/N)\n>> ");
+                System.out.print("Would you like to create a new account? (Y/N)\n>> ");
                 String decision = input.nextLine().trim().toLowerCase();
                 // New Account creation
                 if (decision.equals("y")) {
@@ -182,9 +182,9 @@ public class ConsoleApp {
                             dateFormat.setLenient(false);
 
                             // Ask for the dates of availability
-                            System.out.print("Add available dates for booking!!!\n");
+                            System.out.print("\n#### Add available booking dates! ####\n");
 
-                            System.out.print("Input starting date of availability (DD/MM/YYYY):\n>> ");
+                            System.out.print("\nInput starting date of availability (DD/MM/YYYY):\n>> ");
                             fromInput = input.nextLine(); 
                             from.setTime(dateFormat.parse(fromInput));
 
@@ -226,7 +226,7 @@ public class ConsoleApp {
 
                         try {
                             String message = (String) in.readObject();
-                            System.out.println(message);
+                            System.out.println("\n#### " + message + " ####");
                          } catch (ClassNotFoundException e) {
                              e.printStackTrace();
                          }
@@ -247,7 +247,7 @@ public class ConsoleApp {
                         out.writeObject(user.getUsername());
                         out.flush();
                     
-                        System.out.println("Awaiting for a response...");
+                        System.out.println("\nAwaiting for a response...");
 
                         response = null;
 
@@ -258,7 +258,7 @@ public class ConsoleApp {
                             e.printStackTrace();
                         }
 
-                        System.out.println("Response received!");
+                        System.out.println("\nResponse received!\n");
                         
                         // Retrieve response 
                         HashMap<Lodging, Integer> filtered_rooms = (HashMap<Lodging, Integer>) response.getResponse();

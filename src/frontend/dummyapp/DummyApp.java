@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 public class DummyApp {
 
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "192.168.1.8";
+    private final static String HOST = "localhost"; // TODO: have this be inputted instead!
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
@@ -208,6 +208,14 @@ public class DummyApp {
                             out.flush();
 
                             // TODO: Message for room successfully or failed to book
+
+                            try {
+                                String message = (String) in.readObject();
+                                System.out.println(message);
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+
                             connection.close();
                             break;
 
@@ -369,12 +377,10 @@ public class DummyApp {
                                 e.printStackTrace();
                             }
 
-                            // System.out.println("Response received!\nFound the following rooms: ");
-
                             // Retrieve response
                             HashMap<Lodging, Integer> filtered_rooms = (HashMap<Lodging, Integer>) response.getResponse();
                             
-                            if (filtered_rooms.size()>0)
+                            if (filtered_rooms.size() > 0)
                             {
                                 System.out.println("\nResults: ");
 

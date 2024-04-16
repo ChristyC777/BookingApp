@@ -41,6 +41,7 @@ public class WorkerHandler implements Runnable {
                 // Lodge
                 Lodging lodge;
                 String mapid;
+                String message;
 
             switch(action)
             {
@@ -60,7 +61,7 @@ public class WorkerHandler implements Runnable {
                 case ADD_LODGING:
                     manager = (String) in.readObject();
                     lodge = (Lodging) in.readObject();
-                    String message = worker.addLodge(lodge);
+                    message = worker.addLodge(lodge);
                     response = new Response(manager, message);
 
                     out.writeObject(response);
@@ -84,7 +85,12 @@ public class WorkerHandler implements Runnable {
                     String username = (String) in.readObject();
                     String datefrom = (String) in.readObject();
                     String dateto = (String) in.readObject();
-                    worker.makeBooking(roomName, username, datefrom, dateto);
+                    message = worker.makeBooking(roomName, username, datefrom, dateto);
+
+                    response = new Response(username, message);
+
+                    out.writeObject(response);
+                    out.flush();
                     break;
                 default:
                     System.err.println("Invalid request.");

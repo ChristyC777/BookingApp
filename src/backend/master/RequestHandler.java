@@ -97,6 +97,8 @@ public class RequestHandler implements Runnable {
                     String username = (String) in.readObject();
                     String from = (String) in.readObject();
                     String to = (String) in.readObject();
+                    setUsername(username);
+                    master.addHandler(this);
                     master.makeBooking(roomName, username, from, to);
                     break;
                 case FINAL_FILTERS:
