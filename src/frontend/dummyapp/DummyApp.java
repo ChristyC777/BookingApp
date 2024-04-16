@@ -208,7 +208,7 @@ public class DummyApp {
                             out.flush();
 
                             // TODO: Message for room successfully or failed to book
-
+                            connection.close();
                             break;
 
                         case 2:
@@ -384,6 +384,8 @@ public class DummyApp {
                             // Stop the output and await a keypress so the results don't scroll up too far
                             System.out.print("\nPress 'Enter' to continue...");
                             input.nextLine();
+
+                            connection.close();
                             break;
                         case 3:
                             exit = true;

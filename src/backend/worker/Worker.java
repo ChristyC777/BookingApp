@@ -76,7 +76,7 @@ public class Worker {
      * @param startPeriod -> first day of availability
      * @param endPeriod -> last day of availability
      */ 
-    public synchronized void addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
+    public synchronized String addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
         if (lodge != null)
@@ -98,22 +98,18 @@ public class Worker {
                 DateRange dateRange = new DateRange(from, to);
                 lodge.setDateRange(dateRange);
 
-                System.out.println(lodge);
+
+                
+                return "Successfully updated dates";
             }
             else
             {
-                // TODO:
-                //////////////////////////////////////////////////////////////////////////////////////
-                System.out.println("You're not the manager of this room so you can't add dates"); // We need to see how we'll use the streams to return a message
-                //////////////////////////////////////////////////////////////////////////////////////
+                return "You're not the manager of this room so you can't add dates";
             }
         }
         else 
         {   
-            // TODO:
-            ////////////////////////////////////////////////
-            System.out.println("Room does not exist"); // We need to see how we'll use the streams to return a message
-            ////////////////////////////////////////////////
+            return "Room does not exist"; 
         }
     }
 

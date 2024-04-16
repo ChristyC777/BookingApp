@@ -8,6 +8,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.response.Response;
 import src.shared.ClientActions;
 
 public class WorkerHandler implements Runnable {
@@ -49,31 +50,16 @@ public class WorkerHandler implements Runnable {
                     String from = (String) in.readObject();
                     String to = (String) in.readObject();
 
-                    worker.addDates(lodgeName, manager, from, to);
+                    String success = worker.addDates(lodgeName, manager, from, to);
+                    Response response = new Response(manager, success);
+
+                    out.writeObject(response);
+                    out.flush();
                     
                     break;
                 case ADD_LODGING:
                     lodge = (Lodging) in.readObject();
-                    // int prev = worker.getLodges().size();
-                    // synchronized(this)
-                    // {
-                    //     try {
-                    //         wait();
-                    //     } catch (InterruptedException e) {
-                    //         e.printStackTrace();
-                    //     }
                     worker.addLodge(lodge);
-                    //     if (worker.getLodges().size() == prev + 1)
-                    //     {
-                    //         out.writeObject("Successfully added room!");
-                    //         out.flush();
-                    //     }
-                    //     else 
-                    //     {
-                    //         out.writeObject("Failed to add room!");
-                    //         out.flush();
-                    //     }
-                    // }
                     break;
                 case VIEW_BOOKINGS:
                     String managerName = (String) in.readObject();
@@ -85,7 +71,6 @@ public class WorkerHandler implements Runnable {
                 case FILTER:
                     mapid = (String) in.readObject();
                     HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
-                    
                     worker.manageFilters(mapid, map);
                     break;
                 case BOOK:

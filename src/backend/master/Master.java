@@ -75,7 +75,6 @@ public class Master {
             // Write the lodge that needs to be added
             out.writeObject(room);
             out.flush();
-
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -175,6 +174,22 @@ public class Master {
                 out.writeObject(endPeriod);
                 out.flush();
             
+                try {
+                    Response message = (Response) in.readObject();
+                    String mapid = message.getMapID();
+                    RequestHandler handler = handlers.stream().filter(dummyhandler -> dummyhandler.getUsername().equals(mapid)).findFirst().orElse(null);
+
+                    this.out = handler.getOut();
+                    this.in = handler.getIn();
+
+                    out.writeObject(message.getMessage());
+                    out.flush();
+
+                    handlers.remove(handler);
+                } catch (ClassNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -234,11 +249,6 @@ public class Master {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        // synchronized(handler)
-        // {
-        //     handler.notify();
-        // }     
     }
 
     public synchronized void setResponse(Response response)

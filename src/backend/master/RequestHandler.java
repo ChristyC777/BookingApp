@@ -65,6 +65,8 @@ public class RequestHandler implements Runnable {
                     String manager = (String) in.readObject();
                     String startPeriod = (String) in.readObject();
                     String endPeriod = (String) in.readObject();
+                    setUsername(manager);
+                    master.addHandler(this);
                     master.updateDates(namelodge, manager, startPeriod, endPeriod);
                     break;
                 case ADD_LODGING:
@@ -102,7 +104,7 @@ public class RequestHandler implements Runnable {
                 default:
                     System.err.println("Invalid request.");
             }
-
+        
 
         }catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

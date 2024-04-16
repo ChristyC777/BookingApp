@@ -150,17 +150,10 @@ public class ConsoleApp {
 
                         out.writeObject(lodge);
                         out.flush();
-                        System.out.println("Successfully added lodge!");
 
                         // TODO: implement an incoming message response
 
-                        // try {
-                        //     String message = (String) in.readObject();
-                        //     System.out.println(message);
-                        // } catch (ClassNotFoundException e) {
-                        //     e.printStackTrace();
-                        // }
-
+                        connection.close();
                         break;
 
                     case 2: // Manager wants to add dates of availability for a lodge
@@ -224,7 +217,14 @@ public class ConsoleApp {
                         out.flush();
 
                         // TODO: waiting for string message 
+                        try {
+                            String message = (String) in.readObject();
+                            System.out.println(message);
+                         } catch (ClassNotFoundException e) {
+                             e.printStackTrace();
+                         }
 
+                        connection.close();
                         break;
 
                     case 3:
@@ -271,6 +271,8 @@ public class ConsoleApp {
                         // Stop the output and await a keypress so the results don't scroll up too far
                         System.out.print("\nPress 'Enter' to continue...");
                         input.nextLine();
+
+                        connection.close();
                         break;                        
                     case 4:
                         exit = true;
