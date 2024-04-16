@@ -27,9 +27,14 @@ public class RequestHandler implements Runnable {
         this.master = master;
     }
 
-    public Socket getSocket()
+    public ObjectOutputStream getOut()
     {
-        return requestSocket;
+        return this.out;
+    }
+
+    public ObjectInputStream getIn()
+    {
+        return this.in;
     }
 
     public void setUsername(String username)
@@ -68,29 +73,10 @@ public class RequestHandler implements Runnable {
                     System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
                     break;
                 case VIEW_BOOKINGS:
-                    mapid = Thread.currentThread().getName();
                     manager = (String) in.readObject();
                     setUsername(manager);
                     master.addHandler(this);
-                    master.viewBookings(mapid, manager);
-                
-                    // waits until a response is available
-                    synchronized(this)
-                    {
-                        while(!master.getResponseInstance().hasResponse())
-                        {
-                            try {
-                                wait();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    // ensures synchronization for the current thread
-                    response = master.getResponseInstance();
-                    out.writeObject(response);
-                    out.flush();
+                    master.viewBookings(manager);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
@@ -101,7 +87,6 @@ public class RequestHandler implements Runnable {
                     master.addHandler(this);
                     HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     master.filterRooms(mapid, map);
-
                     break;
                 case BOOK:
                     String roomName = (String) in.readObject();
@@ -111,25 +96,8 @@ public class RequestHandler implements Runnable {
                     master.makeBooking(roomName, username, from, to);
                     break;
                 case FINAL_FILTERS:
-                    // TODO: Properly implement this
                     FilterData final_filters = (FilterData) in.readObject();
                     master.notifyOfResults(final_filters);
-                    // synchronized(this)
-                    // {
-                    //     while(!master.getResponseInstance().hasResponse())
-                    //     {
-                    //         try {
-                    //             wait();
-                    //         } catch (InterruptedException e) {
-                    //             e.printStackTrace();
-                    //         }
-                    //     }
-                    // }
-                    
-                    // response = master.getResponseInstance();
-                    // out.writeObject(response);
-                    // out.flush();
-                    // master.setResponse(null);
                     break;
                 default:
                     System.err.println("Invalid request.");

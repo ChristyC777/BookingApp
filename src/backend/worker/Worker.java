@@ -225,10 +225,10 @@ public class Worker {
      * Views all bookings of manager.
      * @param manager -> the name of the manager
      */ 
-    public synchronized void viewBookings(String mapid, String manager)
+    public synchronized void viewBookings(String manager)
     {
        ArrayList<Lodging> filteredLodges = this.getBookings(manager);
-       Map(mapid, filteredLodges);
+       Map(manager, filteredLodges);
     }
 
     /**

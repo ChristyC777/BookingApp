@@ -118,7 +118,7 @@ public class Master {
         }
     }
 
-    public void viewBookings(String mapid, String manager)
+    public void viewBookings(String manager)
     {
         try {
 
@@ -131,9 +131,6 @@ public class Master {
 
                 // Write the action taking place
                 out.writeObject(VIEW_BOOKINGS);
-                out.flush();
-
-                out.writeObject(mapid);
                 out.flush();
     
                 // Write the manager that wants to see the bookings
@@ -223,14 +220,14 @@ public class Master {
         System.out.println("MapID found! It belongs to " + filters.getMapID() + ".");
         
         response = new Response(filters.getMapID(), filters.getFilters());
-        Socket connection = handler.getSocket();
 
         try {
-            this.out = new ObjectOutputStream(connection.getOutputStream());
-            this.in = new ObjectInputStream(connection.getInputStream());
+            this.out = handler.getOut();
+            this.in = handler.getIn();
 
             out.writeObject(response);
             out.flush();
+
             response.setResponse(null);
             handlers.remove(handler);
         } catch (IOException e) {
