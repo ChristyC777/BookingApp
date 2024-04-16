@@ -20,6 +20,15 @@ public class Response implements Serializable {
         this.message = message;
     }
 
+    public void setMapID(String mapid)
+    {
+        this.mapid = mapid;
+    }
+
+    public void setObject(Object obj)
+    {
+        this.obj = obj;
+    }
 
     public String getMapID()
     {

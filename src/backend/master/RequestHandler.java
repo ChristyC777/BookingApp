@@ -19,11 +19,17 @@ public class RequestHandler implements Runnable {
     private Socket requestSocket;
     private Master master;
     private String username;
+    
 
     public RequestHandler(Socket request, Master master)
     {
         this.requestSocket = request;
         this.master = master;
+    }
+
+    public Socket getSocket()
+    {
+        return requestSocket;
     }
 
     public void setUsername(String username)
@@ -84,6 +90,7 @@ public class RequestHandler implements Runnable {
                     // ensures synchronization for the current thread
                     response = master.getResponseInstance();
                     out.writeObject(response);
+                    out.flush();
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
                     // TODO: Implement this for part B!
@@ -95,20 +102,6 @@ public class RequestHandler implements Runnable {
                     HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     master.filterRooms(mapid, map);
 
-                    synchronized(this)
-                    {
-                        while(!master.getResponseInstance().hasResponse())
-                        {
-                            try {
-                                wait();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    
-                    response = master.getResponseInstance();
-                    out.writeObject(response);
                     break;
                 case BOOK:
                     String roomName = (String) in.readObject();
@@ -121,6 +114,22 @@ public class RequestHandler implements Runnable {
                     // TODO: Properly implement this
                     FilterData final_filters = (FilterData) in.readObject();
                     master.notifyOfResults(final_filters);
+                    // synchronized(this)
+                    // {
+                    //     while(!master.getResponseInstance().hasResponse())
+                    //     {
+                    //         try {
+                    //             wait();
+                    //         } catch (InterruptedException e) {
+                    //             e.printStackTrace();
+                    //         }
+                    //     }
+                    // }
+                    
+                    // response = master.getResponseInstance();
+                    // out.writeObject(response);
+                    // out.flush();
+                    // master.setResponse(null);
                     break;
                 default:
                     System.err.println("Invalid request.");

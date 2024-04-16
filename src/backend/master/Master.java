@@ -27,7 +27,6 @@ public class Master {
     {
         masterThreads = new ArrayList<Thread>();
         workerNodes = new ArrayList<WorkerNode>();
-        response = new Response(null, null);
         handlers = new ArrayList<RequestHandler>();
     }
 
@@ -219,20 +218,40 @@ public class Master {
 
     public synchronized void notifyOfResults(FilterData filters)
     {
+        RequestHandler handler = handlers.stream().filter(dummyhandler -> dummyhandler.getUsername().equals(filters.getMapID())).findFirst().orElse(null);
         System.out.println("\n\n\nThese are the filters I received: \n" + filters.getFilters().toString() + "\n\n\n"); // TODO: remove this
         System.out.println("MapID found! It belongs to " + filters.getMapID() + ".");
         
         response = new Response(filters.getMapID(), filters.getFilters());
+        Socket connection = handler.getSocket();
 
-        synchronized(response)
-        {
-            response.notify();
-        }     
+        try {
+            this.out = new ObjectOutputStream(connection.getOutputStream());
+            this.in = new ObjectInputStream(connection.getInputStream());
+
+            out.writeObject(response);
+            out.flush();
+            response.setResponse(null);
+            handlers.remove(handler);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        // synchronized(handler)
+        // {
+        //     handler.notify();
+        // }     
+    }
+
+    public synchronized void setResponse(Response response)
+    {
+        this.response = response;
     }
 
     public synchronized Response getResponseInstance()
     {
-        return this.response;
+        return response;
     }
 
     public int getNumberOfWorkers()

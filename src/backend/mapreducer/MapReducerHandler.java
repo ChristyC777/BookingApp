@@ -22,7 +22,7 @@ public class MapReducerHandler implements Runnable{
 
     public boolean differentMapid(FilterData filter_results)
     {
-        if (!filter_results.getMapID().equals(mapReducer.getCurrentMapid()))
+        if (mapReducer.getCurrentMapid()!=null && !mapReducer.getCurrentMapid().equals(filter_results.getMapID()))
         {
             return true;
         }
@@ -37,13 +37,8 @@ public class MapReducerHandler implements Runnable{
             this.in = new ObjectInputStream(requestSocket.getInputStream());
             
             FilterData filter_results = (FilterData) in.readObject();
-            
-            if(mapReducer.getCurrentMapid() == null)
-            {
-                mapReducer.setCurrentMapid(filter_results.getMapID());
-            }
 
-            synchronized(this)
+            synchronized(mapReducer)
             {
                 while(differentMapid(filter_results))
                 {
@@ -52,15 +47,14 @@ public class MapReducerHandler implements Runnable{
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    
+                }
+                if(mapReducer.getCurrentMapid() == null)
+                {
+                    mapReducer.setCurrentMapid(filter_results.getMapID());
                 }
                 mapReducer.setCurrentMapid(filter_results.getMapID());
-            }
-
-            if(mapReducer.getCurrentMapid() == null)
-            {
-                mapReducer.setCurrentMapid(filter_results.getMapID());
-            }
-            
+            }   
             mapReducer.Reduce(filter_results.getMapID(), filter_results.getFilters());
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

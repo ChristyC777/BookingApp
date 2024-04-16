@@ -37,12 +37,12 @@ public class MapReducer {
         this.total_answers = new HashMap<Lodging, Integer>();
     }
 
-    public void setCurrentMapid(String currentMapid)
+    public synchronized void setCurrentMapid(String currentMapid)
     {
         this.currentMapid = currentMapid;
     }
 
-    public String getCurrentMapid()
+    public synchronized String getCurrentMapid()
     {
         return this.currentMapid;
     }
@@ -55,7 +55,7 @@ public class MapReducer {
         this.final_results = null;
     }
 
-    public boolean allAnswers()
+    public synchronized boolean allAnswers()
     {
         if (getCounter()==getNumberOfWorkers())
         {
@@ -79,12 +79,7 @@ public class MapReducer {
         return count;
     }
 
-    /**
-     * Reducer function that takes a mapping and produces an aggregated mapping.
-     * @param mapid -> the ID of the specific request.
-     * @param filter_results -> the filters to apply the reduction on.
-     */
-    public synchronized void Reduce(String mapid, Map<Lodging, Integer> filter_results)
+    public synchronized void updateResults(Map<Lodging, Integer> filter_results)
     {
         for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
             Lodging lodge = item.getKey();
@@ -99,7 +94,17 @@ public class MapReducer {
                 total_answers.put(lodge, count);
             }
         }
+    }
 
+    /**
+     * Reducer function that takes a mapping and produces an aggregated mapping.
+     * @param mapid -> the ID of the specific request.
+     * @param filter_results -> the filters to apply the reduction on.
+     */
+    public synchronized void Reduce(String mapid, Map<Lodging, Integer> filter_results)
+    {
+        
+        updateResults(filter_results);
         increaseCount();
 
         // TODO: Have these be sent to ConsoleApp
