@@ -43,7 +43,7 @@ public class MapReducerHandler implements Runnable{
                 while(differentMapid(filter_results))
                 {
                     try {
-                        wait();
+                        mapReducer.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

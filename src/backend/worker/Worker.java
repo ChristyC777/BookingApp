@@ -199,17 +199,15 @@ public class Worker {
      * Adds a lodge.
      * @param lodge -> the lodge the manager wants to add
      */ 
-    public synchronized void addLodge(Lodging lodge)
+    public synchronized String addLodge(Lodging lodge)
     {
         if (this.lodges.contains(lodge))
         {
-            System.out.printf("Lodging \"%s\" already exists!%n", lodge.getRoomName());
-            System.out.println(lodges.size()); // TODO: remove this debug message
-            return;
+            return String.format("Lodging \"%s\" already exists!%n", lodge.getRoomName());
+           
         }
         this.lodges.add(lodge);
-        System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
-        System.out.println(lodges.size()); // TODO: remove this debug message
+        return String.format("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
     }
 
     public synchronized ArrayList<Lodging> getLodges()

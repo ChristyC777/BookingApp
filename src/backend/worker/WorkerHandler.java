@@ -58,8 +58,14 @@ public class WorkerHandler implements Runnable {
                     
                     break;
                 case ADD_LODGING:
+                    manager = (String) in.readObject();
                     lodge = (Lodging) in.readObject();
-                    worker.addLodge(lodge);
+                    String message = worker.addLodge(lodge);
+                    response = new Response(manager, message);
+
+                    out.writeObject(response);
+                    out.flush();
+                    
                     break;
                 case VIEW_BOOKINGS:
                     String managerName = (String) in.readObject();

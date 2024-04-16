@@ -26,7 +26,7 @@ import src.backend.utility.response.Response;
 public class ConsoleApp {
 
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "localhost";
+    private final static String HOST = "192.168.1.8";
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 
@@ -148,10 +148,18 @@ public class ConsoleApp {
                         out.writeObject(ADD_LODGING);
                         out.flush();
 
+                        out.writeObject(user.getUsername());
+                        out.flush();
+
                         out.writeObject(lodge);
                         out.flush();
 
-                        // TODO: implement an incoming message response
+                        try {
+                            String message = (String) in.readObject();
+                            System.out.println(message);
+                         } catch (ClassNotFoundException e) {
+                             e.printStackTrace();
+                         }
 
                         connection.close();
                         break;
@@ -216,7 +224,6 @@ public class ConsoleApp {
                         out.writeObject(toInput);
                         out.flush();
 
-                        // TODO: waiting for string message 
                         try {
                             String message = (String) in.readObject();
                             System.out.println(message);

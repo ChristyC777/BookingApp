@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 public class DummyApp {
 
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "localhost";
+    private final static String HOST = "192.168.1.8";
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
@@ -374,12 +374,20 @@ public class DummyApp {
                             // Retrieve response
                             HashMap<Lodging, Integer> filtered_rooms = (HashMap<Lodging, Integer>) response.getResponse();
                             
-                            System.err.println("\n\n\nThese are the filtered rooms that I received: " + filtered_rooms.toString() + "\n\n\n");
-
-                            for (HashMap.Entry<Lodging, Integer> item : filtered_rooms.entrySet())
+                            if (filtered_rooms.size()>0)
                             {
-                                System.out.println("\n" + item.getKey());
+                                System.out.println("\nResults: ");
+
+                                for (HashMap.Entry<Lodging, Integer> item : filtered_rooms.entrySet())
+                                {
+                                    System.out.println("\n" + item.getKey());
+                                }
                             }
+                            else
+                            {
+                                System.out.println("No rooms found...");
+                            }
+
                             
                             // Stop the output and await a keypress so the results don't scroll up too far
                             System.out.print("\nPress 'Enter' to continue...");

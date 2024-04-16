@@ -70,9 +70,11 @@ public class RequestHandler implements Runnable {
                     master.updateDates(namelodge, manager, startPeriod, endPeriod);
                     break;
                 case ADD_LODGING:
+                    manager = (String) in.readObject(); 
                     Lodging lodge = (Lodging) in.readObject();
-                    master.assignRoom(lodge);
-                    System.out.printf("Lodging \"%s\" has been added succesfully!%n", lodge.getRoomName());
+                    setUsername(manager);
+                    master.addHandler(this);
+                    master.assignRoom(lodge, manager);
                     break;
                 case VIEW_BOOKINGS:
                     manager = (String) in.readObject();
