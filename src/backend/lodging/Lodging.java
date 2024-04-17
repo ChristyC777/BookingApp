@@ -84,8 +84,6 @@ public class Lodging implements LodgingInterface, Serializable {
         return stars;
     }
 
-
-
     @Override
     public String toString()
     {

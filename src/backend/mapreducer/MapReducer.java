@@ -79,7 +79,7 @@ public class MapReducer {
         return count;
     }
 
-    public synchronized void updateResults(Map<Lodging, Integer> filter_results)
+    public synchronized void updateResults(Map<Lodging, Integer> filter_results)// {"room1":1, "room3":1}
     {
         for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
             Lodging lodge = item.getKey();

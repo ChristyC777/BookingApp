@@ -7,13 +7,11 @@ public class DateRange implements Serializable{
 
     private Calendar from;
     private Calendar to; 
-    private boolean locked;
 
     public DateRange(Calendar from, Calendar to)
     {
         this.from = from;
         this.to = to;
-        this.locked = false;
     }
 
     public Calendar getFrom()
@@ -25,23 +23,11 @@ public class DateRange implements Serializable{
     {
         return this.to;
     }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void lock() {
-        this.locked = true;
-    }
-
-    public void unlock() {
-        this.locked = false;
-    }
     
     public boolean isWithinRange(Calendar dateFrom, Calendar dateTo) {
         if (dateFrom!=null && dateTo!=null)
         {
-            return ((from.compareTo(dateFrom) <= 0) && (to.compareTo(dateTo) >= 0));
+            return ((from.compareTo(dateFrom) <= 0) && (to.compareTo(dateTo) >= 0)); //from < from_client (e.g. 17/04/2024 <= 18/04/2024) && to >= to_client (17/04/2026 >= 16/04/2026)
         }
         return false;
     }
