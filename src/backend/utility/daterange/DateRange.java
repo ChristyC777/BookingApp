@@ -39,7 +39,11 @@ public class DateRange implements Serializable{
     }
     
     public boolean isWithinRange(Calendar dateFrom, Calendar dateTo) {
-        return ((from.compareTo(dateFrom) <= 0) && (to.compareTo(dateTo) >= 0));
+        if (dateFrom!=null && dateTo!=null)
+        {
+            return ((from.compareTo(dateFrom) <= 0) && (to.compareTo(dateTo) >= 0));
+        }
+        return false;
     }
     
 }

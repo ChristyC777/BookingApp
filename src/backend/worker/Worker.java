@@ -218,6 +218,8 @@ public class Worker {
                     setMessage(BOOK, String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName()));
                 case BOOKING_SUCCESS:
                     setMessage(BOOK, String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName()));
+                case NULL_DATERANGE: 
+                    setMessage(BOOK, "Not set availability dates");
                 default:
                     setMessage(BOOK, "%n#### An unexpected error while processing this booking has occurred. ####");
             }
@@ -240,8 +242,12 @@ public class Worker {
      * @param lodgeName -> the name of the lodge to be booked
      * @returns 
      */ 
-    public synchronized BookingResponse addBooking(DateRange dateRange, String userName, Lodging lodge) {
+    public BookingResponse addBooking(DateRange dateRange, String userName, Lodging lodge) {
 
+        if(dateRange.getFrom() == null || dateRange.getTo()==null)
+        {
+            return BookingResponse.NULL_DATERANGE;
+        }
         // Check whether the booking is within the lodging's availability.
         if (!lodge.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo()))
         {
