@@ -35,6 +35,8 @@ public class Worker {
     private ArrayList<Lodging> lodges;
     private ArrayList<Booking> bookings;
     private ArrayList<Thread> workerThreads;
+    private boolean lock;
+    private String message;
 
     public Worker(int port)
     {
@@ -42,6 +44,26 @@ public class Worker {
         this.lodges = new ArrayList<Lodging>();
         this.bookings = new ArrayList<Booking>();
         this.workerThreads = new ArrayList<Thread>();
+    }
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
+
+    public void setLocked(boolean lock)
+    {
+        this.lock = lock;
+    }
+
+    public boolean getLocked()
+    {
+        return lock;
     }
 
     void openServer() {
@@ -77,7 +99,7 @@ public class Worker {
      * @return Message to inform whether the update was successful or not,
      * and if not, the reason it was unsuccessful.
      */ 
-    public synchronized String addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
+    public synchronized void addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
         if (lodge != null)
@@ -99,16 +121,22 @@ public class Worker {
                 DateRange dateRange = new DateRange(from, to);
                 lodge.setDateRange(dateRange);
 
-                return "#### Successfully updated dates! ####";
+                setMessage("#### Successfully updated dates! ####");
             }
             else
             {
-                return "#### You're not the manager so you can't add dates for this lodge! ####";
+                setMessage("#### You're not the manager so you can't add dates for this lodge! ####");
             }
         }
         else 
-        {   
-            return " #### Room does not exist. ####"; 
+        {           
+
+            setMessage(" #### Room does not exist. ####"); 
+        }
+        synchronized(this)
+        {
+            setLocked(false);
+            this.notifyAll();
         }
     }
 
@@ -121,7 +149,7 @@ public class Worker {
      * @return Message to inform whether the booking was successful or not,
      * and if not, the reason it was unsuccessful.
      */ 
-    public synchronized String makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
+    public synchronized void makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
     {
         Lodging lodge = lodges.stream().filter(room -> room.getRoomName().equals(roomName)).findFirst().orElse(null);
         if (lodge != null)
@@ -141,18 +169,23 @@ public class Worker {
             switch(bookingResult)
             {
                 case BOOKING_NOT_WITHIN_AVAILABILITY:
-                    return String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName());
+                    setMessage(String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName()));
                 case BOOKING_CONFLICT:
-                    return String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName());
+                    setMessage(String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName()));
                 case BOOKING_SUCCESS:
-                    return String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName());
+                    setMessage(String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName()));
                 default:
-                    return "%n#### An unexpected error while processing this booking has occurred. ####";
+                    setMessage("%n#### An unexpected error while processing this booking has occurred. ####");
             }
         }
         else 
         {
-            return "\nBooking failed!\nReason: Couldn't find the specified lodging!";
+            setMessage("\nBooking failed!\nReason: Couldn't find the specified lodging!");
+        }
+        synchronized(this)
+        {
+            setLocked(false);
+            this.notifyAll();
         }
     }
     
@@ -204,15 +237,21 @@ public class Worker {
      * Adds a lodge.
      * @param lodge -> the lodge the manager wants to add
      */ 
-    public synchronized String addLodge(Lodging lodge)
+    public synchronized void addLodge(Lodging lodge)
     {
         if (this.lodges.contains(lodge))
         {
-            return String.format("#### Lodging \"%s\" already exists! ####%n", lodge.getRoomName());
+            setMessage(String.format("#### Lodging \"%s\" already exists! ####%n", lodge.getRoomName()));
            
         }
         this.lodges.add(lodge);
-        return String.format("#### Lodging \"%s\" has been added succesfully! ####", lodge.getRoomName());
+        setMessage(String.format("#### Lodging \"%s\" has been added succesfully! ####", lodge.getRoomName()));
+        synchronized(this)
+        {
+            setLocked(false);
+            this.notifyAll();
+        }
+
     }
 
     public synchronized ArrayList<Lodging> getLodges()

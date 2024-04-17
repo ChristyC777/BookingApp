@@ -53,11 +53,30 @@ public class WorkerHandler implements Runnable {
                     String from = (String) in.readObject();
                     String to = (String) in.readObject();
 
-                    String success = worker.addDates(lodgeName, manager, from, to);
+                    synchronized(worker)
+                    {
+                        while(worker.getLocked())
+                        {
+                            try {
+                                worker.wait();
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    if (worker.getLocked()==false)
+                    {
+                        worker.setLocked(true);
+                    }
+                    worker.addDates(lodgeName, manager, from, to);
+                    String success = worker.getMessage();
                     Response response = new Response(manager, success);
 
                     out.writeObject(response);
                     out.flush();
+
                     
                     break;
                 case ADD_LODGING:
@@ -65,7 +84,26 @@ public class WorkerHandler implements Runnable {
                     // (read in that order)
                     manager = (String) in.readObject();
                     lodge = (Lodging) in.readObject();
-                    message = worker.addLodge(lodge);
+
+                    synchronized(worker)
+                    {
+                        while(worker.getLocked())
+                        {
+                            try {
+                                worker.wait();
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    if (worker.getLocked()==false)
+                    {
+                        worker.setLocked(true);
+                    }
+
+                    worker.addLodge(lodge);
+                    message = worker.getMessage();
                     response = new Response(manager, message);
 
                     out.writeObject(response);
@@ -93,8 +131,25 @@ public class WorkerHandler implements Runnable {
                     String username = (String) in.readObject();
                     String datefrom = (String) in.readObject();
                     String dateto = (String) in.readObject();
-                    message = worker.makeBooking(roomName, username, datefrom, dateto);
 
+                    synchronized(worker)
+                    {
+                        while(worker.getLocked())
+                        {
+                            try {
+                                worker.wait();
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    if (worker.getLocked()==false)
+                    {
+                        worker.setLocked(true);
+                    }
+                    worker.makeBooking(roomName, username, datefrom, dateto);
+                    message = worker.getMessage();
                     response = new Response(username, message);
 
                     out.writeObject(response);
