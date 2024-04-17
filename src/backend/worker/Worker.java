@@ -213,7 +213,7 @@ public class Worker {
             switch(bookingResult)
             {
                 case BOOKING_NOT_WITHIN_AVAILABILITY:
-                    setMessage(ClientActions.BOOK, String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName()));
+                    setMessage(BOOK, String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName()));
                     break;
                 case BOOKING_CONFLICT:
                     setMessage(BOOK, String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName()));
