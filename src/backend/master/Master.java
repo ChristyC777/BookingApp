@@ -1,4 +1,10 @@
- package src.backend.master;
+/**
+ * Χριστιάνα Χρυσάφη - ΑΜ: 3210220
+ * Αλέξανδρος Αριστοτέλης Μανέτας - ΑΜ: 3200282
+ * Γιώργος Τσαλίκης - ΑΜ: 3210230
+ */
+
+package src.backend.master;
 
 import java.io.*;
 import java.net.*;
