@@ -22,6 +22,7 @@ public class MapReducerHandler implements Runnable{
 
     public boolean differentMapid(FilterData filter_results)
     {
+        // While there is a thread inside mapReducer and this mapid is different from the one asking return true
         if (mapReducer.getCurrentMapid()!=null && !mapReducer.getCurrentMapid().equals(filter_results.getMapID()))
         {
             return true;
@@ -38,9 +39,9 @@ public class MapReducerHandler implements Runnable{
             
             FilterData filter_results = (FilterData) in.readObject();
 
-            synchronized(mapReducer)
+            synchronized(mapReducer) // signal (mapReducer)
             {
-                while(differentMapid(filter_results))
+                while(differentMapid(filter_results)) // 
                 {
                     try {
                         mapReducer.wait();
@@ -48,10 +49,6 @@ public class MapReducerHandler implements Runnable{
                         e.printStackTrace();
                     }
                     
-                }
-                if(mapReducer.getCurrentMapid() == null)
-                {
-                    mapReducer.setCurrentMapid(filter_results.getMapID());
                 }
                 mapReducer.setCurrentMapid(filter_results.getMapID());
             }   
