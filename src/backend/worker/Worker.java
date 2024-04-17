@@ -181,6 +181,7 @@ public class Worker {
         // Add a new booking.
         Booking newBooking = new Booking(dateRange, userName, lodge);
         bookings.add(newBooking);
+        lodge.addBooking(newBooking);
         System.out.printf("Booking for \"%s\" has been confirmed!%n", lodge.getRoomName());
         return BookingResponse.BOOKING_SUCCESS;
     }

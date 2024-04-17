@@ -1,9 +1,12 @@
 package src.backend.booking;
 
+import java.io.Serializable;
+
 import src.backend.lodging.Lodging;
 import src.backend.utility.daterange.DateRange;
 
-public class Booking {
+public class Booking implements Serializable
+{
     private DateRange dateRange;
     private String userName;
     private Lodging lodge;
@@ -38,6 +41,34 @@ public class Booking {
 
     public void setLodge(Lodging lodge) {
         this.lodge = lodge;
+    }
+
+    @Override
+    public String toString()
+    {
+        String fromFormattedDate = getDateRange().getFrom().getTime().toString();
+        String toFormattedDate = getDateRange().getTo().getTime().toString();
+        if (fromFormattedDate==null )
+        {
+            fromFormattedDate = "unknown";
+        }
+        if(toFormattedDate==null)
+        {
+            toFormattedDate ="unknown";
+        }
+        return String.format(
+            """ 
+            ######################
+            #### BOOKING DATA ####
+            ######################
+
+            Name: %s
+            Check-in date: %s
+            Check-out date: %s""",
+            this.getUserName(),
+            fromFormattedDate,
+            toFormattedDate
+        );
     }
 
 }

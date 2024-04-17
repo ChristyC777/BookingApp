@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -18,6 +19,7 @@ import org.json.simple.parser.ParseException;
 import com.google.gson.Gson;
 import static src.shared.ClientActions.*;
 
+import src.backend.booking.Booking;
 import src.backend.lodging.Lodging;
 import src.backend.users.Manager;
 import src.backend.users.User;
@@ -271,7 +273,12 @@ public class ConsoleApp {
                         {
                             System.out.println("Found the following bookings:"); 
                             for (HashMap.Entry<Lodging, Integer> item : filtered_rooms.entrySet()) { // {"lodge1":2, "lodge5":6}
-                                System.out.println("\n" + item.getKey());
+                                ArrayList<Booking> bookings = item.getKey().getBookings();
+                                System.out.println(item.getKey());
+                                for (Booking booking : bookings)
+                                {
+                                    System.out.println(booking);    
+                                }
                             }
                         }
                         else

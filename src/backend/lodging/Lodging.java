@@ -1,7 +1,9 @@
 package src.backend.lodging;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
+import src.backend.booking.Booking;
 import src.backend.utility.daterange.DateRange;
 
 public class Lodging implements LodgingInterface, Serializable {
@@ -14,10 +16,22 @@ public class Lodging implements LodgingInterface, Serializable {
     private int stars;
     private String manager;
     private DateRange dateRange;
+    private ArrayList<Booking> bookings;
 
     Lodging()
     {
         super();
+        bookings = new ArrayList<Booking>();
+    }
+
+    public ArrayList<Booking> getBookings()
+    {
+        return bookings;
+    }
+
+    public void addBooking(Booking booking)
+    {
+        bookings.add(booking);
     }
 
     public void setManager(String manager)
@@ -70,11 +84,21 @@ public class Lodging implements LodgingInterface, Serializable {
         return stars;
     }
 
+
+
     @Override
     public String toString()
     {
         String fromFormattedDate = dateRange.getFrom().getTime().toString();
         String toFormattedDate = dateRange.getTo().getTime().toString();
+        if (fromFormattedDate==null )
+        {
+            fromFormattedDate = "unknown";
+        }
+        if(toFormattedDate==null)
+        {
+            toFormattedDate ="unknown";
+        }
         return String.format(
             """ 
             ###################

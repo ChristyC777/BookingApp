@@ -381,10 +381,13 @@ public class Master {
     }
 
     public static void main(String[] args) {
-        Master master = new Master();
-        master.setWorkers(Integer.parseInt(args[0]));
-        
         Scanner input = new Scanner(System.in);
+        Master master = new Master();
+        System.out.println("How many workers do we have?");
+        int num_of_workers = input.nextInt();
+        input.nextLine();
+        master.setWorkers(num_of_workers);
+        
         String workerIP;
         int workerPort;
         WorkerNode workerNode;
