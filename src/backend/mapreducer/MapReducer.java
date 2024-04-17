@@ -160,6 +160,8 @@ public class MapReducer {
             out.writeObject(final_results);
             out.flush();
 
+            masterSocket.close();
+
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

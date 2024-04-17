@@ -56,6 +56,7 @@ public class MapReducerHandler implements Runnable{
                 mapReducer.setCurrentMapid(filter_results.getMapID());
             }   
             mapReducer.Reduce(filter_results.getMapID(), filter_results.getFilters());
+            requestSocket.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
