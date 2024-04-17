@@ -58,6 +58,14 @@ public class Master {
 		}
 	}
 
+    /**
+     * Establishes a connection with the appropriate worker
+     * and sends the booking's info to process the booking.
+     * Sends a message back to the requesting client regarding
+     * the successfulness of the request.
+     * @param room
+     * @param manager
+     */
     public void assignRoom(Lodging room, String manager) 
     {
         int workerID = selectWorker(room.getRoomName());
@@ -103,6 +111,16 @@ public class Master {
         }
     }
 
+    /**
+     * Establishes a connection with the appropriate worker
+     * and sends the user's booking info to process the booking.
+     * Sends a message back to the requesting client regarding
+     * the successfulness of the request.
+     * @param roomName -> the name of the room to be booked.
+     * @param username -> the username of the requesting user.
+     * @param from -> the start date in text format.
+     * @param to -> the end date in text format. 
+     */
     public synchronized void makeBooking(String roomName, String username, String from, String to)
     {
         int workerID = selectWorker(roomName);
@@ -155,6 +173,11 @@ public class Master {
         }
     }
 
+    /**
+     * Establishes a connection with the appropriate worker
+     * and sends the manager's name to process their bookings.
+     * @param manager -> the name of the manager.
+     */
     public void viewBookings(String manager)
     {
         try {
@@ -182,6 +205,16 @@ public class Master {
         }
     }
 
+    /**
+     * Establishes a connection with the appropriate worker
+     * and sends the availability info to be processed by it.
+     * Sends a message back to the requesting client regarding
+     * the successfulness of the request.  
+     * @param roomName -> the name of the room.
+     * @param manager -> the name of the manager.
+     * @param startPeriod -> the start date in text format. 
+     * @param endPeriod -> the end date in text format.
+     */
     public synchronized void updateDates(String roomName, String manager, String startPeriod, String endPeriod)
     {
         int workerID = selectWorker(roomName);
@@ -236,11 +269,17 @@ public class Master {
         }
     }
 
+    /**
+     * Establishes a connection with all the workers
+     * and sends the user's filters to be processed.
+     * @param mapid -> the user's username or UUID. 
+     * @param filters -> the user's selected search filters. 
+     */
     public void filterRooms(String mapid, Map<String, Object> filters)
     {
         try {
 
-            // Establish connection with Worker
+            // Establish connection with Workers
             for (WorkerNode workerID : workerNodes)
             {
                 Socket new_connection = new Socket(workerID.getIP(), workerID.getPort());
@@ -266,6 +305,11 @@ public class Master {
         }   
     }
 
+    /**
+     * Finds and notifies the thread which is responsible for the filters
+     * to be sent back to the awaiting client.
+     * @param filters -> the final (processed) filters
+     */
     public synchronized void notifyOfResults(FilterData filters)
     {
         RequestHandler handler = handlers.stream().filter(dummyhandler -> dummyhandler.getUsername().equals(filters.getMapID())).findFirst().orElse(null);
@@ -313,7 +357,6 @@ public class Master {
     {
         this.workerNodes.add(worker);
     }
-
     
     public void addRating(int rating) {
         // TODO Auto-generated method stub

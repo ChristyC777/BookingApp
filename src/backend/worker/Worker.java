@@ -57,7 +57,6 @@ public class Worker {
                  * (read in that order)
                  */ 
 
-                // You take the parameter and see which worker does the master want to connect to
                 // You pass the connection to that worker_thread to handle the request  
                 Thread workerThread = new Thread(new WorkerHandler(this, connection));
                 workerThread.start();
@@ -75,6 +74,8 @@ public class Worker {
      * @param manager -> the name of the manager
      * @param startPeriod -> first day of availability
      * @param endPeriod -> last day of availability
+     * @return Message to inform whether the update was successful or not,
+     * and if not, the reason it was unsuccessful.
      */ 
     public synchronized String addDates(String roomName, String manager, String startPeriod, String endPeriod) throws ParseException
     {
@@ -117,6 +118,8 @@ public class Worker {
      * @param username -> the name of the user
      * @param startPeriod -> check-in date
      * @param endPeriod -> check-out date
+     * @return Message to inform whether the booking was successful or not,
+     * and if not, the reason it was unsuccessful.
      */ 
     public synchronized String makeBooking(String roomName, String username, String startPeriod, String endPeriod) throws ParseException
     {
@@ -165,7 +168,6 @@ public class Worker {
         // Check whether the booking is within the lodging's availability.
         if (!lodge.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo()))
         {
-            
             return BookingResponse.BOOKING_NOT_WITHIN_AVAILABILITY;
         }       
 
@@ -179,7 +181,7 @@ public class Worker {
         // Add a new booking.
         Booking newBooking = new Booking(dateRange, userName, lodge);
         bookings.add(newBooking);
-        System.out.println("Booking has been confirmed!");
+        System.out.printf("Booking for \"%s\" has been confirmed!%n", lodge.getRoomName());
         return BookingResponse.BOOKING_SUCCESS;
     }
 
@@ -250,7 +252,6 @@ public class Worker {
                                             return false;
                                     }
                                     })).collect(Collectors.toList());
-                                    
     }
 
     /**

@@ -31,14 +31,14 @@ public class WorkerHandler implements Runnable {
                 this.out = new ObjectOutputStream(requestSocket.getOutputStream());
                 this.in = new ObjectInputStream(requestSocket.getInputStream());
             
-                // Stream contains: | MAPID | *ACTION* | *LODGE* |
+                // Stream contains: | *ACTION* | <REST OF THE STREAM> |
                 // (read in that order)
 
                 // Action
                 ClientActions action = (ClientActions) in.readObject();
 
-                System.out.println("Action: " + action);
-                // Lodge
+                System.out.println("Incoming request: " + action);
+
                 Lodging lodge;
                 String mapid;
                 String message;
@@ -46,6 +46,8 @@ public class WorkerHandler implements Runnable {
             switch(action)
             {
                 case ADD_DATES:
+                    // Stream contains: | *LODGE_NAME* | MANAGER_NAME | FROM_DATE | TO_DATE 
+                    // (read in that order)
                     String lodgeName = (String) in.readObject();
                     String manager = (String) in.readObject();
                     String from = (String) in.readObject();
@@ -59,6 +61,8 @@ public class WorkerHandler implements Runnable {
                     
                     break;
                 case ADD_LODGING:
+                    // Stream contains: | *MANAGER_NAME* | LODGE_NAME | 
+                    // (read in that order)
                     manager = (String) in.readObject();
                     lodge = (Lodging) in.readObject();
                     message = worker.addLodge(lodge);
@@ -69,6 +73,7 @@ public class WorkerHandler implements Runnable {
                     
                     break;
                 case VIEW_BOOKINGS:
+                    // Stream contains: | *MANAGER_NAME* | 
                     String managerName = (String) in.readObject();
                     worker.viewBookings(managerName);
                     break;
@@ -76,11 +81,14 @@ public class WorkerHandler implements Runnable {
                     // TODO: Implement this for part B!
                     break;
                 case FILTER:
+                    // Stream contains: | *USERNAME* | 
                     mapid = (String) in.readObject();
                     HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     worker.manageFilters(mapid, map);
                     break;
                 case BOOK:
+                    // Stream contains: | *LODGE_NAME* | USERNAME | FROM_DATE | TO_DATE
+                    // read in that order
                     String roomName = (String) in.readObject();
                     String username = (String) in.readObject();
                     String datefrom = (String) in.readObject();
