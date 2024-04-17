@@ -1,5 +1,7 @@
 package src.backend.worker;
 
+import static src.shared.ClientActions.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -23,6 +25,7 @@ import src.backend.lodging.Lodging;
 import src.backend.utility.daterange.DateRange;
 import src.backend.utility.filterdata.FilterData;
 import src.shared.BookingResponse;
+import src.shared.ClientActions;
 
 public class Worker {
 
@@ -35,8 +38,13 @@ public class Worker {
     private ArrayList<Lodging> lodges;
     private ArrayList<Booking> bookings;
     private ArrayList<Thread> workerThreads;
-    private boolean lock;
-    private String message;
+    private boolean locklodge;
+    private boolean lockdates;
+    private boolean lockbook;
+    private String messagelodge;
+    private String messagedates;
+    private String messagebook;
+
 
     public Worker(int port)
     {
@@ -46,24 +54,60 @@ public class Worker {
         this.workerThreads = new ArrayList<Thread>();
     }
 
-    public String getMessage()
+    public String getMessage(ClientActions action)
     {
-        return message;
+        switch (action) {
+            case ADD_LODGING:
+                return messagelodge;
+            case BOOK:
+                return messagebook;
+            case ADD_DATES:
+                return messagedates;
+        }
+        return null;
     }
 
-    public void setMessage(String message)
+    public void setMessage(ClientActions action, String message)
     {
-        this.message = message;
+        switch (action) {
+            case ADD_LODGING:
+                messagelodge = message;
+                break;
+            case BOOK:
+                messagebook = message;
+                break;
+            case ADD_DATES:
+                messagedates = message;
+                break;
+        }
     }
 
-    public void setLocked(boolean lock)
+    public void setLocked(ClientActions action ,boolean lock)
     {
-        this.lock = lock;
+        switch (action) {
+            case ADD_LODGING:
+                locklodge = lock;
+                break;
+            case BOOK:
+                lockbook = lock;
+                break;
+            case ADD_DATES:
+                lockdates = lock;
+                break;
+        }
     }
 
-    public boolean getLocked()
+    public boolean getLocked(ClientActions action)
     {
-        return lock;
+        switch (action) {
+            case ADD_LODGING:
+                return locklodge;
+            case BOOK:
+                return lockbook;
+            case ADD_DATES:
+                return lockdates;
+        }
+        return (Boolean) null;
     }
 
     void openServer() {
@@ -121,21 +165,21 @@ public class Worker {
                 DateRange dateRange = new DateRange(from, to);
                 lodge.setDateRange(dateRange);
 
-                setMessage("#### Successfully updated dates! ####");
+                setMessage(ADD_DATES,"#### Successfully updated dates! ####");
             }
             else
             {
-                setMessage("#### You're not the manager so you can't add dates for this lodge! ####");
+                setMessage(ADD_DATES,"#### You're not the manager so you can't add dates for this lodge! ####");
             }
         }
         else 
         {           
 
-            setMessage(" #### Room does not exist. ####"); 
+            setMessage(ADD_DATES," #### Room does not exist. ####"); 
         }
         synchronized(this)
         {
-            setLocked(false);
+            setLocked(ADD_DATES,false);
             this.notifyAll();
         }
     }
@@ -169,22 +213,22 @@ public class Worker {
             switch(bookingResult)
             {
                 case BOOKING_NOT_WITHIN_AVAILABILITY:
-                    setMessage(String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName()));
+                    setMessage(ClientActions.BOOK, String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName()));
                 case BOOKING_CONFLICT:
-                    setMessage(String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName()));
+                    setMessage(BOOK, String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName()));
                 case BOOKING_SUCCESS:
-                    setMessage(String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName()));
+                    setMessage(BOOK, String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName()));
                 default:
-                    setMessage("%n#### An unexpected error while processing this booking has occurred. ####");
+                    setMessage(BOOK, "%n#### An unexpected error while processing this booking has occurred. ####");
             }
         }
         else 
         {
-            setMessage("\nBooking failed!\nReason: Couldn't find the specified lodging!");
+            setMessage(BOOK, "\nBooking failed!\nReason: Couldn't find the specified lodging!");
         }
         synchronized(this)
         {
-            setLocked(false);
+            setLocked(BOOK,false);
             this.notifyAll();
         }
     }
@@ -241,14 +285,14 @@ public class Worker {
     {
         if (this.lodges.contains(lodge))
         {
-            setMessage(String.format("#### Lodging \"%s\" already exists! ####%n", lodge.getRoomName()));
+            setMessage(ADD_LODGING, String.format("#### Lodging \"%s\" already exists! ####%n", lodge.getRoomName()));
            
         }
         this.lodges.add(lodge);
-        setMessage(String.format("#### Lodging \"%s\" has been added succesfully! ####", lodge.getRoomName()));
+        setMessage(ADD_LODGING,String.format("#### Lodging \"%s\" has been added succesfully! ####", lodge.getRoomName()));
         synchronized(this)
         {
-            setLocked(false);
+            setLocked(ADD_LODGING,false);
             this.notifyAll();
         }
 

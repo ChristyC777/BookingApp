@@ -1,5 +1,9 @@
 package src.backend.worker;
 
+import static src.shared.ClientActions.ADD_DATES;
+import static src.shared.ClientActions.ADD_LODGING;
+import static src.shared.ClientActions.BOOK;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -55,7 +59,7 @@ public class WorkerHandler implements Runnable {
 
                     synchronized(worker)
                     {
-                        while(worker.getLocked())
+                        while(worker.getLocked(ADD_DATES))
                         {
                             try {
                                 worker.wait();
@@ -66,12 +70,12 @@ public class WorkerHandler implements Runnable {
                         }
                     }
 
-                    if (worker.getLocked()==false)
+                    if (worker.getLocked(ADD_DATES)==false)
                     {
-                        worker.setLocked(true);
+                        worker.setLocked(ADD_DATES,true);
                     }
                     worker.addDates(lodgeName, manager, from, to);
-                    String success = worker.getMessage();
+                    String success = worker.getMessage(ADD_DATES);
                     Response response = new Response(manager, success);
 
                     out.writeObject(response);
@@ -87,7 +91,7 @@ public class WorkerHandler implements Runnable {
 
                     synchronized(worker)
                     {
-                        while(worker.getLocked())
+                        while(worker.getLocked(ADD_LODGING))
                         {
                             try {
                                 worker.wait();
@@ -97,13 +101,13 @@ public class WorkerHandler implements Runnable {
                             }
                         }
                     }
-                    if (worker.getLocked()==false)
+                    if (worker.getLocked(ADD_LODGING)==false)
                     {
-                        worker.setLocked(true);
+                        worker.setLocked(ADD_LODGING,true);
                     }
 
                     worker.addLodge(lodge);
-                    message = worker.getMessage();
+                    message = worker.getMessage(ADD_LODGING);
                     response = new Response(manager, message);
 
                     out.writeObject(response);
@@ -134,7 +138,7 @@ public class WorkerHandler implements Runnable {
 
                     synchronized(worker)
                     {
-                        while(worker.getLocked())
+                        while(worker.getLocked(BOOK))
                         {
                             try {
                                 worker.wait();
@@ -144,12 +148,12 @@ public class WorkerHandler implements Runnable {
                             }
                         }
                     }
-                    if (worker.getLocked()==false)
+                    if (worker.getLocked(BOOK)==false)
                     {
-                        worker.setLocked(true);
+                        worker.setLocked(BOOK, true);
                     }
                     worker.makeBooking(roomName, username, datefrom, dateto);
-                    message = worker.getMessage();
+                    message = worker.getMessage(BOOK);
                     response = new Response(username, message);
 
                     out.writeObject(response);
