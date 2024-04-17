@@ -26,7 +26,7 @@ import src.backend.utility.response.Response;
 public class ConsoleApp {
 
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "localhost"; // TODO: have this be inputted instead!
+    private static String HOST_ADDRESS;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
 
@@ -35,6 +35,10 @@ public class ConsoleApp {
     public static void main(String[] args) throws IOException, ParseException {
 
         Scanner input = new Scanner(System.in);
+
+        System.out.print("Enter the IP address of Master: ");
+        HOST_ADDRESS = input.nextLine();
+
         System.out.print("Are you a user of this App? (Y/N)\n>> ");
         String id = input.nextLine().trim().toLowerCase();
         User user = null;
@@ -140,7 +144,7 @@ public class ConsoleApp {
                         Lodging lodge = gson.fromJson(jobj.toString(), Lodging.class);
                         lodge.setManager(user.getUsername());
 
-                        connection = new Socket(HOST, SERVERPORT);
+                        connection = new Socket(HOST_ADDRESS, SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -199,7 +203,7 @@ public class ConsoleApp {
                                 System.out.println("Wrong dates, please try again!");
                             }
                         }
-                        connection = new Socket(HOST, SERVERPORT);
+                        connection = new Socket(HOST_ADDRESS, SERVERPORT);
 
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());
@@ -236,7 +240,7 @@ public class ConsoleApp {
 
                     case 3:
                     
-                        connection = new Socket(HOST, SERVERPORT);
+                        connection = new Socket(HOST_ADDRESS, SERVERPORT);
                         
                         out = new ObjectOutputStream(connection.getOutputStream());
                         in = new ObjectInputStream(connection.getInputStream());

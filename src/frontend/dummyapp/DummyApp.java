@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 public class DummyApp {
 
     private final static int SERVERPORT = 7777;
-    private final static String HOST = "localhost"; // TODO: have this be inputted instead!
+    private static String HOST_ADDRESS;
 	private static ObjectInputStream in;
 	private static ObjectOutputStream out;
 
@@ -26,6 +26,10 @@ public class DummyApp {
 
         User user = null;
         Scanner input = new Scanner(System.in);
+        
+        System.out.print("Enter the IP address of Master: ");
+        HOST_ADDRESS = input.nextLine();
+
         System.out.print("Are you a registered user of this app? (Y/N)\n>> ");
         String id = input.nextLine().trim().toLowerCase();
         if (id.equals("y"))
@@ -175,7 +179,7 @@ public class DummyApp {
                                 }
                             }
                             
-                            connection = new Socket(HOST, SERVERPORT);
+                            connection = new Socket(HOST_ADDRESS, SERVERPORT);
 
                             out = new ObjectOutputStream(connection.getOutputStream());
                             in = new ObjectInputStream(connection.getInputStream());
@@ -343,7 +347,7 @@ public class DummyApp {
                                 }
                             }
 
-                            connection = new Socket(HOST, SERVERPORT);
+                            connection = new Socket(HOST_ADDRESS, SERVERPORT);
 
                             out = new ObjectOutputStream(connection.getOutputStream());
                             in = new ObjectInputStream(connection.getInputStream());
