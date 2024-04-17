@@ -232,7 +232,7 @@ public class ConsoleApp {
 
                         try {
                             String message = (String) in.readObject();
-                            System.out.println("\n#### " + message + " ####");
+                            System.out.println("\n\n#### " + message + " ####");
                          } catch (ClassNotFoundException e) {
                              e.printStackTrace();
                          }

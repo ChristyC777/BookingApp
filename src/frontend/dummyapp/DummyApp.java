@@ -175,7 +175,7 @@ public class DummyApp {
                                 if (from.compareTo(to) < 0) {
                                     input_wrong = false;
                                 } else {
-                                    System.out.println("Check-in date was after check-out date, please try again.");
+                                    System.out.println("Check-out date must be after check-in date, please try again.");
                                 }
                             }
                             

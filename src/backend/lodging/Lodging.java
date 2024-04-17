@@ -97,7 +97,7 @@ public class Lodging implements LodgingInterface, Serializable {
         }
         if(toFormattedDate==null)
         {
-            toFormattedDate ="unknown";
+            toFormattedDate = "unknown";
         }
         return String.format(
             """ 

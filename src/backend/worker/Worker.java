@@ -67,7 +67,7 @@ public class Worker {
         return null;
     }
 
-    public void setMessage(ClientActions action, String message)
+    public synchronized void setMessage(ClientActions action, String message)
     {
         switch (action) {
             case ADD_LODGING:
@@ -219,9 +219,9 @@ public class Worker {
                 case BOOKING_SUCCESS:
                     setMessage(BOOK, String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName()));
                 case NULL_DATERANGE: 
-                    setMessage(BOOK, "Not set availability dates");
+                    setMessage(BOOK, String.format("%nAvailability dates have not been set!"));
                 default:
-                    setMessage(BOOK, "%n#### An unexpected error while processing this booking has occurred. ####");
+                    setMessage(BOOK, String.format("%n#### An unexpected error while processing this booking has occurred. ####"));
             }
         }
         else 
