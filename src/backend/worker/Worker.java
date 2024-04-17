@@ -214,14 +214,19 @@ public class Worker {
             {
                 case BOOKING_NOT_WITHIN_AVAILABILITY:
                     setMessage(ClientActions.BOOK, String.format("%nBooking for \"%s\" failed.%nReason: The specified date range is not within the lodge's availability dates!", lodge.getRoomName()));
+                    break;
                 case BOOKING_CONFLICT:
                     setMessage(BOOK, String.format("%nBooking for \"%s\" failed.%nReason: Booking conflict! The lodge is already booked for the specified date range.", lodge.getRoomName()));
+                    break;
                 case BOOKING_SUCCESS:
                     setMessage(BOOK, String.format("%nBooking for \"%s\" successfully submitted!", lodge.getRoomName()));
+                    break;
                 case NULL_DATERANGE: 
                     setMessage(BOOK, String.format("%nAvailability dates have not been set!"));
+                    break;
                 default:
                     setMessage(BOOK, String.format("%n#### An unexpected error while processing this booking has occurred. ####"));
+                    break;
             }
         }
         else 
