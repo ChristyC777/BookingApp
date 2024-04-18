@@ -82,7 +82,7 @@ public class Worker {
         }
     }
 
-    public void setLocked(ClientActions action ,boolean lock)
+    public void setLocked(ClientActions action, boolean lock)
     {
         switch (action) {
             case ADD_LODGING:
@@ -177,6 +177,7 @@ public class Worker {
 
             setMessage(ADD_DATES," #### Room does not exist. ####"); 
         }
+
         synchronized(this)
         {
             setLocked(ADD_DATES,false);
@@ -297,10 +298,12 @@ public class Worker {
         if (this.lodges.contains(lodge))
         {
             setMessage(ADD_LODGING, String.format("#### Lodging \"%s\" already exists! ####%n", lodge.getRoomName()));
-           
         }
-        this.lodges.add(lodge);
-        setMessage(ADD_LODGING,String.format("#### Lodging \"%s\" has been added succesfully! ####", lodge.getRoomName()));
+        else
+        {
+            this.lodges.add(lodge);
+            setMessage(ADD_LODGING,String.format("#### Lodging \"%s\" has been added succesfully! ####", lodge.getRoomName()));
+        }
         synchronized(this)
         {
             setLocked(ADD_LODGING,false);

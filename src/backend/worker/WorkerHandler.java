@@ -81,7 +81,6 @@ public class WorkerHandler implements Runnable {
                     out.writeObject(response);
                     out.flush();
 
-                    
                     break;
                 case ADD_LODGING:
                     // Stream contains: | *MANAGER_NAME* | LODGE_NAME | 
