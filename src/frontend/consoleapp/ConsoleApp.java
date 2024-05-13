@@ -12,6 +12,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import javax.swing.text.Style;
+import javax.swing.text.StyledEditorKit;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -23,6 +26,7 @@ import src.backend.booking.Booking;
 import src.backend.lodging.Lodging;
 import src.backend.users.Manager;
 import src.backend.users.User;
+import src.backend.utility.daterange.DateRange;
 import src.backend.utility.response.Response;
 
 public class ConsoleApp {
@@ -291,8 +295,89 @@ public class ConsoleApp {
                         input.nextLine();
 
                         connection.close();
-                        break;                        
+                        break;
                     case 4:
+                        input_wrong = true;
+                        name = null;
+                        fromInput = null;
+                        toInput = null;
+                        from = Calendar.getInstance();
+                        to = Calendar.getInstance();
+                        while (input_wrong) // Till the input is right
+                        {
+
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                            // Ask for the dates of availability
+                            System.out.print("\n#### Select the dates! ####\n");
+
+                            System.out.print("\nInput starting date (DD/MM/YYYY):\n>> ");
+                            fromInput = input.nextLine(); 
+                            from.setTime(dateFormat.parse(fromInput));
+
+                            System.out.print("Input ending date (DD/MM/YYYY):\n>> ");
+                            toInput = input.nextLine();
+                            to.setTime(dateFormat.parse(toInput));
+                            
+                            // Compare then so that the date of from is always smaller than the date of to
+                            if (from.compareTo(to) < 0) {
+                                input_wrong = false;
+                            } else {
+                                System.out.println("Wrong dates, please try again!");
+                            }
+                        }
+                        DateRange dateRange = new DateRange(from, to);
+                        connection = new Socket(HOST_ADDRESS, SERVERPORT);
+
+                        out = new ObjectOutputStream(connection.getOutputStream());
+                        in = new ObjectInputStream(connection.getInputStream());
+
+                        out.writeObject(VIEW_RESERVATIONS_PER_AREA);
+                        out.flush();
+                        
+                        out.writeObject(user.getUsername());
+                        out.flush();
+
+                        out.writeObject(dateRange);
+                        out.flush();
+                        
+                        System.out.println("\nAwaiting for a response...");
+
+                        response = null;
+
+                        // await for a response
+                        try {
+                            response = (Response) in.readObject();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        System.out.println("\nResponse received!\n");
+                        
+                        // Retrieve response 
+                        HashMap<String, Integer> found_rooms = (HashMap<String, Integer>) response.getResponse();
+
+                        if (found_rooms.size() > 0)
+                        {
+                            System.out.println("Found the following bookings:"); 
+                            System.out.printf("For the given period of time (%s - %s) %n", fromInput, toInput, "we found the following booking(s): %n");
+                            for (HashMap.Entry<String, Integer> item : found_rooms.entrySet()) { // {"lodge1":2, "lodge5":6}
+                                System.out.printf("%s : %d%n", item.getKey(), item.getValue());
+                            }
+                        }
+                        else
+                        {
+                            System.out.println("No bookings found.");
+                        }
+                        
+                        // Stop the output and await a keypress so the results don't scroll up too far
+                        System.out.print("\nPress 'Enter' to continue...");
+                        input.nextLine();
+
+                        connection.close();
+                        
+                        break;                        
+                    case 5:
                         exit = true;
                         break;
                 }
@@ -309,6 +394,7 @@ public class ConsoleApp {
         System.out.println("1. Add a room");
         System.out.println("2. Update dates");
         System.out.println("3. View bookings");
-        System.out.println("4. Exit");
+        System.out.println("4. View bookings per area");
+        System.out.println("5. Exit");
     }
 }

@@ -3,15 +3,18 @@ package src.backend.worker;
 import static src.shared.ClientActions.ADD_DATES;
 import static src.shared.ClientActions.ADD_LODGING;
 import static src.shared.ClientActions.BOOK;
+import static src.shared.ClientActions.VIEW_RESERVATIONS_PER_AREA;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.daterange.DateRange;
 import src.backend.utility.response.Response;
 import src.shared.ClientActions;
 
@@ -119,7 +122,11 @@ public class WorkerHandler implements Runnable {
                     worker.viewBookings(managerName);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
-                    // TODO: Implement this for part B!
+                    manager = (String) in.readObject();
+                    DateRange dates = (DateRange) in.readObject();
+                    Calendar from_date = dates.getFrom();
+                    Calendar to_date = dates.getTo();
+                    worker.bookingsPerArea(manager, from_date, to_date);
                     break;
                 case FILTER:
                     // Stream contains: | *USERNAME* | 

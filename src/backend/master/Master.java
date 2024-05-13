@@ -11,6 +11,7 @@ import java.net.*;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.daterange.DateRange;
 import src.backend.utility.filterdata.FilterData;
 import src.backend.utility.response.Response;
 
@@ -311,6 +312,34 @@ public class Master {
         }   
     }
 
+    public synchronized void bookingPerArea(String manager, DateRange dates)
+    {
+        // Establish connection with Workers
+        try{
+            for (WorkerNode workerID : workerNodes)
+            {
+                Socket new_connection = new Socket(workerID.getIP(), workerID.getPort());
+                out = new ObjectOutputStream(new_connection.getOutputStream());
+
+                // Write the action taking place
+                out.writeObject(VIEW_RESERVATIONS_PER_AREA);
+                out.flush();
+
+                // Write manager's username
+                out.writeObject(manager);
+                out.flush();
+
+                // Write starting and ending period
+                out.writeObject(dates);
+                out.flush();
+            }
+        }
+        catch (IOException io)
+        {
+            io.setStackTrace(null);
+        }
+    }
+
     /**
      * Finds and notifies the thread which is responsible for the filters
      * to be sent back to the awaiting client.
@@ -319,10 +348,20 @@ public class Master {
     public synchronized void notifyOfResults(FilterData filters)
     {
         RequestHandler handler = handlers.stream().filter(dummyhandler -> dummyhandler.getUsername().equals(filters.getMapID())).findFirst().orElse(null);
-        System.out.println("\n\n\nThese are the filters I received: \n" + filters.getFilters().toString() + "\n\n\n"); // TODO: remove this
-        System.out.println("MapID found! It belongs to " + filters.getMapID() + ".");
         
-        response = new Response(filters.getMapID(), filters.getFilters());
+        
+        if (filters.getFilters() == null)
+        {
+            response = new Response(filters.getMapID(), filters.getBookings());
+            System.out.println("\n\n\nThese are the filters I received: \n" + filters.getBookings().toString() + "\n\n\n"); // TODO: remove this
+            System.out.println("MapID found! It belongs to " + filters.getMapID() + ".");
+        }
+        else
+        {
+            response = new Response(filters.getMapID(), filters.getFilters());
+            System.out.println("\n\n\nThese are the filters I received: \n" + filters.getFilters().toString() + "\n\n\n"); // TODO: remove this
+            System.out.println("MapID found! It belongs to " + filters.getMapID() + ".");
+        }
 
         try {
             this.out = handler.getOut();

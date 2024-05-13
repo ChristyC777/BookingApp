@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import src.shared.ClientActions;
 
 import src.backend.lodging.Lodging;
+import src.backend.utility.daterange.DateRange;
 import src.backend.utility.filterdata.FilterData;
 import src.backend.utility.response.Response;
 
@@ -83,7 +85,11 @@ public class RequestHandler implements Runnable {
                     master.viewBookings(manager);
                     break;
                 case VIEW_RESERVATIONS_PER_AREA:
-                    // TODO: Implement this for part B!
+                    manager = (String) in.readObject();
+                    DateRange dates = (DateRange) in.readObject();
+                    setUsername(manager);
+                    master.addHandler(this);
+                    master.bookingPerArea(manager, dates);
                     break;
                 case FILTER:
                     mapid = (String) in.readObject(); 

@@ -1,6 +1,7 @@
 package src.backend.mapreducer;
 
 import static src.shared.ClientActions.FINAL_FILTERS;
+import static src.shared.ClientActions.VIEW_RESERVATIONS_PER_AREA;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -8,10 +9,12 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.ClientInfoStatus;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
 import src.backend.utility.filterdata.FilterData;
+import src.shared.ClientActions;
 
 public class MapReducer {
   
@@ -27,6 +30,7 @@ public class MapReducer {
     private ObjectOutputStream out;
     private String currentMapid;
     FilterData final_results;
+    HashMap<String, Integer> bookings_per_area;
     HashMap<Lodging, Integer> total_answers; // Creates {"room1":3, "room5":10} 
 
 
@@ -35,6 +39,7 @@ public class MapReducer {
         this.num_of_workers = num_of_workers;
         this.final_results = null;
         this.total_answers = new HashMap<Lodging, Integer>();
+        this.bookings_per_area = new HashMap<String, Integer>();
     }
 
     public synchronized void setCurrentMapid(String currentMapid)
@@ -53,6 +58,7 @@ public class MapReducer {
         this.count = 0;
         this.total_answers.clear();
         this.final_results = null;
+        this.bookings_per_area.clear();
     }
 
     public synchronized boolean allAnswers()
@@ -79,21 +85,42 @@ public class MapReducer {
         return count;
     }
 
-    public synchronized void updateResults(Map<Lodging, Integer> filter_results)// {"room1":1, "room3":1}
+    public synchronized void updateResults(Map<Lodging, Integer> filter_results, ClientActions action)// {"room1":1, "room3":1}
     {
-        for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
-            Lodging lodge = item.getKey();
-            int count = item.getValue();
-            if (total_answers.containsKey(lodge))
-            {
-                int updatedValue = total_answers.get(lodge) + count;
-                total_answers.put(lodge, updatedValue);
-            }
-            else 
-            {
-                total_answers.put(lodge, count);
+        if (action == VIEW_RESERVATIONS_PER_AREA)
+        {
+            for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
+                Lodging lodge = item.getKey();
+                int count = item.getValue();
+                String area = lodge.getArea();
+                if (bookings_per_area.containsKey(area))
+                {
+                    int updatedValue = bookings_per_area.get(area) + count;
+                    bookings_per_area.put(area, updatedValue);
+                }
+                else 
+                {
+                    bookings_per_area.put(area, count);
+                }
             }
         }
+        else
+        {
+            for (Map.Entry<Lodging, Integer> item : filter_results.entrySet()) {
+                Lodging lodge = item.getKey();
+                int count = item.getValue();
+                if (total_answers.containsKey(lodge))
+                {
+                    int updatedValue = total_answers.get(lodge) + count;
+                    total_answers.put(lodge, updatedValue);
+                }
+                else 
+                {
+                    total_answers.put(lodge, count);
+                }
+            }
+        }
+        
     }
 
     /**
@@ -101,10 +128,10 @@ public class MapReducer {
      * @param mapid -> the ID of the specific request.
      * @param filter_results -> the filters to apply the reduction on.
      */
-    public synchronized void Reduce(String mapid, Map<Lodging, Integer> filter_results)
+    public synchronized void Reduce(String mapid, Map<Lodging, Integer> filter_results, ClientActions action)
     {
         
-        updateResults(filter_results);
+        updateResults(filter_results, action);
         increaseCount();
 
         // TODO: Have these be sent to ConsoleApp
@@ -113,7 +140,7 @@ public class MapReducer {
     
         if (allAnswers())
         {
-            sendResults();
+            sendResults(action);
         }
     }
 
@@ -144,9 +171,17 @@ public class MapReducer {
     }
 
     
-    public synchronized void sendResults()
+    public synchronized void sendResults(ClientActions action)
     {
-        final_results = new FilterData(currentMapid, total_answers);
+        if (action == VIEW_RESERVATIONS_PER_AREA)
+        {
+            final_results = new FilterData(currentMapid, null);
+            final_results.setBookings(bookings_per_area);
+        }
+        else
+        {
+            final_results = new FilterData(currentMapid, total_answers);
+        }
         // Create a socket to send the results back to the master
         try {
             Socket masterSocket = new Socket(MASTERIP, MASTERPORT);

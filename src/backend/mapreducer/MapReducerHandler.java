@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import src.backend.utility.filterdata.FilterData;
+import src.shared.ClientActions;
 
 public class MapReducerHandler implements Runnable{
     
@@ -36,6 +37,8 @@ public class MapReducerHandler implements Runnable{
         try {
             this.out = new ObjectOutputStream(requestSocket.getOutputStream());
             this.in = new ObjectInputStream(requestSocket.getInputStream());
+
+            ClientActions action = (ClientActions) in.readObject();
             
             FilterData filter_results = (FilterData) in.readObject();
 
@@ -52,7 +55,7 @@ public class MapReducerHandler implements Runnable{
                 }
                 mapReducer.setCurrentMapid(filter_results.getMapID());
             }   
-            mapReducer.Reduce(filter_results.getMapID(), filter_results.getFilters());
+            mapReducer.Reduce(filter_results.getMapID(), filter_results.getFilters(), action);
             requestSocket.close();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

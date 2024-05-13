@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.swing.Action;
 
 import java.util.Calendar;
 
@@ -41,9 +44,11 @@ public class Worker {
     private boolean locklodge;
     private boolean lockdates;
     private boolean lockbook;
+    private boolean lockbookingsperarea;
     private String messagelodge;
     private String messagedates;
     private String messagebook;
+    private String messagebookingsperarea;
 
 
     public Worker(int port)
@@ -94,6 +99,9 @@ public class Worker {
             case ADD_DATES:
                 lockdates = lock;
                 break;
+            case VIEW_RESERVATIONS_PER_AREA:
+                lockbookingsperarea = lock;
+                break;
         }
     }
 
@@ -106,6 +114,8 @@ public class Worker {
                 return lockbook;
             case ADD_DATES:
                 return lockdates;
+            case VIEW_RESERVATIONS_PER_AREA:
+                return lockbookingsperarea;
         }
         return (Boolean) null;
     }
@@ -133,6 +143,21 @@ public class Worker {
 			e.printStackTrace();
 		}
 	}
+
+    public synchronized void bookingsPerArea(String manager, Calendar startPeriod, Calendar endPeriod)
+    {
+        ArrayList<Lodging> bookings_found = (ArrayList<Lodging>) bookings.stream()
+        .filter(lodge -> lodge.getLodge().getManager().equals(manager))
+        .filter(lodge -> {
+            Calendar from = lodge.getDateRange().getFrom();
+            Calendar to = lodge.getDateRange().getTo();
+            return !(from.before(startPeriod) || to.after(endPeriod));
+        })
+        .map(Booking::getLodge)
+        .collect(Collectors.toList());
+        System.out.println(bookings_found);
+        Map(manager, bookings_found, VIEW_RESERVATIONS_PER_AREA);
+    }
 
     /**
      * Adds availability dates to a lodge.
@@ -262,7 +287,7 @@ public class Worker {
 
         // Check whether the booking conflicts with another booking.
         for (Booking booking : bookings) {
-            if (booking.getLodge().equals(lodge) && booking.getDateRange().isWithinRange(dateRange.getFrom(), dateRange.getTo())) {
+            if (booking.getLodge().equals(lodge) && booking.getDateRange().checkReservations(dateRange.getFrom(), dateRange.getTo())) {
                 return BookingResponse.BOOKING_CONFLICT;
             }
         }
@@ -324,7 +349,7 @@ public class Worker {
     public synchronized void viewBookings(String manager)
     {
        ArrayList<Lodging> filteredLodges = this.getBookings(manager);
-       Map(manager, filteredLodges);
+       Map(manager, filteredLodges, VIEW_BOOKINGS);
     }
 
     /**
@@ -360,7 +385,7 @@ public class Worker {
     public synchronized void manageFilters(String mapid, Map<String, Object> map)
     {
         ArrayList<Lodging> filters = filterRooms(map);
-        Map(mapid, filters);
+        Map(mapid, filters, FILTER);
     }
 
     /**
@@ -369,17 +394,34 @@ public class Worker {
      * @param mapid -> the name of the user 
      * @param filter -> arraylist of the filtered room(s)
      */ 
-    public synchronized void Map(String mapid, ArrayList<Lodging> filter)
+    public synchronized void Map(String mapid, ArrayList<Lodging> filter, ClientActions action)
     {
         HashMap<Lodging, Integer> count = new HashMap<Lodging, Integer>(); // {"room1":1, "room2":1, "room3":1}
-        Set<Lodging> filtereredUniques = new HashSet<Lodging>(filter);
-        for (Lodging lodge : filtereredUniques)
+        FilterData filterData = null;
+        if (action == VIEW_RESERVATIONS_PER_AREA)
         {
-            count.put(lodge, 1);
+            count = new HashMap<Lodging, Integer>();
+            for (Lodging lodge : filter) {
+                if (count.containsKey(lodge)) {
+                    count.put(lodge, count.get(lodge) + 1); // Increment count if already exists
+                } else 
+                {
+                count.put(lodge, 1); // Add if doesn't exist
+                }
+            }
+            filterData = new FilterData(mapid, count);
         }
-        FilterData filterData = new FilterData(mapid, count);
-
-        System.out.println("MapID: " + filterData.getMapID() + "\nData:\n" + filterData.getFilters().toString());
+        else 
+        {
+            Set<Lodging> filtereredUniques = new HashSet<Lodging>(filter);
+            for (Lodging lodge : filtereredUniques)
+            {
+                count.put(lodge, 1);
+            }
+            filterData = new FilterData(mapid, count);
+    
+            System.out.println("MapID: " + filterData.getMapID() + "\nData:\n" + filterData.getFilters().toString());
+        }
 
         try
         {
@@ -387,6 +429,9 @@ public class Worker {
 
             ObjectOutputStream output = new ObjectOutputStream(reducer.getOutputStream());
             ObjectInputStream input = new ObjectInputStream(reducer.getInputStream());
+
+            output.writeObject(action);
+            output.flush();
 
             output.writeObject(filterData);
             output.flush();
