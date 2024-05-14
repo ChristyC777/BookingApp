@@ -146,6 +146,7 @@ public class Worker {
 
     public synchronized void bookingsPerArea(String manager, Calendar startPeriod, Calendar endPeriod)
     {
+
         ArrayList<Lodging> bookings_found = (ArrayList<Lodging>) bookings.stream()
         .filter(lodge -> lodge.getLodge().getManager().equals(manager))
         .filter(lodge -> {

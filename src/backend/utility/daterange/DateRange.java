@@ -43,7 +43,7 @@ public class DateRange implements Serializable{
     public boolean checkReservations(Calendar dateFrom, Calendar dateTo) {
         if (dateFrom != null && dateTo != null) {
             // Check if the given period overlaps with any existing reservation
-            if ((from.compareTo(dateTo) <= 0) && (to.compareTo(dateFrom) >= 0)) {
+            if ((from.compareTo(dateFrom) <= 0) && (to.compareTo(dateTo) >= 0)) {
                 return false; // There is an overlap, reservation not allowed
             }
             return true; // No overlap, reservation allowed
