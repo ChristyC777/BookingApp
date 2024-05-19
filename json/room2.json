@@ -4,5 +4,6 @@
     "area": "Glyfada",
     "stars": 4,
     "noOfReviews": 94,
-    "roomImage": "images/Golden_Island_Resorts.png"
+    "roomImage": "images\\lodges\\Golden_Island_Resorts.png",
+    "price": 353
 }

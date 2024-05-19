@@ -1,20 +1,18 @@
 package src.backend.mapreducer;
 
-import static src.shared.ClientActions.FINAL_FILTERS;
-import static src.shared.ClientActions.VIEW_RESERVATIONS_PER_AREA;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.ClientInfoStatus;
 import java.util.*;
 
 import src.backend.lodging.Lodging;
 import src.backend.utility.filterdata.FilterData;
 import src.shared.ClientActions;
+
+import static src.shared.ClientActions.*;
 
 public class MapReducer {
   

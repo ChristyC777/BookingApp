@@ -4,5 +4,6 @@
     "area": "Monastiraki",
     "stars": 4,
     "noOfReviews": 871,
-    "roomImage": "images/The_Artisan_Suites.png"
+    "roomImage": "images\\lodges\\The_Artisan_Suites.png",
+    "price": 168
 }

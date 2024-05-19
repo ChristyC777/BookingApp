@@ -4,5 +4,6 @@
     "area": "Petralona",
     "stars": 4,
     "noOfReviews": 245,
-    "roomImage": "images/Troon_Of_Athens_Apartments.png"
+    "roomImage": "images\\lodges\\Troon_Of_Athens_Apartments.png",
+    "price": 91
 }

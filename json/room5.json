@@ -4,5 +4,6 @@
     "area": "Cholargos",
     "stars": 3,
     "noOfReviews": 871,
-    "roomImage": "images/Olygreen_Athens_Residences.png"
+    "roomImage": "images\\lodges\\Olygreen_Athens_Residences.png",
+    "price": 160
 }

@@ -13,7 +13,7 @@ public interface GuestInterface {
     public void search(Map<Integer, String> filter);
 
     /** 
-     * Κράτηση για ένα κατάλυμα {@link backend.Lodging.Lodging}από εκείνα που επέστρεψε η search().
+     * Κράτηση για ένα κατάλυμα {@link gr.aueb.ebookingapp.backend.lodging.Lodging}από εκείνα που επέστρεψε η search().
      * @param lodge -> Κατάλυμα για το οποίο γίνεται η κράτηση.
      */ 
     public void book(Lodging lodge);

@@ -1,9 +1,6 @@
 package src.backend.worker;
 
-import static src.shared.ClientActions.ADD_DATES;
-import static src.shared.ClientActions.ADD_LODGING;
-import static src.shared.ClientActions.BOOK;
-import static src.shared.ClientActions.VIEW_RESERVATIONS_PER_AREA;
+import static src.shared.ClientActions.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

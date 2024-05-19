@@ -33,6 +33,8 @@ public class User {
         return this.username;
     }
 
+    public String getPassword(){ return this.password;}
+
     public boolean login(String username, String password, String identifier)
     {
         User dummyuser = new User(username, password);

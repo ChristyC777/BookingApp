@@ -14,6 +14,7 @@ public class Lodging implements LodgingInterface, Serializable {
     private int noOfPersons;
     private int noOfReviews;
     private int stars;
+    private int price;
     private String manager;
     private DateRange dateRange;
     private ArrayList<Booking> bookings;
@@ -22,6 +23,16 @@ public class Lodging implements LodgingInterface, Serializable {
     {
         super();
         bookings = new ArrayList<Booking>();
+    }
+
+    public void setPrice(int price)
+    {
+        this.price = price;
+    }
+
+    public int getPrice()
+    {
+        return price;
     }
 
     public ArrayList<Booking> getBookings()
