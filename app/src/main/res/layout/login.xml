@@ -5,27 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/ic_launcher_round"
     tools:context=".activity.login.Login">
 
-    <ImageView
-        android:id="@+id/background"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        android:orientation="vertical"
-        android:background="@mipmap/ic_launcher_round"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
-        tools:ignore="MissingConstraints">
-
-    </ImageView>
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="631dp"
-        android:layout_height="243dp"
-        android:layout_marginTop="128dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/background"
+        android:layout_width="411dp"
+        android:layout_height="196dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -35,9 +22,8 @@
     <EditText
         android:id="@+id/username"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="13dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="-20dp"
         android:background="@color/white"
         android:ems="10"
         android:inputType="text"
@@ -46,7 +32,6 @@
         android:textSize="18dp"
         app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:ignore="MissingConstraints" />
@@ -55,8 +40,8 @@
         android:id="@+id/password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="59dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="88dp"
         android:background="@color/white"
         android:ems="10"
         android:inputType="textPassword"
@@ -64,21 +49,21 @@
         android:textColor="@color/black"
         android:textSize="18dp"
         app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="101dp" />
+        tools:ignore="MissingConstraints" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="59dp"
         android:background="@color/color1"
         android:text="Sign Up"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="161dp"
+        tools:layout_editor_absoluteY="425dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

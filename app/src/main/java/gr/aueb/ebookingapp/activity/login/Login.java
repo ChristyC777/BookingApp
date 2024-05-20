@@ -17,7 +17,6 @@ import gr.aueb.ebookingapp.activity.homepage.Homepage;
 
 public class Login extends AppCompatActivity {
 
-    private ImageView backgroundImage;
     private ImageView logoImage;
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -34,7 +33,6 @@ public class Login extends AppCompatActivity {
         guestDAO.initialize();
 
         // Initialize the views
-        backgroundImage = findViewById(R.id.background);
         logoImage = findViewById(R.id.imageView);
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
