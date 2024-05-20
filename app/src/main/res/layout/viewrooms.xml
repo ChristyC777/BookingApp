@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- Small picture on the left side -->
+
+
+
+    <ImageView
+        android:id="@+id/lodgeImage"
+        android:layout_width="117dp"
+        android:layout_height="108dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="0dp"
+        android:scaleType="centerCrop"
+         />
+
+    <!-- Name of the lodge in the top center -->
+    <TextView
+        android:id="@+id/lodgeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lodge Name"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_toEndOf="@+id/lodgeImage"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/lodgePrice"
+        android:layout_width="44dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/starContainer"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="-24dp"
+        android:layout_marginEnd="216dp"
+        android:layout_toEndOf="@+id/lodgeImage"
+        android:text=""
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:id="@+id/starContainer"
+        android:layout_width="27dp"
+        android:layout_height="24dp"
+        android:layout_below="@id/lodgeName"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="6dp"
+        android:layout_toEndOf="@+id/lodgeImage"
+        android:background="@mipmap/ic_launcher_round"
+        android:orientation="horizontal" />
+
+    <TextView
+        android:id="@+id/textPrice"
+        android:layout_width="49dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/starContainer"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="23dp"
+        android:text="€"
+        android:textSize="16sp" />
+
+</RelativeLayout>

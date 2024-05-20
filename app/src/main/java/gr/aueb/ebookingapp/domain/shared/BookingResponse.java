@@ -1,0 +1,9 @@
+package gr.aueb.ebookingapp.domain.shared;
+
+public enum BookingResponse
+{
+    BOOKING_NOT_WITHIN_AVAILABILITY,
+    BOOKING_CONFLICT,
+    BOOKING_SUCCESS,
+    NULL_DATERANGE
+}

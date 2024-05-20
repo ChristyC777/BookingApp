@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ImageActivity"
+    android:background="@color/color2"
+    android:orientation="vertical">
+    
+    <ImageView
+        android:id="@+id/selectedlodge"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+    </ImageView>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:textColor="#FFFF"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/book"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color1"
+        android:text="Book"
+        android:textColor="@color/white"
+        android:translationX="170dp" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>
