@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,10 +43,11 @@ public class Worker {
     private boolean lockdates;
     private boolean lockbook;
     private boolean lockbookingsperarea;
+    private boolean lockrating;
     private String messagelodge;
     private String messagedates;
     private String messagebook;
-    private String messagebookingsperarea;
+    private String messagerating;
 
 
     public Worker(int port)
@@ -54,6 +56,18 @@ public class Worker {
         this.lodges = new ArrayList<Lodging>();
         this.bookings = new ArrayList<Booking>();
         this.workerThreads = new ArrayList<Thread>();
+    }
+
+    public synchronized void addRating(String lodgeName, Integer rating)
+    {
+        lodges.stream().filter(lodge -> lodge.getRoomName().equals(lodgeName)).findFirst().get().addRating(rating);
+        synchronized(this)
+        {
+            setMessage(RATE, "Succesfully added rating!");
+            setLocked(RATE,false);
+            this.notifyAll();
+
+        }
     }
 
     public String getMessage(ClientActions action)
@@ -65,6 +79,8 @@ public class Worker {
                 return messagebook;
             case ADD_DATES:
                 return messagedates;
+            case RATE:
+                return messagerating;
         }
         return null;
     }
@@ -80,6 +96,9 @@ public class Worker {
                 break;
             case ADD_DATES:
                 messagedates = message;
+                break;
+            case RATE:
+                messagerating = message;
                 break;
         }
     }
@@ -99,6 +118,9 @@ public class Worker {
             case VIEW_RESERVATIONS_PER_AREA:
                 lockbookingsperarea = lock;
                 break;
+            case RATE:
+                lockrating = lock;
+                break;
         }
     }
 
@@ -113,6 +135,8 @@ public class Worker {
                 return lockdates;
             case VIEW_RESERVATIONS_PER_AREA:
                 return lockbookingsperarea;
+            case RATE:
+                return lockrating;
         }
         return (Boolean) null;
     }

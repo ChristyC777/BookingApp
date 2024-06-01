@@ -36,5 +36,5 @@ public interface LodgingInterface {
      * Επιστρέφει την μέση βαθμολογία των χρηστών για το κατάλυμα.
      * @return Τη μέση βαθμολογία χρηστών για το κατάλυμα (1 - 5 αστέρια).
      */
-    public int getStars();
+    public double getStars();
 }

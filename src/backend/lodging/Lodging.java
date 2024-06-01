@@ -13,7 +13,7 @@ public class Lodging implements LodgingInterface, Serializable {
     private String area;
     private int noOfPersons;
     private int noOfReviews;
-    private int stars;
+    private double stars;
     private int price;
     private String manager;
     private DateRange dateRange;
@@ -23,6 +23,12 @@ public class Lodging implements LodgingInterface, Serializable {
     {
         super();
         bookings = new ArrayList<Booking>();
+    }
+
+    public synchronized void addRating(Integer rating)
+    {
+        stars = (stars + rating)/2;
+        stars = Math.round(stars * 10.0) / 10.0;
     }
 
     public void setPrice(int price)
@@ -90,7 +96,7 @@ public class Lodging implements LodgingInterface, Serializable {
         return noOfReviews;
     }
 
-    public int getStars()
+    public double getStars()
     {
         return stars;
     }
@@ -115,7 +121,7 @@ public class Lodging implements LodgingInterface, Serializable {
             ###################
 
             Name: %s
-            Stars: %d
+            Stars: %.f
             Area: %s
             Manager: %s
             Number of people: %d

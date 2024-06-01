@@ -8,7 +8,6 @@ import static src.shared.ClientActions.*;
 
 import src.backend.lodging.Lodging;
 import src.backend.users.Guest;
-import src.backend.users.User;
 import src.backend.utility.response.Response;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +22,7 @@ public class DummyApp {
     DummyApp() { }
     public static void main(String[] args) throws IOException, java.text.ParseException {
 
-        User user = null;
+        Guest user = null;
         Scanner input = new Scanner(System.in);
         
         System.out.print("Enter the IP address of Master: ");
@@ -131,7 +130,7 @@ public class DummyApp {
                     System.out.print("Enter your answer: ");
                     int option = input.nextInt();
                     input.nextLine(); // consume newline
-                    while (option > 4 && option < 1) 
+                    while (option > 5 && option < 1) 
                     {
                         System.out.println("There is no such option!!! Please try again!!!");
                         Menu();
@@ -405,6 +404,52 @@ public class DummyApp {
                             connection.close();
                             break;
                         case 3:
+
+                            System.out.print("Enter the name of the lodge you want to book: ");
+                            name = input.nextLine();
+
+                            System.out.println("Enter your rating: ");
+                            int rating = input.nextInt();
+                            input.nextLine();
+
+                            if (user.hasRated(name))
+                            {
+                                System.out.println("You have already rate this lodge");
+                                break;
+                            }
+
+                            connection = new Socket(HOST_ADDRESS, SERVERPORT);
+
+                            out = new ObjectOutputStream(connection.getOutputStream());
+                            in = new ObjectInputStream(connection.getInputStream());
+
+                            out.writeObject(RATE);
+                            out.flush();
+
+                            if (user.getUsername() == null)
+                            {
+                                out.writeObject(user.getUUID());
+                                out.flush();
+                            }
+                            else 
+                            {
+                                out.writeObject(user.getUsername());
+                                out.flush();
+                            }
+                                                    
+                            // Send the name of the room
+                            out.writeObject(name);
+                            out.flush();
+
+                            out.writeObject(rating);
+                            out.flush();
+
+                            String message = (String) in.readObject();
+                            System.out.println(message);
+
+                            user.addRatings(name, rating);
+                            break;
+                        case 4: 
                             connection = new Socket(HOST_ADDRESS, SERVERPORT);
 
                             out = new ObjectOutputStream(connection.getOutputStream());
@@ -446,11 +491,15 @@ public class DummyApp {
                             {
                                 System.out.println(lodge.getRoomName());
                             }
-                        case 4:
+                            break;
+                        case 5:
                             exit = true;
                             break;
                     }
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -462,8 +511,9 @@ public class DummyApp {
         System.out.println("Please select from the following options (1-3):");
         System.out.println("1. Book a room");
         System.out.println("2. Use filters");
-        System.out.println("3. Retrieve random lodges");
-        System.out.println("4. Exit App");
+        System.out.println("3. Rate");
+        System.out.println("4. Retrieve random lodges");
+        System.out.println("5. Exit App");
     }
 
     public static void filters()

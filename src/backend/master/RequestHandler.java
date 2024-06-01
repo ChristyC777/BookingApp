@@ -109,13 +109,23 @@ public class RequestHandler implements Runnable {
                     FilterData final_filters = (FilterData) in.readObject();
                     master.notifyOfResults(final_filters);
                     break;
+                case RATE:
+                    username = (String) in.readObject();
+                    String lodgeName = (String) in.readObject();
+                    Integer rating = (Integer) in.readObject();
+                    setUsername(username);
+                    master.addHandler(this);
+                    master.addRating(username, lodgeName, rating);
+                    break;
                 case HOMEPAGE_LODGES:
                     username = (String) in.readObject();
                     setUsername(username);
                     master.addHandler(this);
                     master.randomLodgeAssortment(username);
+                    break;
                 default:
                     System.err.println("Invalid request.");
+                    break;
             }
         
 

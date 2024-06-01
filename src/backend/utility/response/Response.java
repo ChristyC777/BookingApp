@@ -8,6 +8,7 @@ public class Response implements Serializable {
     private Object obj;
     private String message;
 
+
     public Response(String mapid, Object obj)
     {
         this.mapid = mapid;
