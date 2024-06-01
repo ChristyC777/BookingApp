@@ -162,8 +162,13 @@ public class WorkerHandler implements Runnable {
                     out.writeObject(response);
                     out.flush();
                     break;
+                case HOMEPAGE_LODGES:
+                    username = (String) in.readObject();
+                    worker.randomLodgeAssortment(username);
+                    break;
                 default:
                     System.err.println("Invalid request.");
+                    break;
             }
         } catch (IOException | ClassNotFoundException e)
         {

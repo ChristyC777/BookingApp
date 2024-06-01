@@ -11,6 +11,7 @@ public enum ClientActions
     // Guest actions
     FILTER,
     BOOK,
+    HOMEPAGE_LODGES,
 
     // Reducer actions
     FINAL_FILTERS

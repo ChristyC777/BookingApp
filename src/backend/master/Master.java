@@ -348,7 +348,7 @@ public class Master {
     public synchronized void notifyOfResults(FilterData filters)
     {
         RequestHandler handler = handlers.stream().filter(dummyhandler -> dummyhandler.getUsername().equals(filters.getMapID())).findFirst().orElse(null);
-        
+
         
         if (filters.getFilters() == null)
         {
@@ -423,6 +423,30 @@ public class Master {
     
     public int selectWorker(String roomName) {
         return H(roomName) % numberOfWorkers;
+    }
+
+    public void randomLodgeAssortment(String username)
+    {
+        // Establish connection with Workers
+        try{
+            for (WorkerNode workerID : workerNodes)
+            {
+                Socket new_connection = new Socket(workerID.getIP(), workerID.getPort());
+                out = new ObjectOutputStream(new_connection.getOutputStream());
+
+                // Write the action taking place
+                out.writeObject(HOMEPAGE_LODGES);
+                out.flush();
+
+                // Write manager's username
+                out.writeObject(username);
+                out.flush();
+            }
+        }
+        catch (IOException io)
+        {
+            io.setStackTrace(null);
+        }
     }
 
     public static void main(String[] args) {

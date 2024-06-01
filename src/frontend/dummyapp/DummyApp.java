@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.*;
 
-import org.json.simple.parser.ParseException;
 import static src.shared.ClientActions.*;
 
 import src.backend.lodging.Lodging;
@@ -22,7 +21,7 @@ public class DummyApp {
 	private static ObjectOutputStream out;
 
     DummyApp() { }
-    public static void main(String[] args) throws IOException, ParseException, java.text.ParseException {
+    public static void main(String[] args) throws IOException, java.text.ParseException {
 
         User user = null;
         Scanner input = new Scanner(System.in);
@@ -132,7 +131,7 @@ public class DummyApp {
                     System.out.print("Enter your answer: ");
                     int option = input.nextInt();
                     input.nextLine(); // consume newline
-                    while (option > 3 && option < 1) 
+                    while (option > 4 && option < 1) 
                     {
                         System.out.println("There is no such option!!! Please try again!!!");
                         Menu();
@@ -406,6 +405,48 @@ public class DummyApp {
                             connection.close();
                             break;
                         case 3:
+                            connection = new Socket(HOST_ADDRESS, SERVERPORT);
+
+                            out = new ObjectOutputStream(connection.getOutputStream());
+                            in = new ObjectInputStream(connection.getInputStream());
+                            
+                            out.writeObject(HOMEPAGE_LODGES);
+                            out.flush();
+
+                            if (user.getUsername() != null)
+                            {
+                                out.writeObject(user.getUsername());
+                                out.flush();
+                            }
+                            else
+                            {
+                                out.writeObject(user.getUUID());
+                                out.flush();
+                            }
+
+                            // await for a response
+                            try {
+                                response = (Response) in.readObject();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+
+                            // Retrieve response
+                            HashMap<Lodging, Integer> lodgeListResponse = (HashMap<Lodging, Integer>) response.getResponse();
+
+                            ArrayList<Lodging> lodgeList = new ArrayList<Lodging>();
+
+                            for (Lodging lodge : lodgeListResponse.keySet())
+                            {
+                                lodgeList.add(lodge);
+                            }
+
+                            System.out.println("Retrieved the following lodges: ");
+                            for(Lodging lodge : lodgeList)
+                            {
+                                System.out.println(lodge.getRoomName());
+                            }
+                        case 4:
                             exit = true;
                             break;
                     }
@@ -421,7 +462,8 @@ public class DummyApp {
         System.out.println("Please select from the following options (1-3):");
         System.out.println("1. Book a room");
         System.out.println("2. Use filters");
-        System.out.println("3. Exit App");
+        System.out.println("3. Retrieve random lodges");
+        System.out.println("4. Exit App");
     }
 
     public static void filters()

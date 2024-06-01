@@ -439,6 +439,11 @@ public class Worker {
         }
     }
 
+    public synchronized void randomLodgeAssortment(String username)
+    {
+        Map(username, lodges, FILTER);
+    }
+
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         

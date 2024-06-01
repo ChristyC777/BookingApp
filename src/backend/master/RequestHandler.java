@@ -56,6 +56,7 @@ public class RequestHandler implements Runnable {
             ClientActions action = (ClientActions) in.readObject();
             Response response = null;
             String mapid;
+            String username;
 
             switch(action)
             {
@@ -97,7 +98,7 @@ public class RequestHandler implements Runnable {
                     break;
                 case BOOK:
                     String roomName = (String) in.readObject();
-                    String username = (String) in.readObject();
+                    username = (String) in.readObject();
                     String from = (String) in.readObject();
                     String to = (String) in.readObject();
                     setUsername(username);
@@ -108,6 +109,11 @@ public class RequestHandler implements Runnable {
                     FilterData final_filters = (FilterData) in.readObject();
                     master.notifyOfResults(final_filters);
                     break;
+                case HOMEPAGE_LODGES:
+                    username = (String) in.readObject();
+                    setUsername(username);
+                    master.addHandler(this);
+                    master.randomLodgeAssortment(username);
                 default:
                     System.err.println("Invalid request.");
             }
