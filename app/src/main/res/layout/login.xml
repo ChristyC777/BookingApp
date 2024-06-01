@@ -7,27 +7,44 @@
     android:layout_height="match_parent"
     tools:context=".activity.login.Login">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="162dp"
+        android:layout_marginTop="33dp"
+        android:layout_marginEnd="162dp"
+        android:background="@color/color1"
+        android:text="Sign In"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password"
+        tools:ignore="MissingConstraints" />
+
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="196dp"
-        android:layout_marginTop="64dp"
+        android:layout_width="276dp"
+        android:layout_height="143dp"
+        android:layout_marginTop="50dp"
         android:layout_marginBottom="14dp"
         app:layout_constraintBottom_toTopOf="@+id/username"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher_logo"
+        app:srcCompat="@drawable/ebooking"
         tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/username"
         android:layout_width="240dp"
         android:layout_height="40dp"
+        android:layout_marginTop="14dp"
         android:background="@color/white"
         android:ems="10"
+        android:hint="Username"
         android:inputType="text"
-        android:text="Username"
         android:textColor="@color/black"
         android:textSize="18dp"
         app:layout_constraintBottom_toTopOf="@+id/password"
@@ -41,11 +58,11 @@
         android:layout_width="240dp"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="25dp"
         android:background="@color/white"
         android:ems="10"
+        android:hint="Password"
         android:inputType="textPassword"
-        android:text="Password"
         android:textColor="@color/black"
         android:textSize="18dp"
         app:layout_constraintBottom_toTopOf="@+id/button2"
@@ -55,20 +72,20 @@
         tools:ignore="MissingConstraints" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button2"
+        android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="162dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="162dp"
         android:layout_marginBottom="300dp"
         android:background="@color/color1"
-        android:text="Sign Up"
+        android:text="Register"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
         tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

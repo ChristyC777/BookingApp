@@ -5,6 +5,10 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowBackground">@drawable/background_image</item>
     </style>
+    <style name="Base.Theme.ClassicBackground" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_solid</item>
+    </style>
 
     <style name="Theme.EBooking" parent="Base.Theme.EBooking" />
+    <style name="Theme.ClassicBackground" parent="Base.Theme.ClassicBackground"/>
 </resources>

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import gr.aueb.ebookingapp.activity.register.Register;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.homepage.Homepage;
@@ -21,9 +22,8 @@ public class Login extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button signUpButton;
-
+    private Button registerButton;
     private MemoryGuestDAO guestDAO;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,18 +37,24 @@ public class Login extends AppCompatActivity {
         usernameEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
         signUpButton = findViewById(R.id.button2);
+        registerButton = findViewById(R.id.register);
 
         // Set up the sign-up button click listener
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handleSignUp();
+                handleSignIn();
             }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){ goToRegister(); };
         });
 
     }
 
-    public void handleSignUp()
+    public void handleSignIn()
     {
         String username = usernameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
@@ -65,10 +71,19 @@ public class Login extends AppCompatActivity {
         }
     }
 
+    public void goToRegister()
+    {
+        Intent intent = new Intent(this, Register.class);
+        startActivity(intent);
+    }
+
+
     protected void onDestroy()
     {
         super.onDestroy();
         signUpButton = findViewById(R.id.button2);
         signUpButton.setOnClickListener(null);
+        registerButton = findViewById(R.id.register);
+        registerButton.setOnClickListener(null);
     }
 }

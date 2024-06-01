@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import gr.aueb.ebookingapp.activity.homepage.Homepage;
 import gr.aueb.ebookingapp.activity.login.Login;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import gr.aueb.ebookingapp.R;
@@ -19,7 +20,6 @@ public class Register extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private Button registerButton;
-
     private Button guestButton;
     private MemoryGuestDAO guestDAO;
 
@@ -65,7 +65,7 @@ public class Register extends AppCompatActivity {
                 Guest newGuest = new Guest();
                 guestDAO.save(newGuest);
                 Toast.makeText(Register.this, "Your id is: " + newGuest.getUUID() + "Please remember it!",Toast.LENGTH_SHORT).show();
-                registerSuccess();
+                guestRegistered();
             }
         });
     }
@@ -73,7 +73,12 @@ public class Register extends AppCompatActivity {
     {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
-        finish();
+    }
+
+    public void guestRegistered()
+    {
+        Intent intent = new Intent(this, Homepage.class);
+        startActivity(intent);
     }
 
 
