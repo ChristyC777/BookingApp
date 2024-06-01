@@ -5,4 +5,6 @@
     <color name="color1">#28A9E0</color>
     <color name="color2">#283890</color>
     <color name="yellow">#FFFF00</color>
+    <color name="transparent">#00FF1F00</color>
+
 </resources>
