@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ViewRooms"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -19,6 +20,7 @@
          />
 
     <!-- Name of the lodge in the top center -->
+
     <TextView
         android:id="@+id/lodgeName"
         android:layout_width="wrap_content"
@@ -31,33 +33,43 @@
         android:layout_marginTop="8dp"/>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/lodgeStar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_marginStart="-102dp"
+        android:layout_marginTop="40dp"
+        android:layout_toEndOf="@id/lodgeImage"
+        android:text="lodgeStar"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="43dp"
+        android:layout_toEndOf="@id/lodgeStar"
+        app:srcCompat="@drawable/star" />
 
     <TextView
         android:id="@+id/lodgePrice"
-        android:layout_width="44dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/starContainer"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="216dp"
-        android:layout_toEndOf="@+id/lodgeImage"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="80dp"
         android:text="number"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/textPrice"
-        android:layout_width="49dp"
+        android:layout_width="20dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/starContainer"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="31dp"
-        android:layout_marginEnd="23dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="0dp"
         android:text="€"
+        android:layout_marginStart="5dp"
         android:textSize="16sp" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>
