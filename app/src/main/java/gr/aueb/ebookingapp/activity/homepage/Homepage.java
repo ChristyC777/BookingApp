@@ -22,6 +22,8 @@ public class Homepage extends AppCompatActivity {
 
     private ImageView logoImage;
     private ListView listView;
+
+    private Button filterButton;
     private MemoryGuestDAO guestDAO;
 
     @Override
@@ -32,7 +34,10 @@ public class Homepage extends AppCompatActivity {
 
         // Initialize Views
         logoImage = findViewById(R.id.imageView);
+
         listView = findViewById(R.id.listView);
+
+        filterButton = findViewById(R.id.button1);
 
 
     }
