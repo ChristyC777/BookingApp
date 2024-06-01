@@ -131,6 +131,32 @@ public class WorkerHandler implements Runnable {
                     HashMap<String, Object> map = (HashMap<String, Object>) in.readObject();
                     worker.manageFilters(mapid, map);
                     break;
+                case RATE:
+                    mapid = (String) in.readObject();
+                    lodgeName = (String) in.readObject();
+                    Integer rating = (Integer) in.readObject();
+                    synchronized(worker)
+                    {
+                        while(worker.getLocked(RATE))
+                        {
+                            try {
+                                worker.wait();
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    if (worker.getLocked(RATE)==false)
+                    {
+                        worker.setLocked(RATE, true);
+                    }
+                    worker.addRating(lodgeName, rating);
+                    message = worker.getMessage(RATE);
+                    response = new Response(mapid, message);
+                    out.writeObject(response);
+                    out.flush();
+                    break;
                 case BOOK:
                     // Stream contains: | *LODGE_NAME* | USERNAME | FROM_DATE | TO_DATE
                     // read in that order

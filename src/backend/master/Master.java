@@ -118,6 +118,8 @@ public class Master {
         }
     }
 
+
+
     /**
      * Establishes a connection with the appropriate worker
      * and sends the user's booking info to process the booking.
@@ -403,9 +405,51 @@ public class Master {
         this.workerNodes.add(worker);
     }
     
-    public void addRating(int rating) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addRating'");
+    public synchronized void addRating(String username, String lodgeName ,Integer rating) {
+        int workerID = selectWorker(lodgeName);
+        try {
+            
+            // Establish a connection with Worker
+            Socket new_connection = new Socket(workerNodes.get(workerID).getIP(), workerNodes.get(workerID).getPort());
+            out = new ObjectOutputStream(new_connection.getOutputStream());
+            in = new ObjectInputStream(new_connection.getInputStream());
+
+            // Write Action
+            out.writeObject(RATE);
+            out.flush();
+
+            out.writeObject(username);
+            out.flush();
+
+            out.writeObject(lodgeName);
+            out.flush();
+            
+            // Write the lodge that needs to be added
+            out.writeObject(rating);
+            out.flush();
+
+            try {
+                Response message = (Response) in.readObject();
+                String mapid = message.getMapID();
+                RequestHandler handler = handlers.stream().filter(dummyhandler -> dummyhandler.getUsername().equals(mapid)).findFirst().orElse(null);
+
+                this.out = handler.getOut();
+                this.in = handler.getIn();
+
+                out.writeObject(message.getMessage());
+                out.flush();
+
+                handlers.remove(handler);
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public int H(String roomName)
