@@ -412,9 +412,17 @@ public class DummyApp {
                             int rating = input.nextInt();
                             input.nextLine();
 
+                            while (rating < 1 || rating > 5)
+                            {
+                                System.out.println("Rating out of range. Please try again!");
+                                System.out.println("Enter your rating: ");
+                                rating = input.nextInt();
+                                input.nextLine();
+                            }
+
                             if (user.hasRated(name))
                             {
-                                System.out.println("You have already rate this lodge");
+                                System.out.println("You have already rated this lodge");
                                 break;
                             }
 

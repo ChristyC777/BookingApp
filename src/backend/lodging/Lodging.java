@@ -27,8 +27,9 @@ public class Lodging implements LodgingInterface, Serializable {
 
     public synchronized void addRating(Integer rating)
     {
-        stars = (stars + rating)/2;
-        stars = Math.round(stars * 10.0) / 10.0;
+        noOfReviews++;
+        stars = (stars + rating) / 2;
+        stars = ((double) Math.round(stars * 10.0f)) / 10.0f;
     }
 
     public void setPrice(int price)
@@ -121,7 +122,7 @@ public class Lodging implements LodgingInterface, Serializable {
             ###################
 
             Name: %s
-            Stars: %.f
+            Stars: %.1f
             Area: %s
             Manager: %s
             Number of people: %d
