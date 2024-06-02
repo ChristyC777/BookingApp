@@ -5,22 +5,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+
 import gr.aueb.ebookingapp.R;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import gr.aueb.ebookingapp.domain.backend.lodging.Lodging;
+import src.backend.lodging.Lodging;
 
 public class CollectionHomepageAdapter extends BaseAdapter {
     private Context context;

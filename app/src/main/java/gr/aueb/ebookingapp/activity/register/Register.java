@@ -13,7 +13,7 @@ import gr.aueb.ebookingapp.activity.homepage.Homepage;
 import gr.aueb.ebookingapp.activity.login.Login;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import gr.aueb.ebookingapp.R;
-import gr.aueb.ebookingapp.domain.backend.users.Guest;
+import src.backend.users.Guest;
 
 public class Register extends AppCompatActivity {
 
@@ -65,7 +65,7 @@ public class Register extends AppCompatActivity {
                 Guest newGuest = new Guest();
                 guestDAO.save(newGuest);
                 Toast.makeText(Register.this, "Your id is: " + newGuest.getUUID() + "Please remember it!",Toast.LENGTH_SHORT).show();
-                guestRegistered();
+                guestRegistered(newGuest.getUUID());
             }
         });
     }
@@ -75,9 +75,10 @@ public class Register extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void guestRegistered()
+    public void guestRegistered(String username)
     {
         Intent intent = new Intent(this, Homepage.class);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 

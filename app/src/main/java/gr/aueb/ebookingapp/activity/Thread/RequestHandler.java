@@ -1,6 +1,6 @@
 package gr.aueb.ebookingapp.activity.Thread;
 
-import static gr.aueb.ebookingapp.domain.shared.ClientActions.*;
+import static src.shared.ClientActions.*;
 
 import android.os.Handler;
 import android.os.Message;
@@ -15,14 +15,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
+import gr.aueb.ebookingapp.activity.homepage.Homepage;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
-import gr.aueb.ebookingapp.domain.backend.lodging.Lodging;
-import gr.aueb.ebookingapp.domain.backend.response.Response;
-import gr.aueb.ebookingapp.domain.shared.ClientActions;
+import src.backend.lodging.Lodging;
+import src.backend.utility.response.Response;
+import src.shared.ClientActions;
 
 public class RequestHandler implements Runnable
 {
-    Socket connection;
+
     private MemoryGuestDAO guestDAO;
     private Handler handler;
     private int rating;
@@ -31,7 +32,7 @@ public class RequestHandler implements Runnable
     private String username;
     private String lodgeName;
     private String message;
-    private static String HOST_ADDRESS;
+    private static String HOST_ADDRESS = "192.168.1.12";
     private ClientActions action;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
@@ -124,6 +125,7 @@ public class RequestHandler implements Runnable
     @Override
     public void run()
     {
+        Socket connection;
         switch(action)
         {
             case BOOK:
@@ -270,9 +272,10 @@ public class RequestHandler implements Runnable
                         {
                             lodges.add(item.getKey());
                         }
-                        Message msg = handler.obtainMessage();
+                        Message msg = new Message();
+                        msg = handler.obtainMessage();
                         msg.obj = lodges;
-                        handler.sendMessage(msg);
+                        handler.handleMessage(msg);
                     }
                     else
                     {
@@ -280,7 +283,7 @@ public class RequestHandler implements Runnable
                     }
                     connection.close();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
                 break;
         }

@@ -1,7 +1,6 @@
 package gr.aueb.ebookingapp.activity.homepage;
 
-import static gr.aueb.ebookingapp.domain.shared.ClientActions.FILTER;
-import static gr.aueb.ebookingapp.domain.shared.ClientActions.HOMEPAGE_LODGES;
+import static src.shared.ClientActions.HOMEPAGE_LODGES;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +8,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.os.Handler;
 import java.util.ArrayList;
 
@@ -21,13 +18,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
 import gr.aueb.ebookingapp.activity.filter.Filter;
-import gr.aueb.ebookingapp.activity.homepage.Homepage;
-import gr.aueb.ebookingapp.activity.login.Login;
 import gr.aueb.ebookingapp.adapter.CollectionHomepageAdapter;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import gr.aueb.ebookingapp.R;
-import gr.aueb.ebookingapp.domain.backend.lodging.Lodging;
-import gr.aueb.ebookingapp.domain.backend.users.Guest;
+import src.backend.lodging.Lodging;
 
 public class Homepage extends AppCompatActivity {
 
@@ -39,16 +33,16 @@ public class Homepage extends AppCompatActivity {
 
     private CollectionHomepageAdapter adapter;
 
-    private Handler handler = new Handler(Looper.getMainLooper()) {
+    public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             // Update the UI with the lodges data
             ArrayList<Lodging> lodges = (ArrayList<Lodging>) msg.obj;
             adapter = new CollectionHomepageAdapter(Homepage.this, lodges);
+            listView = findViewById(R.id.listView);
             listView.setAdapter(adapter);
         }
     };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +55,6 @@ public class Homepage extends AppCompatActivity {
 
         // Initialize Views
         logoImage = findViewById(R.id.imageView);
-
-        listView = findViewById(R.id.listView);
 
         filterButton = findViewById(R.id.filterButton);
 

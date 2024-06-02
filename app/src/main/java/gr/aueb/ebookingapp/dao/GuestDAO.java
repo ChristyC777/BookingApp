@@ -2,7 +2,7 @@ package gr.aueb.ebookingapp.dao;
 
 import java.util.ArrayList;
 
-import gr.aueb.ebookingapp.domain.backend.users.Guest;
+import src.backend.users.Guest;
 public interface GuestDAO {
 
     void initialize();

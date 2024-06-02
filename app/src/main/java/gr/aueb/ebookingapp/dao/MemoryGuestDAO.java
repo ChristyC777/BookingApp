@@ -3,16 +3,17 @@ package gr.aueb.ebookingapp.dao;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import gr.aueb.ebookingapp.domain.backend.users.Guest;
+import src.backend.users.Guest;
 
 public class MemoryGuestDAO implements GuestDAO
 {
-    protected static ArrayList<Guest> guestList = new ArrayList<Guest>();
+    protected static ArrayList<Guest> guestList;
 
     public MemoryGuestDAO(){}
 
     @Override
     public void initialize() {
+        guestList = new ArrayList<Guest>();
         Guest guest1 = new Guest("JohnWick",
                 "Excommunicado");
         guestList.add(guest1);
@@ -20,7 +21,7 @@ public class MemoryGuestDAO implements GuestDAO
 
     @Override
     public Guest find(String username, String password) {
-        Guest found_guest = (Guest) guestList.stream().filter(dummyguest -> dummyguest.getUsername().equals(username));
+        Guest found_guest = (Guest) guestList.stream().filter(dummyguest -> dummyguest.getUsername().equals(username)).findFirst().orElse(null);
         return found_guest;
     }
 
