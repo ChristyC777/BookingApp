@@ -1,6 +1,6 @@
 package gr.aueb.ebookingapp.domain.shared;
 
-public enum ClientActions 
+public enum ClientActions
 {
     // Manager actions
     ADD_DATES,
@@ -11,7 +11,10 @@ public enum ClientActions
     // Guest actions
     FILTER,
     BOOK,
+    RATE,
+    HOMEPAGE_LODGES,
 
     // Reducer actions
     FINAL_FILTERS
 }
+

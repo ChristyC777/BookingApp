@@ -17,16 +17,17 @@ import gr.aueb.ebookingapp.R;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gr.aueb.ebookingapp.domain.backend.lodging.Lodging;
 
 public class CollectionHomepageAdapter extends BaseAdapter {
     private Context context;
-    private List<Lodging> rooms;
+    private ArrayList<Lodging> rooms;
     private LayoutInflater inflater;
 
-    public CollectionHomepageAdapter(Context context, List<Lodging> rooms) {
+    public CollectionHomepageAdapter(Context context, ArrayList<Lodging> rooms) {
         this.context = context;
         this.rooms = rooms;
         this.inflater = LayoutInflater.from(context);
@@ -63,7 +64,7 @@ public class CollectionHomepageAdapter extends BaseAdapter {
 
         // Set the data
         lodgeName.setText(room.getRoomName());
-        lodgeStar.setText(room.getStars());
+        lodgeStar.setText(String.valueOf(room.getStars()));
         lodgePrice.setText(String.valueOf(room.getPrice()));
 
         // Assuming you have a method to get the drawable id from room

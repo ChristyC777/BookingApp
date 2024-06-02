@@ -1,6 +1,7 @@
 package gr.aueb.ebookingapp.dao;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import gr.aueb.ebookingapp.domain.backend.users.Guest;
 
@@ -23,9 +24,17 @@ public class MemoryGuestDAO implements GuestDAO
         return found_guest;
     }
 
+
     @Override
-    public Guest findGuest(String uuid) {
-        Guest found_guest = (Guest) guestList.stream().filter(dummyguest -> dummyguest.getUUID().equals(uuid));
+    public Guest findGuest(String username) {
+        Optional<Guest> optionalGuest = guestList.stream()
+                .filter(dummyguest -> dummyguest.getUsername().equals(username))
+                .findFirst();
+        if(optionalGuest.isPresent())
+        {
+            return optionalGuest.get();
+        }
+        Guest found_guest = (Guest) guestList.stream().filter(dummyguest -> dummyguest.getUUID().equals(username));
         return found_guest;
     }
 

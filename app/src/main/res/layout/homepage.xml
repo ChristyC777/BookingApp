@@ -11,21 +11,19 @@
         android:id="@+id/imageView"
         android:layout_width="125dp"
         android:layout_height="67dp"
-        android:layout_marginStart="150dp"
-        android:layout_marginEnd="160dp"
+        android:layout_marginEnd="190dp"
         android:layout_marginBottom="75dp"
         android:src="@drawable/ebooking"
         app:layout_constraintBottom_toTopOf="@+id/listView"
-        app:layout_constraintEnd_toStartOf="@+id/button1"
+        app:layout_constraintEnd_toStartOf="@+id/filterButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button1"
+        android:id="@+id/filterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="-30dp"
-        android:layout_marginEnd="100dp"
         android:layout_marginBottom="75dp"
         android:background="@color/color1"
         android:text="Filter"
@@ -34,22 +32,7 @@
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/goBack"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="75dp"
-        android:background="@color/color1"
-        android:text="<"
-        android:textColor="@color/white"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/listView"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.333" />
+
 
     <ListView
         android:id="@+id/listView"

@@ -1,11 +1,10 @@
 package gr.aueb.ebookingapp.domain.backend.users;
 
-import java.util.Map;
+import java.util.HashMap;
 
-import gr.aueb.ebookingapp.domain.backend.lodging.Lodging;
+public class Guest extends User {
 
-public class Guest extends User implements GuestInterface {
-
+    private HashMap<String, Integer> ratings;
     public Guest()
     {
         super();
@@ -16,19 +15,19 @@ public class Guest extends User implements GuestInterface {
         super(username, password);
     }
 
-    public void search(Map<Integer, String> filter)
+    public void addRatings(String lodgeName, Integer rating)
     {
-        // TODO: PART B 
+        ratings.put(lodgeName, rating);
     }
 
-    public void book(Lodging lodge)
+    public boolean hasRated(String lodgeName)
     {
-        // TODO: PART B
+        if (ratings.containsKey(lodgeName))
+        {
+            return true;
+        }
+        return false;
     }
 
-    public void rate(int stars)
-    {
-        // TODO: PART B
-    }
     
 }

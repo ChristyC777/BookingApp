@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import gr.aueb.ebookingapp.domain.backend.booking.Booking;
 import gr.aueb.ebookingapp.domain.backend.utility.daterange.DateRange;
 
+
+import java.io.Serializable;
+import java.util.ArrayList;
+
+
 public class Lodging implements LodgingInterface, Serializable {
 
     private String roomImage;
@@ -13,7 +18,7 @@ public class Lodging implements LodgingInterface, Serializable {
     private String area;
     private int noOfPersons;
     private int noOfReviews;
-    private int stars;
+    private double stars;
     private int price;
     private String manager;
     private DateRange dateRange;
@@ -23,6 +28,13 @@ public class Lodging implements LodgingInterface, Serializable {
     {
         super();
         bookings = new ArrayList<Booking>();
+    }
+
+    public synchronized void addRating(Integer rating)
+    {
+        noOfReviews++;
+        stars = (stars + rating) / 2;
+        stars = ((double) Math.round(stars * 10.0f)) / 10.0f;
     }
 
     public void setPrice(int price)
@@ -90,7 +102,7 @@ public class Lodging implements LodgingInterface, Serializable {
         return noOfReviews;
     }
 
-    public int getStars()
+    public double getStars()
     {
         return stars;
     }
@@ -108,7 +120,7 @@ public class Lodging implements LodgingInterface, Serializable {
         {
             toFormattedDate = "unknown";
         }
-        return String.format("%n###################%#### ROOM DATA ####%###################%n%nName: %s%nStars: %d%nArea: %s%nManager: %s%nNumber of people: %d%nNumber of reviews: %d%nAvailable from: %s%nAvailable to: %s%n", this.getRoomName(), this.getStars(), this.getArea(), this.getManager(), this.getNumberOfPersons(), this.getNumberOfReviews(), fromFormattedDate, toFormattedDate);
+        return String.format("%n###################%#### ROOM DATA ####%###################%n%nName: %s%nStars: %.1f%nArea: %s%nManager: %s%nNumber of people: %d%nNumber of reviews: %d%nAvailable from: %s%nAvailable to: %s%n", this.getRoomName(), this.getStars(), this.getArea(), this.getManager(), this.getNumberOfPersons(), this.getNumberOfReviews(), fromFormattedDate, toFormattedDate);
     }
 
     @Override
@@ -117,7 +129,7 @@ public class Lodging implements LodgingInterface, Serializable {
         if (other == this) {
             return true;
         }
- 
+
         if (!(other instanceof Lodging)) {
             return false;
         }
@@ -154,7 +166,7 @@ public class Lodging implements LodgingInterface, Serializable {
         {
             return false;
         }
-        
+
         if (!this.manager.equals(otherLodge.manager))
         {
             return false;
@@ -162,4 +174,4 @@ public class Lodging implements LodgingInterface, Serializable {
 
         return true;
     }
-}  
+}

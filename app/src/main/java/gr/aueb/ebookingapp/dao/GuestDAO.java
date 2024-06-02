@@ -9,7 +9,7 @@ public interface GuestDAO {
 
     Guest find(String username, String password);
 
-    Guest findGuest(String uuid);
+    Guest findGuest(String username);
 
     ArrayList<Guest> findAll();
 
