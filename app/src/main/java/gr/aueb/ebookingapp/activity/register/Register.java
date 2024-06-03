@@ -22,13 +22,23 @@ public class Register extends AppCompatActivity {
     private Button registerButton;
     private Button guestButton;
     private MemoryGuestDAO guestDAO;
+    private static boolean isInitialized;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-        guestDAO = new MemoryGuestDAO();
 
+        if (!isInitialized)
+        {
+            guestDAO = new MemoryGuestDAO();
+            guestDAO.initialize();
+            isInitialized = true;
+        }
+        else
+        {
+            guestDAO = new MemoryGuestDAO();
+        }
         // Initialize the views
         usernameEditText = findViewById(R.id.username_reg);
         passwordEditText = findViewById(R.id.Password_reg);
@@ -38,15 +48,14 @@ public class Register extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get the text from the EditText fields
-                String username = usernameEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
-
+                /* Get the text from the EditText fields and trim it so that no leading or trailing whitespace remains */
+                String username = usernameEditText.getText().toString().trim();
+                String password = passwordEditText.getText().toString().trim();
 
                 // Validate the inputs
                 if (username.isEmpty() || password.isEmpty()) {
                     Toast.makeText(Register.this, "Please enter both username and password", Toast.LENGTH_SHORT).show();
-                } else if (guestDAO.find(username,password)!=null) {
+                } else if (guestDAO.findGuest(username)!=null) {
                     Toast.makeText(Register.this, "This user already exists!", Toast.LENGTH_SHORT).show();
                 } else {
                     // Handle the registration logic (e.g., save to database, send to server)

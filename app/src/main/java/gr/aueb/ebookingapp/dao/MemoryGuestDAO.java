@@ -7,36 +7,44 @@ import src.backend.users.Guest;
 
 public class MemoryGuestDAO implements GuestDAO
 {
-    protected static ArrayList<Guest> guestList;
+    protected static ArrayList<Guest> guestList = new ArrayList<Guest>();
 
     public MemoryGuestDAO(){}
 
     @Override
     public void initialize() {
-        guestList = new ArrayList<Guest>();
         Guest guest1 = new Guest("JohnWick",
                 "Excommunicado");
         guestList.add(guest1);
     }
 
-    @Override
-    public Guest find(String username, String password) {
-        Guest found_guest = (Guest) guestList.stream().filter(dummyguest -> dummyguest.getUsername().equals(username)).findFirst().orElse(null);
-        return found_guest;
+    public ArrayList<Guest> getGuestList()
+    {
+        return guestList;
     }
 
+    @Override
+    public Guest find(String username, String password) {
+        Guest found_guest = (Guest) guestList.stream().filter(dummyguest -> dummyguest.getUsername().equals(username) && dummyguest.getPassword().equals(password)).findFirst().orElse(null);
+        return found_guest;
+    }
 
     @Override
     public Guest findGuest(String username) {
         Optional<Guest> optionalGuest = guestList.stream()
-                .filter(dummyguest -> dummyguest.getUsername().equals(username))
+                .filter(dummyguest -> dummyguest.getUsername() != null && dummyguest.getUsername().equals(username)) /* Added check in case it is null */
                 .findFirst();
         if(optionalGuest.isPresent())
         {
             return optionalGuest.get();
         }
-        Guest found_guest = (Guest) guestList.stream().filter(dummyguest -> dummyguest.getUUID().equals(username));
-        return found_guest;
+        Optional<Guest> found_guest = guestList.stream().filter(dummyguest -> dummyguest.getUUID() != null && dummyguest.getUUID().equals(username)).findFirst(); /* Added check in case it is null */
+        if(found_guest.isPresent())
+        {
+            return found_guest.get();
+        }
+
+        return null;
     }
 
     @Override

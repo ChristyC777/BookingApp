@@ -24,13 +24,12 @@ public class Login extends AppCompatActivity {
     private Button signUpButton;
     private Button registerButton;
     private MemoryGuestDAO guestDAO;
+    private static boolean isDAOInitialized;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.login);
-        guestDAO = new MemoryGuestDAO();
-        guestDAO.initialize();
 
         // Initialize the views
         logoImage = findViewById(R.id.imageView);
@@ -56,8 +55,20 @@ public class Login extends AppCompatActivity {
 
     public void handleSignIn()
     {
-        String username = usernameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        /* Create and initialize guestDAO if not already initialized*/
+        if (!isDAOInitialized)
+        {
+            guestDAO = new MemoryGuestDAO();
+            guestDAO.initialize();
+            isDAOInitialized = true;
+        }
+        else
+        {
+            guestDAO = new MemoryGuestDAO();
+        }
+        /* Get the text from the EditText fields and trim it so that no leading or trailing whitespace remains */
+        String username = usernameEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
         if(guestDAO.find(username, password)!=null)
         {
             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
