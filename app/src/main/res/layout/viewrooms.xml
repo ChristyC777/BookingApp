@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ViewRooms"
     android:layout_width="wrap_content"
@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/lodgeImage"
             android:layout_width="117dp"
@@ -18,8 +19,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="0dp"
-            android:scaleType="centerCrop"
-             />
+            android:scaleType="centerCrop" />
 
         <!-- Name of the lodge in the top center -->
 
@@ -27,12 +27,12 @@
             android:id="@+id/lodgeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/lodgeImage"
             android:text="Lodge Name"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_toEndOf="@+id/lodgeImage"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lodgeStar"
@@ -68,11 +68,11 @@
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="80dp"
             android:layout_marginEnd="0dp"
             android:text="€"
-            android:layout_marginStart="5dp"
             android:textSize="16sp" />
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
