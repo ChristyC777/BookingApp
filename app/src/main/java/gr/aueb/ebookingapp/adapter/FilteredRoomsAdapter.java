@@ -50,19 +50,20 @@ public class FilteredRoomsAdapter extends ArrayAdapter<Lodging> {
             viewHolder.starImage = convertView.findViewById(R.id.imageView3);
             viewHolder.lodgePrice = convertView.findViewById(R.id.lodgePrice);
             viewHolder.priceSymbol = convertView.findViewById(R.id.textPrice);
+
+            viewHolder.lodgeName.setText(lodge.getRoomName());
+            viewHolder.lodgeStar.setText(String.valueOf(lodge.getStars()));
+            viewHolder.lodgePrice.setText(String.valueOf(lodge.getPrice()));
+            viewHolder.priceSymbol.setText("€");
+
+            // Get the drawable id from the lodge object
+            int imageResId = context.getResources().getIdentifier(lodge.getRoomImage(), "drawable", context.getPackageName());
+            viewHolder.lodgeImage.setImageResource(imageResId);
+
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
-        viewHolder.lodgeName.setText(lodge.getRoomName());
-        viewHolder.lodgeStar.setText(String.valueOf(lodge.getStars()));
-        viewHolder.lodgePrice.setText(String.valueOf(lodge.getPrice()));
-        viewHolder.priceSymbol.setText("€");
-
-        // Assuming you have a method to get the drawable id from the lodge object
-        int imageResId = context.getResources().getIdentifier(lodge.getRoomImage(), "drawable", context.getPackageName());
-        viewHolder.lodgeImage.setImageResource(imageResId);
 
         return convertView;
     }
