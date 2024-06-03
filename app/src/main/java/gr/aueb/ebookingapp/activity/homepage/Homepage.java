@@ -32,15 +32,28 @@ public class Homepage extends AppCompatActivity {
     private MemoryGuestDAO guestDAO;
     private String username;
 
+    private ArrayList<Lodging> lodgingList;
+
     private CollectionHomepageAdapter adapter;
 
+    public void setLodgingList(ArrayList<Lodging> lodgingList)
+    {
+        this.lodgingList = lodgingList;
+    }
+
+    public ArrayList<Lodging> getLodgingList()
+    {
+        return lodgingList;
+    }
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             // Update the UI with the lodges data
             ArrayList<Lodging> lodges = (ArrayList<Lodging>) msg.obj;
-            adapter = new CollectionHomepageAdapter(lodges, Homepage.this);
-            listView.setAdapter(adapter);
+            setLodgingList(lodges);
+            adapter = new CollectionHomepageAdapter(getLodgingList(), Homepage.this);
+
+            runOnUiThread(() -> listView.setAdapter(adapter));
         }
     };
 
@@ -64,13 +77,12 @@ public class Homepage extends AppCompatActivity {
 
         filterButton = findViewById(R.id.filterButton);
 
-        listView = findViewById(R.id.listView);
+        listView = findViewById(R.id.homePageListView);
 
         setUsername(this.getIntent().getStringExtra("username"));
 
         Thread mythread = new Thread(new RequestHandler(this, HOMEPAGE_LODGES, this.getIntent().getStringExtra("username"),handler));
         mythread.start();
-
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
