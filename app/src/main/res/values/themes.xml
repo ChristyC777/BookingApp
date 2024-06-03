@@ -8,7 +8,11 @@
     <style name="Base.Theme.ClassicBackground" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/background_solid</item>
     </style>
+    <style name="Base.Theme.Background" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/background</item>
+    </style>
 
     <style name="Theme.EBooking" parent="Base.Theme.EBooking" />
     <style name="Theme.ClassicBackground" parent="Base.Theme.ClassicBackground"/>
+    <style name="Theme.Background" parent="Base.Theme.Background"/>
 </resources>

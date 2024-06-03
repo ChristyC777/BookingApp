@@ -1,60 +1,41 @@
 package gr.aueb.ebookingapp.adapter;
 
-import android.content.Intent;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import gr.aueb.ebookingapp.R;
-import gr.aueb.ebookingapp.activity.selectedlodge.SelectedLodge;
 import src.backend.lodging.Lodging;
 
-public class CollectionHomepageAdapter extends ArrayAdapter<Lodging> implements View.OnClickListener {
+public class FilteredRoomsAdapter extends ArrayAdapter<Lodging> {
+
     private Context context;
-    private ArrayList<Lodging> rooms;
-    private String username;
+    private ArrayList<Lodging> lodges;
 
-    public CollectionHomepageAdapter(ArrayList<Lodging> rooms, Context context) {
-        super(context, R.layout.viewrooms, rooms);
-        this.rooms = rooms;
+    public FilteredRoomsAdapter(Context context, ArrayList<Lodging> lodges) {
+        super(context, R.layout.viewrooms, lodges);
         this.context = context;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public void onClick(View view) {
-        int position = (Integer) view.getTag();
-        Lodging lodging = getItem(position);
-
-        Intent intent = new Intent(context, SelectedLodge.class);
-        intent.putExtra("username", getUsername());
-        intent.putExtra("lodging", lodging);
-        context.startActivity(intent);
+        this.lodges = lodges;
     }
 
     private static class ViewHolder {
         ImageView lodgeImage;
         TextView lodgeName;
         TextView lodgeStar;
+        ImageView starImage;
         TextView lodgePrice;
-        TextView textPrice;
+        TextView priceSymbol;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         Lodging lodge = getItem(position);
         ViewHolder viewHolder;
 
@@ -66,9 +47,9 @@ public class CollectionHomepageAdapter extends ArrayAdapter<Lodging> implements 
             viewHolder.lodgeImage = convertView.findViewById(R.id.lodgeImage);
             viewHolder.lodgeName = convertView.findViewById(R.id.lodgeName);
             viewHolder.lodgeStar = convertView.findViewById(R.id.lodgeStar);
+            viewHolder.starImage = convertView.findViewById(R.id.imageView3);
             viewHolder.lodgePrice = convertView.findViewById(R.id.lodgePrice);
-            viewHolder.textPrice = convertView.findViewById(R.id.textPrice);
-
+            viewHolder.priceSymbol = convertView.findViewById(R.id.textPrice);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -77,14 +58,11 @@ public class CollectionHomepageAdapter extends ArrayAdapter<Lodging> implements 
         viewHolder.lodgeName.setText(lodge.getRoomName());
         viewHolder.lodgeStar.setText(String.valueOf(lodge.getStars()));
         viewHolder.lodgePrice.setText(String.valueOf(lodge.getPrice()));
-        viewHolder.textPrice.setText("€");
+        viewHolder.priceSymbol.setText("€");
 
         // Assuming you have a method to get the drawable id from the lodge object
         int imageResId = context.getResources().getIdentifier(lodge.getRoomImage(), "drawable", context.getPackageName());
         viewHolder.lodgeImage.setImageResource(imageResId);
-
-        convertView.setOnClickListener(this);
-        convertView.setTag(position);
 
         return convertView;
     }

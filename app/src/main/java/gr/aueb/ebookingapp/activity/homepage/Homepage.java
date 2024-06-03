@@ -30,6 +30,7 @@ public class Homepage extends AppCompatActivity {
     private Button filterButton;
     private Button goBack;
     private MemoryGuestDAO guestDAO;
+    private String username;
 
     private CollectionHomepageAdapter adapter;
 
@@ -38,25 +39,38 @@ public class Homepage extends AppCompatActivity {
         public void handleMessage(Message msg) {
             // Update the UI with the lodges data
             ArrayList<Lodging> lodges = (ArrayList<Lodging>) msg.obj;
-            adapter = new CollectionHomepageAdapter(Homepage.this, lodges);
-            listView = findViewById(R.id.listView);
+            adapter = new CollectionHomepageAdapter(lodges, Homepage.this);
             listView.setAdapter(adapter);
         }
     };
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.homepage);
 
-        Thread mythread = new Thread(new RequestHandler(this, HOMEPAGE_LODGES, this.getIntent().getStringExtra("username"),handler));
-        mythread.start();
-
-
         // Initialize Views
         logoImage = findViewById(R.id.imageView);
 
         filterButton = findViewById(R.id.filterButton);
+
+        listView = findViewById(R.id.listView);
+
+        setUsername(this.getIntent().getStringExtra("username"));
+
+        Thread mythread = new Thread(new RequestHandler(this, HOMEPAGE_LODGES, this.getIntent().getStringExtra("username"),handler));
+        mythread.start();
+
 
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +86,7 @@ public class Homepage extends AppCompatActivity {
         Intent intent = new Intent(this, Filter.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
         startActivity(intent);
+
     }
 
     protected void OnDestroy()
