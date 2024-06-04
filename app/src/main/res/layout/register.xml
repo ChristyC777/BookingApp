@@ -11,15 +11,14 @@
         android:id="@+id/register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="300dp"
+        android:layout_marginTop="33dp"
         android:background="@color/color1"
-        android:text="Register"
+        android:text="Submit"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/guest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/guest"
+        app:layout_constraintTop_toBottomOf="@+id/Password_reg"
         tools:ignore="MissingConstraints" />
 
     <ImageView
@@ -39,14 +38,15 @@
         android:id="@+id/guest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="33dp"
-        android:background="@color/color1"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="300dp"
+        android:background="#CDDC39"
         android:text="Guest"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/register"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Password_reg"
+        app:layout_constraintTop_toBottomOf="@+id/register"
         tools:ignore="MissingConstraints" />
 
     <EditText
@@ -54,20 +54,18 @@
         android:layout_width="240dp"
         android:layout_height="40dp"
         android:layout_marginStart="101dp"
-        android:layout_marginTop="2dp"
         android:layout_marginEnd="101dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="26dp"
         android:background="@color/white"
         android:ems="10"
         android:hint="Password"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/guest"
+        app:layout_constraintBottom_toTopOf="@+id/register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username_reg"
-        tools:ignore="MissingConstraints"
-        tools:inputType="textPassword" />
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/username_reg"

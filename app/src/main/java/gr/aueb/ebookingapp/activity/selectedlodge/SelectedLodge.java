@@ -1,24 +1,39 @@
 package gr.aueb.ebookingapp.activity.selectedlodge;
 
+import static src.shared.ClientActions.BOOK;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
+
+import com.google.android.material.datepicker.MaterialDatePicker;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import gr.aueb.ebookingapp.R;
-import gr.aueb.ebookingapp.activity.book.Book;
+import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
 import gr.aueb.ebookingapp.activity.homepage.Homepage;
 import gr.aueb.ebookingapp.activity.rate.Rate;
 import src.backend.lodging.Lodging;
 
 public class SelectedLodge extends AppCompatActivity {
 
+    private String username;
     private ImageView lodgeImageView;
     private TextView lodgeNameTextView;
     private TextView lodgeStarsTextView;
@@ -29,11 +44,31 @@ public class SelectedLodge extends AppCompatActivity {
 
     private Button goBack, rate, book;
 
+    private String getUsername()
+    {
+        return username;
+    }
+
+    private void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            String message = (String) msg.obj;
+
+            Toast.makeText(SelectedLodge.this, message, Toast.LENGTH_LONG).show();
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.selectedlodge);
+
+        setUsername(this.getIntent().getStringExtra("username"));
 
         lodgeImageView = findViewById(R.id.selectedlodge);
         lodgeNameTextView = findViewById(R.id.textLodgeName);
@@ -60,6 +95,13 @@ public class SelectedLodge extends AppCompatActivity {
             lodgeImageView.setImageResource(imageResId);
         }
 
+        book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDates();
+            }
+        });
+
         goBack.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -74,15 +116,6 @@ public class SelectedLodge extends AppCompatActivity {
             public void onClick(View v)
             {
                 goToRate();
-            }
-        });
-
-        book.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                goToBook();
             }
         });
 
@@ -110,19 +143,43 @@ public class SelectedLodge extends AppCompatActivity {
         rate.setBackgroundColor(getResources().getColor(R.color.grey));
     }
 
-    private void goToBook()
-    {
-        Intent intent = new Intent(this, Book.class);
-        intent.putExtra("username", this.getIntent().getStringExtra("username"));
-        startActivity(intent);
-    }
-
     private void goToRate()
     {
         Intent intent = new Intent(this, Rate.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
         intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
         startActivity(intent);
+    }
+
+    private void selectDates()
+    {
+        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+        builder.setTitleText("Select the period you wish to book this lodge on.");
+
+        MaterialDatePicker<Pair<Long, Long>> selectButton = builder.build();
+
+        selectButton.addOnPositiveButtonClickListener(selection -> {
+            onDatePickerDialog(selection.first, selection.second);
+        });
+
+        selectButton.show(getSupportFragmentManager(), "DATE_PICKER");
+    }
+
+    public void onDatePickerDialog(Long startPeriod, Long endPeriod)
+    {
+        // Formatting the selected dates as strings
+        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String startPeriodString = date.format(new Date(startPeriod));
+        String endPeriodString = date.format(new Date(endPeriod));
+
+        RequestHandler runnable = new RequestHandler(this, BOOK, this.getUsername(), this.lodgeNameTextView.getText().toString(), startPeriodString, endPeriodString, handler);
+        Thread thread = new Thread(runnable);
+        thread.start();
+
+        // Creating the date range string
+        String selectedDateRange = startPeriodString + " - " + endPeriodString;
+
+        runOnUiThread(() -> Toast.makeText(SelectedLodge.this, String.format("Booking for '%s' was successfully"), Toast.LENGTH_LONG).show());
     }
 
     protected void OnDestroy()

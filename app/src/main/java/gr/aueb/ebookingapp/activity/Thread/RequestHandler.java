@@ -23,7 +23,6 @@ import src.shared.ClientActions;
 
 public class RequestHandler implements Runnable
 {
-
     private MemoryGuestDAO guestDAO;
     private Handler handler;
     private int rating;
@@ -32,22 +31,30 @@ public class RequestHandler implements Runnable
     private String username;
     private String lodgeName;
     private String message;
-    private static String HOST_ADDRESS = "192.168.1.12";
+    private static String HOST_ADDRESS = "192.168.2.5";
     private ClientActions action;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
-    private Calendar checkIn_date;
-    private Calendar checkOut_date;
+    private String checkIn_date;
+    private String checkOut_date;
     private AppCompatActivity activity;
     private HashMap<String, Object> filters;
     private final static int SERVERPORT = 7777;
-
 
     public RequestHandler(AppCompatActivity activity, ClientActions action, String username, Handler handler)
     {
         this.activity = activity;
         this.action = action;
         this.username = username;
+        this.handler = handler;
+    }
+
+    public RequestHandler(AppCompatActivity activity, ClientActions action, String username, String lodgeName, String checkIn_date, String checkOut_date, Handler handler)
+    {
+        this.activity = activity;
+        this.action = action;
+        this.username = username;
+        this.lodgeName = lodgeName;
         this.handler = handler;
     }
 
@@ -67,18 +74,18 @@ public class RequestHandler implements Runnable
         this.guestDAO = guestDAO;
     }
 
-    public void setDates(Calendar checkIn_date, Calendar checkOut_date)
+    public void setDates(String checkIn_date, String checkOut_date)
     {
         this.checkIn_date = checkIn_date;
         this.checkOut_date = checkOut_date;
     }
 
-    public Calendar getCheckIn()
+    public String getCheckIn()
     {
         return checkIn_date;
     }
 
-    public Calendar getCheckOut()
+    public String getCheckOut()
     {
         return checkOut_date;
     }
@@ -243,6 +250,7 @@ public class RequestHandler implements Runnable
                     msg.obj = message;
                     handler.handleMessage(msg);
 
+                    connection.close();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 } catch (ClassNotFoundException e) {

@@ -40,11 +40,18 @@
             android:exported="true"
             android:theme="@style/Base.Theme.ClassicBackground">
         </activity>
-        <activity android:name=".activity.filter.Filter"
+        <activity
+            android:name=".activity.filter.Filter"
             android:exported="true"
             android:theme="@style/Base.Theme.Background">
         </activity>
-        <activity android:name=".activity.selectedlodge.SelectedLodge"
+        <activity
+            android:name=".activity.selectedlodge.SelectedLodge"
+            android:exported="true"
+            android:theme="@style/Base.Theme.Background">
+        </activity>
+        <activity
+            android:name=".activity.rate.Rate"
             android:exported="true"
             android:theme="@style/Base.Theme.Background">
         </activity>

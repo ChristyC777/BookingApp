@@ -40,9 +40,9 @@ public class Rate extends AppCompatActivity {
         public void handleMessage(Message msg) {
             // Update the UI with the lodges data
             String message = (String) msg.obj;
-            if (message.equals("Succesfully added rating!"))
+            if (message.equals("Successfully added rating!"))
             {
-                Toast.makeText(Rate.this, message, Toast.LENGTH_LONG).show();
+                runOnUiThread(() ->Toast.makeText(Rate.this, message, Toast.LENGTH_SHORT).show());
                 guestDAO.findGuest(getUsername()).addRatings(lodgeName, currentRating);
                 SharedPreferences sharedPreferences = getSharedPreferences("RatingState", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -52,7 +52,7 @@ public class Rate extends AppCompatActivity {
             }
             else
             {
-                Toast.makeText(Rate.this, message, Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> Toast.makeText(Rate.this, message, Toast.LENGTH_SHORT).show());
                 finish();
             }
         }
@@ -69,8 +69,7 @@ public class Rate extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rate);  // Ensure you set the correct layout file
-
+        setContentView(R.layout.rate);
         if (!isInitialized)
         {
             guestDAO = new MemoryGuestDAO();
@@ -113,6 +112,7 @@ public class Rate extends AppCompatActivity {
         }
 
         RequestHandler requestHandler = new RequestHandler(this,RATE,this.getIntent().getStringExtra("username"), handler);
+        requestHandler.setGuestDAO(guestDAO);
         requestHandler.setRating(rating);
         requestHandler.setLodgeName(lodgeName);
         Thread thread = new Thread(requestHandler);

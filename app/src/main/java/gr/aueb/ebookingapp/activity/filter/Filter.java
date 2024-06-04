@@ -37,11 +37,11 @@ public class Filter extends AppCompatActivity {
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            // Update the UI with the lodges data
+            /* Update the UI with the lodge data */
             lodges = (ArrayList<Lodging>) msg.obj;
             if (lodges == null)
             {
-                Toast.makeText(Filter.this, "No rooms found...", Toast.LENGTH_LONG).show();
+                runOnUiThread(() -> Toast.makeText(Filter.this, "No rooms found...", Toast.LENGTH_LONG).show());
             }
             else
             {
@@ -50,6 +50,10 @@ public class Filter extends AppCompatActivity {
                 intent.putExtra("lodges", lodges);
                 startActivity(intent);
             }
+
+            /* Clear filters */
+            filters.clear();
+
         }
     };
 
@@ -77,7 +81,6 @@ public class Filter extends AppCompatActivity {
         editTextLocation = findViewById(R.id.editTextLocation);
         filterButton = findViewById(R.id.filter);
 
-
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +103,7 @@ public class Filter extends AppCompatActivity {
                     filters.put("stars", starsValue);
                 }
             } catch (NumberFormatException e) {
-                // Handle error if needed
+                e.printStackTrace();
             }
         }
 
@@ -115,7 +118,7 @@ public class Filter extends AppCompatActivity {
                     filters.put("noOfPersons", peopleValue);
                 }
             } catch (NumberFormatException e) {
-                // Handle error if needed
+                e.printStackTrace();
             }
         }
 

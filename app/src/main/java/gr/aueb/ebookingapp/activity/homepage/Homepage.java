@@ -99,7 +99,7 @@ public class Homepage extends AppCompatActivity {
 
         setUsername(this.getIntent().getStringExtra("username"));
 
-        Thread mythread = new Thread(new RequestHandler(this, HOMEPAGE_LODGES, this.getIntent().getStringExtra("username"),handler));
+        Thread mythread = new Thread(new RequestHandler(this, HOMEPAGE_LODGES, getUsername(), handler));
         mythread.start();
 
         filterButton.setOnClickListener(new View.OnClickListener() {
