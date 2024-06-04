@@ -1,69 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:layout_gravity="center">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_vertical|center_horizontal">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Rate this Lodge"
-        android:textSize="16sp"
-        android:textColor="@color/white">
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="20dp"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center">
 
-    </TextView>
+        <ImageView
+            android:id="@+id/star1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_border"
+            android:tag="1" />
 
-    <ImageView
-        android:id="@+id/star1"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="2dp"
-        android:src="@drawable/ic_star_border"
-        android:tag="1"
-        android:clickable="true"
-        android:focusable="true" />
+        <ImageView
+            android:id="@+id/star2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_border"
+            android:tag="2" />
 
-    <ImageView
-        android:id="@+id/star2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="2dp"
-        android:src="@drawable/ic_star_border"
-        android:tag="2"
-        android:clickable="true"
-        android:focusable="true" />
+        <ImageView
+            android:id="@+id/star3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_border"
+            android:tag="3" />
 
-    <ImageView
-        android:id="@+id/star3"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="2dp"
-        android:src="@drawable/ic_star_border"
-        android:tag="3"
-        android:clickable="true"
-        android:focusable="true" />
+        <ImageView
+            android:id="@+id/star4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="4dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_border"
+            android:tag="4" />
 
-    <ImageView
-        android:id="@+id/star4"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="2dp"
-        android:src="@drawable/ic_star_border"
-        android:tag="4"
-        android:clickable="true"
-        android:focusable="true" />
+        <ImageView
+            android:id="@+id/star5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_star_border"
+            android:tag="5" />
 
-    <ImageView
-        android:id="@+id/star5"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="2dp"
-        android:src="@drawable/ic_star_border"
-        android:tag="5"
-        android:clickable="true"
-        android:focusable="true" />
+    </LinearLayout>
 
 </LinearLayout>
