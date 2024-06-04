@@ -21,13 +21,11 @@ import androidx.core.util.Pair;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
-import gr.aueb.ebookingapp.activity.homepage.Homepage;
 import gr.aueb.ebookingapp.activity.rate.Rate;
 import src.backend.lodging.Lodging;
 
@@ -175,11 +173,6 @@ public class SelectedLodge extends AppCompatActivity {
         RequestHandler runnable = new RequestHandler(this, BOOK, this.getUsername(), this.lodgeNameTextView.getText().toString(), startPeriodString, endPeriodString, handler);
         Thread thread = new Thread(runnable);
         thread.start();
-
-        // Creating the date range string
-        String selectedDateRange = startPeriodString + " - " + endPeriodString;
-
-        runOnUiThread(() -> Toast.makeText(SelectedLodge.this, String.format("Booking for '%s' was successfully"), Toast.LENGTH_LONG).show());
     }
 
     protected void OnDestroy()
