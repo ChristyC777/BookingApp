@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.os.Handler;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 import androidx.activity.EdgeToEdge;
@@ -48,12 +50,18 @@ public class Homepage extends AppCompatActivity {
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            // Update the UI with the lodges data
-            ArrayList<Lodging> lodges = (ArrayList<Lodging>) msg.obj;
-            setLodgingList(lodges);
-            adapter = new CollectionHomepageAdapter(getLodgingList(), Homepage.this);
+            ArrayList<Lodging> lodges= (ArrayList<Lodging>) msg.obj;
+            if (lodges == null)
+            {
+                Toast.makeText(Homepage.this, "No rooms found...", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                setLodgingList(lodges);
+                adapter = new CollectionHomepageAdapter(getLodgingList(), Homepage.this);
 
-            runOnUiThread(() -> listView.setAdapter(adapter));
+                runOnUiThread(() -> listView.setAdapter(adapter));
+            }
         }
     };
 
@@ -97,8 +105,6 @@ public class Homepage extends AppCompatActivity {
     {
         Intent intent = new Intent(this, Filter.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
-        startActivity(intent);
-
     }
 
     protected void OnDestroy()

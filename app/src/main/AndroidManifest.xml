@@ -44,6 +44,10 @@
             android:exported="true"
             android:theme="@style/Base.Theme.Background">
         </activity>
+        <activity android:name=".activity.selectedlodge.SelectedLodge"
+            android:exported="true"
+            android:theme="@style/Base.Theme.Background">
+        </activity>
     </application>
 
 </manifest>

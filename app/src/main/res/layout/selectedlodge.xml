@@ -1,51 +1,253 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ImageActivity"
+    tools:context=".activity.selectedlodge.SelectedLodge"
     android:background="@color/color2"
     android:orientation="vertical">
 
-<!--    <androidx.appcompat.widget.AppCompatButton-->
-<!--        android:id="@+id/goBack"-->
-<!--        android:layout_width="50dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginStart="10dp"-->
-<!--        android:layout_marginEnd="10dp"-->
-<!--        android:layout_marginBottom="75dp"-->
-<!--        android:background="@color/color1"-->
-<!--        android:text="<"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="30dp"-->
-<!--        app:layout_constraintBottom_toTopOf="@+id/listView"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/imageView"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.333" />-->
-    
+
     <ImageView
         android:id="@+id/selectedlodge"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="246dp"
+        app:layout_constraintBottom_toTopOf="@+id/Stars"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     </ImageView>
 
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="380dp"
-        android:textColor="#FFFF"
-        />
+    <TextView
+        android:id="@+id/Stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-240dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/yellow"
+        android:text="Number of Stars (1-5)"
+        android:textColor="@color/black"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/textStars"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectedlodge" />
+
+    <TextView
+        android:id="@+id/textStars"
+        android:layout_width="376dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Enter number of stars"
+        android:inputType="number"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/lodgeName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Stars" />
+
+    <TextView
+        android:id="@+id/lodgeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-255dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/yellow"
+        android:text="Name of the Lodge"
+        android:textColor="@color/black"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/textLodgeName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textStars" />
+
+    <TextView
+        android:id="@+id/textLodgeName"
+        android:layout_width="376dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Enter lodge name"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lodgeName" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-340dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/yellow"
+        android:text="Price"
+        android:textColor="@color/black"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/textPrice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textLodgeName" />
+
+    <TextView
+        android:id="@+id/textPrice"
+        android:layout_width="376dp"
+        android:layout_height="32dp"
+        android:hint="Enter lodge name"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/noOfPersons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/price" />
+
+    <TextView
+        android:id="@+id/noOfPersons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-256dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/yellow"
+        android:text="Number of People"
+        android:textColor="@color/black"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/textNoOfPersons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPrice" />
+
+    <TextView
+        android:id="@+id/textNoOfPersons"
+        android:layout_width="376dp"
+        android:layout_height="32dp"
+        android:hint="Enter number of people"
+        android:inputType="number"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/location"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noOfPersons" />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-315dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/yellow"
+        android:text="Location"
+        android:textColor="@color/black"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/textLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textNoOfPersons" />
+
+    <TextView
+        android:id="@+id/textLocation"
+        android:layout_width="376dp"
+        android:layout_height="32dp"
+        android:hint="Location"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textColorHint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/reviews"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location" />
+
+    <TextView
+        android:id="@+id/reviews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-320dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="7dp"
+        android:background="@color/yellow"
+        android:text="Reviews"
+        android:textColor="@color/black"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/textReviews"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textLocation" />
+
+    <TextView
+        android:id="@+id/textReviews"
+        android:layout_width="376dp"
+        android:layout_height="32dp"
+        android:hint="Number Of Reviews"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/book"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reviews" />
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/book"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/color1"
         android:text="Book"
         android:textColor="@color/white"
-        android:translationX="170dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/rate"
+        app:layout_constraintStart_toEndOf="@+id/goBack"
+        app:layout_constraintTop_toBottomOf="@+id/textReviews" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/color1"
+        android:text="Rate"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/book"
+        app:layout_constraintTop_toBottomOf="@+id/textReviews"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/goBack"
+        android:layout_width="43dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/color1"
+        android:text="Go Back"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/book"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textReviews"
+        app:layout_constraintVertical_bias="1.0" />
 
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

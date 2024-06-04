@@ -1,5 +1,6 @@
 package gr.aueb.ebookingapp.adapter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;

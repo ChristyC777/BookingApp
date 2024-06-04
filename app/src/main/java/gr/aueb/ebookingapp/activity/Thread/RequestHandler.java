@@ -32,7 +32,7 @@ public class RequestHandler implements Runnable
     private String username;
     private String lodgeName;
     private String message;
-    private static String HOST_ADDRESS = "localhost";
+    private static String HOST_ADDRESS = "192.168.1.12";
     private ClientActions action;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
@@ -198,11 +198,17 @@ public class RequestHandler implements Runnable
                         {
                             lodges.add(item.getKey());
                         }
-                        setLodges(lodges);
+                        Message msg = new Message();
+                        msg = handler.obtainMessage();
+                        msg.obj = lodges;
+                        handler.handleMessage(msg);
                     }
                     else
                     {
-                        setErrorMessage("No rooms found...");
+                        Message msg = new Message();
+                        msg = handler.obtainMessage();
+                        msg.obj = null;
+                        handler.handleMessage(msg);
                     }
                     connection.close();
                 } catch (IOException e) {
@@ -279,7 +285,10 @@ public class RequestHandler implements Runnable
                     }
                     else
                     {
-                        setErrorMessage("No rooms found...");
+                        Message msg = new Message();
+                        msg = handler.obtainMessage();
+                        msg.obj = null;
+                        handler.handleMessage(msg);
                     }
                     connection.close();
                 } catch (IOException e) {

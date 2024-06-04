@@ -1,13 +1,28 @@
 package gr.aueb.ebookingapp.activity.filter;
 
+import static src.shared.ClientActions.FILTER;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import gr.aueb.ebookingapp.R;
+import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
+import gr.aueb.ebookingapp.activity.filteredrooms.FilteredRooms;
+import gr.aueb.ebookingapp.activity.homepage.Homepage;
+import gr.aueb.ebookingapp.adapter.CollectionHomepageAdapter;
+import src.backend.lodging.Lodging;
 
 public class Filter extends AppCompatActivity {
 
@@ -17,13 +32,44 @@ public class Filter extends AppCompatActivity {
     private EditText editTextPeople;
     private EditText editTextLocation;
     private Button filterButton;
-    private  Button clearButton;
+    private ArrayList<Lodging> lodges;
+
+    public Handler handler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            // Update the UI with the lodges data
+            lodges = (ArrayList<Lodging>) msg.obj;
+            if (lodges == null)
+            {
+                Toast.makeText(Filter.this, "No rooms found...", Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                Intent intent = new Intent(Filter.this, FilteredRooms.class);
+                intent.putExtra("username", getUsername());
+                intent.putExtra("lodges", lodges);
+                startActivity(intent);
+            }
+        }
+    };
+
+    private String username;
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filter);
         filters = new HashMap<>();
+        setUsername(this.getIntent().getStringExtra("username"));
 
         editTextStars = findViewById(R.id.editTextStars);
         editTextName = findViewById(R.id.editTextName);
@@ -77,8 +123,10 @@ public class Filter extends AppCompatActivity {
             filters.put("area", location);
         }
 
-        // Use the filters HashMap as needed
-        // For example, pass it to another activity or use it in a query
+        RequestHandler runnable = new RequestHandler(this,FILTER,this.getUsername(), handler);
+        runnable.setFilters(filters);
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     protected void OnDestroy()
