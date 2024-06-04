@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.filter.Filter;
 import gr.aueb.ebookingapp.activity.homepage.Homepage;
+import gr.aueb.ebookingapp.activity.selectedlodge.SelectedLodge;
 import gr.aueb.ebookingapp.adapter.CollectionHomepageAdapter;
 import gr.aueb.ebookingapp.adapter.FilteredRoomsAdapter;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
@@ -83,12 +85,29 @@ public class FilteredRooms extends AppCompatActivity {
             }
         });
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Lodging lodging = (Lodging) parent.getItemAtPosition(position);
+                goToNewActivity(lodging);
+            }
+        });
+
+    }
+
+    private void goToNewActivity(Lodging lodging)
+    {
+        Intent intent = new Intent(FilteredRooms.this, SelectedLodge.class);
+        intent.putExtra("username", getUsername());
+        intent.putExtra("lodging", lodging);
+        startActivity(intent);
     }
 
     public void goToFilter()
     {
         Intent intent = new Intent(this, Filter.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
+        startActivity(intent);
     }
 
     protected void OnDestroy()

@@ -16,7 +16,7 @@ import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.selectedlodge.SelectedLodge;
 import src.backend.lodging.Lodging;
 
-public class CollectionHomepageAdapter extends ArrayAdapter<Lodging> implements View.OnClickListener {
+public class CollectionHomepageAdapter extends ArrayAdapter<Lodging> {
     private Context context;
     private ArrayList<Lodging> rooms;
     private String username;
@@ -35,16 +35,8 @@ public class CollectionHomepageAdapter extends ArrayAdapter<Lodging> implements 
         return username;
     }
 
-    @Override
-    public void onClick(View view) {
-        int position = (Integer) view.getTag();
-        Lodging lodging = getItem(position);
 
-        Intent intent = new Intent(context, SelectedLodge.class);
-        intent.putExtra("username", getUsername());
-        intent.putExtra("lodging", lodging);
-        context.startActivity(intent);
-    }
+
 
     private static class ViewHolder {
         ImageView lodgeImage;
@@ -83,8 +75,6 @@ public class CollectionHomepageAdapter extends ArrayAdapter<Lodging> implements 
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
-        convertView.setOnClickListener(this);
 
         return convertView;
     }

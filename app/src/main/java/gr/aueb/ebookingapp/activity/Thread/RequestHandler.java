@@ -235,9 +235,13 @@ public class RequestHandler implements Runnable
                     out.flush();
 
                     String message = (String) in.readObject();
-                    System.out.println(message);
 
                     getGuestDAO().findGuest(getUsername()).addRatings(getLodgeName(), getRating());
+
+                    Message msg = new Message();
+                    msg = handler.obtainMessage();
+                    msg.obj = message;
+                    handler.handleMessage(msg);
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);

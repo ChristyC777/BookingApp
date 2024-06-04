@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
 import gr.aueb.ebookingapp.activity.filter.Filter;
+import gr.aueb.ebookingapp.activity.selectedlodge.SelectedLodge;
 import gr.aueb.ebookingapp.adapter.CollectionHomepageAdapter;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import gr.aueb.ebookingapp.R;
@@ -61,6 +63,14 @@ public class Homepage extends AppCompatActivity {
                 adapter = new CollectionHomepageAdapter(getLodgingList(), Homepage.this);
 
                 runOnUiThread(() -> listView.setAdapter(adapter));
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Lodging lodging = (Lodging) parent.getItemAtPosition(position);
+                        goToNewActivity(lodging);
+                    }
+                });
             }
         }
     };
@@ -99,12 +109,22 @@ public class Homepage extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    private void goToNewActivity(Lodging lodging)
+    {
+        Intent intent = new Intent(Homepage.this, SelectedLodge.class);
+        intent.putExtra("username", getUsername());
+        intent.putExtra("lodging", lodging);
+        startActivity(intent);
     }
 
     public void goToFilter()
     {
         Intent intent = new Intent(this, Filter.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
+        startActivity(intent);
     }
 
     protected void OnDestroy()

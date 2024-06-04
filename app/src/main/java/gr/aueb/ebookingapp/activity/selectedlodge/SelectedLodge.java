@@ -1,6 +1,7 @@
 package gr.aueb.ebookingapp.activity.selectedlodge;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -84,6 +85,29 @@ public class SelectedLodge extends AppCompatActivity {
                 goToBook();
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Retrieve the rating submission state for the current user
+        SharedPreferences sharedPreferences = getSharedPreferences("RatingState", MODE_PRIVATE);
+        boolean rated = sharedPreferences.getBoolean(getIntent().getStringExtra("username") + "_rated", false);
+
+        // Disable the "Rate" button if the user has already rated
+        if (rated) {
+            disableRateButton();
+        } else {
+            // Enable the "Rate" button if the user hasn't rated
+            rate.setEnabled(true);
+            rate.setBackgroundColor(getResources().getColor(R.color.color1)); // Set background to the original color
+        }
+    }
+
+    private void disableRateButton() {
+        rate.setEnabled(false);
+        rate.setBackgroundColor(getResources().getColor(R.color.grey));
     }
 
     private void goToBook()
@@ -97,6 +121,7 @@ public class SelectedLodge extends AppCompatActivity {
     {
         Intent intent = new Intent(this, Rate.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
+        intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
         startActivity(intent);
     }
 
