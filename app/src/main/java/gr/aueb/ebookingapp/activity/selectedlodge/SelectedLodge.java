@@ -1,6 +1,7 @@
 package gr.aueb.ebookingapp.activity.selectedlodge;
 
 import static src.shared.ClientActions.BOOK;
+import static src.shared.ClientActions.FILTER;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,17 +17,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
 import gr.aueb.ebookingapp.activity.rate.Rate;
+import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import src.backend.lodging.Lodging;
 
 public class SelectedLodge extends AppCompatActivity {
@@ -40,6 +46,10 @@ public class SelectedLodge extends AppCompatActivity {
     private TextView locationTextView;
     private TextView reviewsTextView;
 
+    private static boolean isInitialized;
+
+    private MemoryGuestDAO guestDAO;
+    private ActivityResultLauncher<Intent> rateActivityResultLauncher;
     private Button goBack, rate, book;
 
     private String getUsername()
@@ -60,11 +70,36 @@ public class SelectedLodge extends AppCompatActivity {
             Toast.makeText(SelectedLodge.this, message, Toast.LENGTH_LONG).show();
         }
     };
+
+    public Handler ratehandler = new Handler(Looper.getMainLooper())
+    {
+        @Override
+        public void handleMessage(Message msg) {
+            ArrayList<Lodging>  message = (ArrayList<Lodging> ) msg.obj;
+            Lodging lodge = message.get(0);
+            Intent intent = getIntent();
+            intent.putExtra("username",getUsername());
+            intent.putExtra("lodging", lodge);
+            finish();
+            startActivity(intent);
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.selectedlodge);
+
+        if (!isInitialized)
+        {
+            guestDAO = new MemoryGuestDAO();
+            guestDAO.initialize();
+            isInitialized = true;
+        }
+        else
+        {
+            guestDAO = new MemoryGuestDAO();
+        }
 
         setUsername(this.getIntent().getStringExtra("username"));
 
@@ -80,6 +115,17 @@ public class SelectedLodge extends AppCompatActivity {
         book = findViewById(R.id.book);
 
         Lodging lodging = (Lodging) getIntent().getSerializableExtra("lodging");
+
+        boolean rated = guestDAO.findGuest(getUsername()).hasRated(lodging.getRoomName());
+
+        // Disable the "Rate" button if the user has already rated
+        if (rated) {
+            disableRateButton();
+        } else {
+            // Enable the "Rate" button if the user hasn't rated
+            rate.setEnabled(true);
+            rate.setBackgroundColor(getResources().getColor(R.color.color1)); // Set background to the original color
+        }
 
         if (lodging != null) {
             lodgeNameTextView.setText(lodging.getRoomName());
@@ -134,6 +180,13 @@ public class SelectedLodge extends AppCompatActivity {
             rate.setEnabled(true);
             rate.setBackgroundColor(getResources().getColor(R.color.color1)); // Set background to the original color
         }
+
+        HashMap<String, Object> filter = new HashMap<String, Object>();
+        filter.put("roomName", lodgeNameTextView.getText().toString());
+        RequestHandler requestHandler = new RequestHandler(this, FILTER, getUsername(),handler);
+        requestHandler.setFilters(filter);
+        Thread thread =  new Thread();
+        thread.start();
     }
 
     private void disableRateButton() {
@@ -146,7 +199,7 @@ public class SelectedLodge extends AppCompatActivity {
         Intent intent = new Intent(this, Rate.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
         intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     private void selectDates()

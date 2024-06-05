@@ -31,7 +31,7 @@ public class RequestHandler implements Runnable
     private String username;
     private String lodgeName;
     private String message;
-    private static String HOST_ADDRESS = "192.168.2.5";
+    private static String HOST_ADDRESS = "192.168.1.12";
     private ClientActions action;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
@@ -307,6 +307,7 @@ public class RequestHandler implements Runnable
                     e.printStackTrace();
                 }
                 break;
+
         }
     }
 }
