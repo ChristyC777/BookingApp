@@ -168,6 +168,11 @@ public class RequestHandler implements Runnable
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                  }
+
+                Message msg = new Message();
+                msg = handler.obtainMessage();
+                msg.obj = lodges;
+                handler.handleMessage(msg);
                 break;
             case FILTER:
                 try {
@@ -205,14 +210,14 @@ public class RequestHandler implements Runnable
                         {
                             lodges.add(item.getKey());
                         }
-                        Message msg = new Message();
+                        msg = new Message();
                         msg = handler.obtainMessage();
                         msg.obj = lodges;
                         handler.handleMessage(msg);
                     }
                     else
                     {
-                        Message msg = new Message();
+                        msg = new Message();
                         msg = handler.obtainMessage();
                         msg.obj = null;
                         handler.handleMessage(msg);
@@ -245,7 +250,7 @@ public class RequestHandler implements Runnable
 
                     getGuestDAO().findGuest(getUsername()).addRatings(getLodgeName(), getRating());
 
-                    Message msg = new Message();
+                    msg = new Message();
                     msg = handler.obtainMessage();
                     msg.obj = message;
                     handler.handleMessage(msg);
@@ -290,14 +295,14 @@ public class RequestHandler implements Runnable
                         {
                             lodges.add(item.getKey());
                         }
-                        Message msg = new Message();
+                        msg = new Message();
                         msg = handler.obtainMessage();
                         msg.obj = lodges;
                         handler.handleMessage(msg);
                     }
                     else
                     {
-                        Message msg = new Message();
+                        msg = new Message();
                         msg = handler.obtainMessage();
                         msg.obj = null;
                         handler.handleMessage(msg);

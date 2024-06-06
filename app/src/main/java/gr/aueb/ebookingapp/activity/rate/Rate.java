@@ -1,10 +1,8 @@
 package gr.aueb.ebookingapp.activity.rate;
 
-import static src.shared.ClientActions.FILTER;
 import static src.shared.ClientActions.RATE;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,14 +13,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
-import gr.aueb.ebookingapp.activity.filter.Filter;
-import gr.aueb.ebookingapp.activity.filteredrooms.FilteredRooms;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
-import src.backend.lodging.Lodging;
 
 public class Rate extends AppCompatActivity {
     private ImageView[] stars = new ImageView[5];
@@ -42,12 +35,10 @@ public class Rate extends AppCompatActivity {
             String message = (String) msg.obj;
             if (message.equals("Successfully added rating!"))
             {
+                Intent resultIntent = new Intent();
                 runOnUiThread(() ->Toast.makeText(Rate.this, message, Toast.LENGTH_SHORT).show());
                 guestDAO.findGuest(getUsername()).addRatings(lodgeName, currentRating);
-                SharedPreferences sharedPreferences = getSharedPreferences("RatingState", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(getUsername() + "_rated", true); // Store true if the user has rated
-                editor.apply();
+                setResult(RESULT_OK, resultIntent);
                 finish();
             }
             else
@@ -57,6 +48,8 @@ public class Rate extends AppCompatActivity {
             }
         }
     };
+
+
 
     public String getUsername() {
         return username;

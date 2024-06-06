@@ -4,7 +4,6 @@ import static src.shared.ClientActions.BOOK;
 import static src.shared.ClientActions.FILTER;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +17,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 
@@ -31,6 +30,7 @@ import java.util.Locale;
 
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
+import gr.aueb.ebookingapp.activity.booking.Booking;
 import gr.aueb.ebookingapp.activity.rate.Rate;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import src.backend.lodging.Lodging;
@@ -38,6 +38,8 @@ import src.backend.lodging.Lodging;
 public class SelectedLodge extends AppCompatActivity {
 
     private String username;
+    private static final int REQUEST_RATE = 1;
+    private static final int REQUEST_BOOK = 2;
     private ImageView lodgeImageView;
     private TextView lodgeNameTextView;
     private TextView lodgeStarsTextView;
@@ -47,6 +49,10 @@ public class SelectedLodge extends AppCompatActivity {
     private TextView reviewsTextView;
 
     private static boolean isInitialized;
+    private static boolean bookingInitialized;
+
+    private String checkIn;
+    private String checkOut;
 
     private MemoryGuestDAO guestDAO;
     private ActivityResultLauncher<Intent> rateActivityResultLauncher;
@@ -62,26 +68,42 @@ public class SelectedLodge extends AppCompatActivity {
         this.username = username;
     }
 
+    public String getCheckIn() {
+        return checkIn;
+    }
+
+    public void setCheckIn(String checkIn) {
+        this.checkIn = checkIn;
+    }
+
+    public String getCheckOut() {
+        return checkOut;
+    }
+
+    public void setCheckOut(String checkOut) {
+        this.checkOut = checkOut;
+    }
+
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             String message = (String) msg.obj;
-
             Toast.makeText(SelectedLodge.this, message, Toast.LENGTH_LONG).show();
         }
     };
+
+
+
 
     public Handler ratehandler = new Handler(Looper.getMainLooper())
     {
         @Override
         public void handleMessage(Message msg) {
             ArrayList<Lodging>  message = (ArrayList<Lodging> ) msg.obj;
-            Lodging lodge = message.get(0);
-            Intent intent = getIntent();
-            intent.putExtra("username",getUsername());
-            intent.putExtra("lodging", lodge);
-            finish();
-            startActivity(intent);
+            Lodging lodging = message.get(0);
+            getIntent().putExtra("username",getUsername());
+            getIntent().putExtra("lodging", lodging);
+            recreate();
         }
     };
     @Override
@@ -142,7 +164,7 @@ public class SelectedLodge extends AppCompatActivity {
         book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectDates();
+                goToBook();
             }
         });
 
@@ -163,16 +185,20 @@ public class SelectedLodge extends AppCompatActivity {
             }
         });
 
+
+
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Retrieve the rating submission state for the current user
-        SharedPreferences sharedPreferences = getSharedPreferences("RatingState", MODE_PRIVATE);
-        boolean rated = sharedPreferences.getBoolean(getIntent().getStringExtra("username") + "_rated", false);
-
-        // Disable the "Rate" button if the user has already rated
+    private void goToBook()
+    {
+        Intent intent = new Intent(this, Booking.class);
+        intent.putExtra("username", this.getIntent().getStringExtra("username"));
+        intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
+        startActivityForResult(intent, 2);
+    }
+    private void reset(boolean rated)
+    {
         if (rated) {
             disableRateButton();
         } else {
@@ -181,13 +207,9 @@ public class SelectedLodge extends AppCompatActivity {
             rate.setBackgroundColor(getResources().getColor(R.color.color1)); // Set background to the original color
         }
 
-        HashMap<String, Object> filter = new HashMap<String, Object>();
-        filter.put("roomName", lodgeNameTextView.getText().toString());
-        RequestHandler requestHandler = new RequestHandler(this, FILTER, getUsername(),handler);
-        requestHandler.setFilters(filter);
-        Thread thread =  new Thread();
-        thread.start();
+
     }
+
 
     private void disableRateButton() {
         rate.setEnabled(false);
@@ -201,6 +223,30 @@ public class SelectedLodge extends AppCompatActivity {
         intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
         startActivityForResult(intent, 1);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_RATE) {
+            // Handle result from Rate activity
+            if (resultCode == RESULT_OK) {
+                HashMap<String, Object> filter = new HashMap<String, Object>();
+                filter.put("roomName", lodgeNameTextView.getText().toString());
+                RequestHandler requestHandler = new RequestHandler(this, FILTER, getUsername(),handler);
+                requestHandler.setFilters(filter);
+                Thread thread =  new Thread();
+                thread.start();
+
+                // Logic to refresh or update the UI can be placed here
+                Lodging lodging = (Lodging) getIntent().getSerializableExtra("lodging");
+                boolean rated = guestDAO.findGuest(getUsername()).hasRated(lodging.getRoomName());
+                reset(rated);
+            }
+        }
+    }
+
+
 
     private void selectDates()
     {
@@ -227,6 +273,7 @@ public class SelectedLodge extends AppCompatActivity {
         Thread thread = new Thread(runnable);
         thread.start();
     }
+
 
     protected void OnDestroy()
     {
