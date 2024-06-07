@@ -55,6 +55,11 @@
             android:exported="true"
             android:theme="@style/Base.Theme.Background">
         </activity>
+        <activity
+            android:name=".activity.book.Book"
+            android:exported="true"
+            android:theme="@style/Base.Theme.Background">
+        </activity>
     </application>
 
 </manifest>

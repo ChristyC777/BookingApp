@@ -182,9 +182,6 @@ public class SelectedLodge extends AppCompatActivity {
             }
         });
 
-
-
-
     }
 
     private void goToBook()

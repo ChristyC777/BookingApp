@@ -133,6 +133,7 @@ public class RequestHandler implements Runnable
     public void run()
     {
         Socket connection;
+        Message msg;
         switch(action)
         {
             case BOOK:
@@ -157,22 +158,19 @@ public class RequestHandler implements Runnable
                     out.writeObject(getCheckOut());
                     out.flush();
 
-                    try {
-                        String message = (String) in.readObject();
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    String message = (String) in.readObject();
+
+                    msg = new Message();
+                    msg = handler.obtainMessage();
+                    msg.obj = message;
+                    handler.handleMessage(msg);
 
                     connection.close();
-
-                } catch (IOException e) {
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
-                 }
-
-                Message msg = new Message();
-                msg = handler.obtainMessage();
-                msg.obj = lodges;
-                handler.handleMessage(msg);
+                }
                 break;
             case FILTER:
                 try {
