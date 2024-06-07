@@ -1,10 +1,8 @@
 package gr.aueb.ebookingapp.activity.selectedlodge;
 
-import static src.shared.ClientActions.BOOK;
 import static src.shared.ClientActions.FILTER;
 
 import android.content.Intent;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,20 +15,14 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.Pair;
-
-import com.google.android.material.datepicker.MaterialDatePicker;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
-import gr.aueb.ebookingapp.activity.booking.Booking;
+import gr.aueb.ebookingapp.activity.book.Book;
 import gr.aueb.ebookingapp.activity.rate.Rate;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
 import src.backend.lodging.Lodging;
@@ -38,8 +30,6 @@ import src.backend.lodging.Lodging;
 public class SelectedLodge extends AppCompatActivity {
 
     private String username;
-    private static final int REQUEST_RATE = 1;
-    private static final int REQUEST_BOOK = 2;
     private ImageView lodgeImageView;
     private TextView lodgeNameTextView;
     private TextView lodgeStarsTextView;
@@ -53,7 +43,7 @@ public class SelectedLodge extends AppCompatActivity {
 
     private String checkIn;
     private String checkOut;
-
+    private Lodging lodging;
     private MemoryGuestDAO guestDAO;
     private ActivityResultLauncher<Intent> rateActivityResultLauncher;
     private Button goBack, rate, book;
@@ -92,8 +82,13 @@ public class SelectedLodge extends AppCompatActivity {
         }
     };
 
+    public Lodging getLodging() {
+        return lodging;
+    }
 
-
+    public void setLodging(Lodging lodging) {
+        this.lodging = lodging;
+    }
 
     public Handler ratehandler = new Handler(Looper.getMainLooper())
     {
@@ -137,12 +132,14 @@ public class SelectedLodge extends AppCompatActivity {
         book = findViewById(R.id.book);
 
         Lodging lodging = (Lodging) getIntent().getSerializableExtra("lodging");
+        setLodging(lodging);
 
         boolean rated = guestDAO.findGuest(getUsername()).hasRated(lodging.getRoomName());
 
         // Disable the "Rate" button if the user has already rated
         if (rated) {
-            disableRateButton();
+            rate.setEnabled(false);
+            rate.setBackgroundColor(getResources().getColor(R.color.grey));
         } else {
             // Enable the "Rate" button if the user hasn't rated
             rate.setEnabled(true);
@@ -192,17 +189,36 @@ public class SelectedLodge extends AppCompatActivity {
 
     private void goToBook()
     {
-        Intent intent = new Intent(this, Booking.class);
+        Intent intent = new Intent(this, Book.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
         intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
-        startActivityForResult(intent, 2);
+        startActivity(intent);
     }
-    private void reset(boolean rated)
+
+
+    private void goToRate()
     {
+        Intent intent = new Intent(this, Rate.class);
+        intent.putExtra("username", this.getIntent().getStringExtra("username"));
+        intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
+        startActivity(intent);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean rated = guestDAO.findGuest(getUsername()).hasRated(getLodging().getRoomName());
         if (rated) {
-            disableRateButton();
+            rate.setEnabled(false);
+            rate.setBackgroundColor(getResources().getColor(R.color.grey));
+            HashMap<String, Object> filter = new HashMap<String, Object>();
+            filter.put("roomName", lodgeNameTextView.getText().toString());
+            RequestHandler requestHandler = new RequestHandler(this, FILTER, getUsername(),handler);
+            requestHandler.setFilters(filter);
+            Thread thread =  new Thread();
+            thread.start();
         } else {
-            // Enable the "Rate" button if the user hasn't rated
             rate.setEnabled(true);
             rate.setBackgroundColor(getResources().getColor(R.color.color1)); // Set background to the original color
         }
@@ -211,68 +227,6 @@ public class SelectedLodge extends AppCompatActivity {
     }
 
 
-    private void disableRateButton() {
-        rate.setEnabled(false);
-        rate.setBackgroundColor(getResources().getColor(R.color.grey));
-    }
-
-    private void goToRate()
-    {
-        Intent intent = new Intent(this, Rate.class);
-        intent.putExtra("username", this.getIntent().getStringExtra("username"));
-        intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
-        startActivityForResult(intent, 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_RATE) {
-            // Handle result from Rate activity
-            if (resultCode == RESULT_OK) {
-                HashMap<String, Object> filter = new HashMap<String, Object>();
-                filter.put("roomName", lodgeNameTextView.getText().toString());
-                RequestHandler requestHandler = new RequestHandler(this, FILTER, getUsername(),handler);
-                requestHandler.setFilters(filter);
-                Thread thread =  new Thread();
-                thread.start();
-
-                // Logic to refresh or update the UI can be placed here
-                Lodging lodging = (Lodging) getIntent().getSerializableExtra("lodging");
-                boolean rated = guestDAO.findGuest(getUsername()).hasRated(lodging.getRoomName());
-                reset(rated);
-            }
-        }
-    }
-
-
-
-    private void selectDates()
-    {
-        MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-        builder.setTitleText("Select the period you wish to book this lodge on.");
-
-        MaterialDatePicker<Pair<Long, Long>> selectButton = builder.build();
-
-        selectButton.addOnPositiveButtonClickListener(selection -> {
-            onDatePickerDialog(selection.first, selection.second);
-        });
-
-        selectButton.show(getSupportFragmentManager(), "DATE_PICKER");
-    }
-
-    public void onDatePickerDialog(Long startPeriod, Long endPeriod)
-    {
-        // Formatting the selected dates as strings
-        SimpleDateFormat date = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String startPeriodString = date.format(new Date(startPeriod));
-        String endPeriodString = date.format(new Date(endPeriod));
-
-        RequestHandler runnable = new RequestHandler(this, BOOK, this.getUsername(), this.lodgeNameTextView.getText().toString(), startPeriodString, endPeriodString, handler);
-        Thread thread = new Thread(runnable);
-        thread.start();
-    }
 
 
     protected void OnDestroy()

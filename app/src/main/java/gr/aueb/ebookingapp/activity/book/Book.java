@@ -1,14 +1,17 @@
-package gr.aueb.ebookingapp.activity.booking;
+package gr.aueb.ebookingapp.activity.book;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.CalendarView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
@@ -18,12 +21,17 @@ import java.util.Locale;
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
-import src.backend.lodging.Lodging;
 import src.shared.ClientActions;
 
-public class Booking extends AppCompatActivity {
+public class Book extends AppCompatActivity {
 
-    private CalendarView calendarView;
+    private EditText checkInEditText;
+    private EditText checkOutEditText;
+    private Button selectButton;
+    private Button backButton;
+    private ImageView imageView2;
+    private ImageView imageView5;
+    private TextView addDatesTextView;
     private String selectedCheckInDate;
     private String selectedCheckOutDate;
     private MemoryGuestDAO guestDAO;
@@ -35,9 +43,7 @@ public class Booking extends AppCompatActivity {
         public void handleMessage(Message msg) {
             // Update the UI with the lodges data
             String message = (String) msg.obj;
-            runOnUiThread(() -> Toast.makeText(Booking.this, message, Toast.LENGTH_SHORT).show());
-            Intent resultIntent = new Intent();
-            setResult(RESULT_OK, resultIntent);
+            runOnUiThread(() -> Toast.makeText(Book.this, message, Toast.LENGTH_SHORT).show());
             finish();
         }
     };
@@ -53,27 +59,39 @@ public class Booking extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.booking);
 
-        calendarView = findViewById(R.id.calendarView);
+        imageView2 = findViewById(R.id.imageView2);
+        imageView5 = findViewById(R.id.imageView5);
+        addDatesTextView = findViewById(R.id.addDates);
+        checkInEditText = findViewById(R.id.checkIn);
+        checkOutEditText = findViewById(R.id.checkOut);
+        selectButton = findViewById(R.id.selectButton);
+        backButton = findViewById(R.id.backButton);
 
         setUsername(getIntent().getStringExtra("username"));
         String lodgeName = this.getIntent().getStringExtra("lodgeName");
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+
+        selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                Calendar selectedDate = Calendar.getInstance();
-                selectedDate.set(year, month, dayOfMonth);
-                if (selectedCheckInDate == null) {
-                    selectedCheckInDate = formatDate(selectedDate);
-                    Toast.makeText(Booking.this, "Check-in Date Selected: " + selectedCheckInDate, Toast.LENGTH_SHORT).show();
-                } else {
-                    selectedCheckOutDate = formatDate(selectedDate);
-                    Toast.makeText(Booking.this, "Check-out Date Selected: " + selectedCheckOutDate, Toast.LENGTH_SHORT).show();
-                    bookLodge(lodgeName);
+            public void onClick(View v) {
+                selectedCheckInDate = checkInEditText.getText().toString();
+                selectedCheckOutDate = checkOutEditText.getText().toString();
+
+                if (selectedCheckInDate.isEmpty() || selectedCheckOutDate.isEmpty()) {
+                    Toast.makeText(Book.this, "Please enter both check-in and check-out dates", Toast.LENGTH_SHORT).show();
+                    return;
                 }
-                setSelectedCheckInDate(selectedCheckInDate);
-                setSelectedCheckOutDate(selectedCheckOutDate);
+
+                bookLodge(lodgeName);
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
@@ -96,8 +114,7 @@ public class Booking extends AppCompatActivity {
         return username;
     }
 
-    private void setUsername(String username)
-    {
+    private void setUsername(String username) {
         this.username = username;
     }
 

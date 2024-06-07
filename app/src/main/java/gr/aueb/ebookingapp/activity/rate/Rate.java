@@ -38,7 +38,6 @@ public class Rate extends AppCompatActivity {
                 Intent resultIntent = new Intent();
                 runOnUiThread(() ->Toast.makeText(Rate.this, message, Toast.LENGTH_SHORT).show());
                 guestDAO.findGuest(getUsername()).addRatings(lodgeName, currentRating);
-                setResult(RESULT_OK, resultIntent);
                 finish();
             }
             else

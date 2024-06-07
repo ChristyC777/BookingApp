@@ -55,6 +55,7 @@ public class Homepage extends AppCompatActivity {
             ArrayList<Lodging> lodges= (ArrayList<Lodging>) msg.obj;
             if (lodges == null)
             {
+                listView.setVisibility(View.GONE);
                 Toast.makeText(Homepage.this, "No rooms found...", Toast.LENGTH_LONG).show();
             }
             else
