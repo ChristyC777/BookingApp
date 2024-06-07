@@ -17,6 +17,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -49,7 +51,14 @@ public class Book extends AppCompatActivity {
         public void handleMessage(Message msg) {
             // Update the UI with the lodges data
             String message = (String) msg.obj;
-            runOnUiThread(() -> Toast.makeText(Book.this, message, Toast.LENGTH_SHORT).show());
+            if(message.contains("successfully submitted"))
+            {
+                runOnUiThread(() -> Toast.makeText(Book.this, "Successful booking!", Toast.LENGTH_SHORT).show());
+            }
+            else
+            {
+                runOnUiThread(() -> Toast.makeText(Book.this, "Booking failed...", Toast.LENGTH_SHORT).show());
+            }
             finish();
         }
     };
