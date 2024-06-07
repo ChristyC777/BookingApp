@@ -52,6 +52,8 @@
         android:id="@+id/imageView5"
         android:layout_width="233dp"
         android:layout_height="181dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/addDates"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2"
@@ -97,24 +99,29 @@
         android:layout_width="235dp"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:text="Add your booking dates! Availability date range is shown below"
+        android:layout_marginBottom="2dp"
+        android:text="Add your booking dates! Availability date range is:"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/daterange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
-        <TextView
-            android:id="@+id/daterange"
-            android:layout_width="236dp"
-            android:layout_height="27dp"
-            android:text="(DD/MM/YYYY)"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addDates" />
+    <TextView
+        android:id="@+id/daterange"
+        android:layout_width="236dp"
+        android:layout_height="27dp"
+        android:layout_marginBottom="4dp"
+        android:text="(DD/MM/YYYY)"
+        android:textSize="16dp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/checkIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addDates" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

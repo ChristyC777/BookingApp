@@ -83,7 +83,7 @@ public class Book extends AppCompatActivity {
         Calendar from = lodging.getDateRange().getFrom();
         Calendar to = lodging.getDateRange().getTo();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String fromInput = formatter.format(from.getTime());
         String toInput = formatter.format(to.getTime());
 

@@ -75,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="300dp"
-        android:background="@android:color/holo_green_light"
+        android:background="#CDDC39"
         android:text="Register"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
