@@ -4,10 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Collections;
+
 
 import src.backend.lodging.Lodging;
 import src.backend.utility.daterange.DateRange;
@@ -111,30 +108,8 @@ public class RequestHandler implements Runnable {
                     break;
                 case FINAL_FILTERS:
                     FilterData final_filters = (FilterData) in.readObject();
-                    HashMap<Lodging, Integer> dummymap = final_filters.getFilters();
-                    if (dummymap == null || dummymap.isEmpty())
-                    {
-                        Response nullResponse = null;
-                        out.writeObject(nullResponse);
-                        out.flush();
-                        break;
-                    }
-                    List<Map.Entry<Lodging, Integer>> entryList = new ArrayList<>(dummymap.entrySet());
-                    List<Map.Entry<Lodging, Integer>> selectedEntries;
-
-                    if (entryList.size() <= 4) {
-                        selectedEntries = entryList;
-                    } else {
-                        Collections.shuffle(entryList);
-                        selectedEntries = entryList.subList(0, 4);
-                    }
-
-                    HashMap<Lodging, Integer> selectedMap = new HashMap<>();
-                    for (Map.Entry<Lodging, Integer> entry : selectedEntries) {
-                        selectedMap.put(entry.getKey(), entry.getValue());
-                    }
-                    FilterData filteredResults = new FilterData(final_filters.getMapID(), selectedMap);
-                    master.notifyOfResults(filteredResults);
+                    master.notifyOfResults(final_filters);
+                    
                     break;
                 case RATE:
                     username = (String) in.readObject();
