@@ -112,6 +112,12 @@ public class RequestHandler implements Runnable {
                 case FINAL_FILTERS:
                     FilterData final_filters = (FilterData) in.readObject();
                     HashMap<Lodging, Integer> dummymap = final_filters.getFilters();
+                    if (dummymap == null)
+                    {
+                        out.writeObject(dummymap);
+                        out.flush();
+                        break;
+                    }
                     List<Map.Entry<Lodging, Integer>> entryList = new ArrayList<>(dummymap.entrySet());
                     List<Map.Entry<Lodging, Integer>> selectedEntries;
 

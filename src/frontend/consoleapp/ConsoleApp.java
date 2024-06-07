@@ -355,19 +355,27 @@ public class ConsoleApp {
                         System.out.println("\nResponse received!\n");
                         
                         // Retrieve response 
-                        HashMap<String, Integer> found_rooms = (HashMap<String, Integer>) response.getResponse();
-
-                        if (found_rooms.size() > 0)
+                        
+                        if (response == null)
                         {
-                            System.out.println("Found the following bookings:"); 
-                            System.out.printf("For the given period of time (%s - %s) %n", fromInput, toInput, "we found the following booking(s): %n");
-                            for (HashMap.Entry<String, Integer> item : found_rooms.entrySet()) { // {"lodge1":2, "lodge5":6}
-                                System.out.printf("%s : %d%n", item.getKey(), item.getValue());
-                            }
+                            System.out.println("Selected period is out of range of any booking periods.");
                         }
                         else
                         {
-                            System.out.println("No bookings found.");
+                            HashMap<String, Integer> found_rooms = (HashMap<String, Integer>) response.getResponse();
+    
+                            if (found_rooms.size() > 0)
+                            {
+                                System.out.println("Found the following bookings:"); 
+                                System.out.printf("For the given period of time (%s - %s) %n", fromInput, toInput, "we found the following booking(s): %n");
+                                for (HashMap.Entry<String, Integer> item : found_rooms.entrySet()) { // {"lodge1":2, "lodge5":6}
+                                    System.out.printf("%s : %d%n", item.getKey(), item.getValue());
+                                }
+                            }
+                            else
+                            {
+                                System.out.println("No bookings found.");
+                            }
                         }
                         
                         // Stop the output and await a keypress so the results don't scroll up too far
