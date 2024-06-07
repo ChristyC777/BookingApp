@@ -188,7 +188,7 @@ public class SelectedLodge extends AppCompatActivity {
     {
         Intent intent = new Intent(this, Book.class);
         intent.putExtra("username", this.getIntent().getStringExtra("username"));
-        intent.putExtra("lodgeName",lodgeNameTextView.getText().toString());
+        intent.putExtra("lodge",getLodging());
         startActivity(intent);
     }
 

@@ -61,17 +61,18 @@
         android:id="@+id/checkIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="3dp"
+        android:clickable="true"
         android:ems="10"
+        android:focusable="false"
         android:hint="CheckIn Date"
-        android:inputType="date"
+        android:inputType="none"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/checkOut"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addDates" />
+        app:layout_constraintTop_toBottomOf="@+id/daterange"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/checkOut"
@@ -81,7 +82,9 @@
         android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="CheckOut Date"
-        android:inputType="date"
+        android:inputType="none"
+        android:focusable="false"
+        android:clickable="true"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/selectButton"
@@ -94,15 +97,24 @@
         android:layout_width="235dp"
         android:layout_height="48dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:text="Add your booking dates! Availability date range is shown below"
         android:textAlignment="center"
-        android:text="Add your booking dates (Format: DD/MM/YYYY)"
         android:textColor="@color/white"
         android:textSize="18dp"
-        app:layout_constraintBottom_toTopOf="@+id/checkIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+
+        <TextView
+            android:id="@+id/daterange"
+            android:layout_width="236dp"
+            android:layout_height="27dp"
+            android:text="(DD/MM/YYYY)"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addDates" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

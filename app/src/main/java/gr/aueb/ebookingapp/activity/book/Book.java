@@ -1,15 +1,18 @@
 package gr.aueb.ebookingapp.activity.book;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +24,7 @@ import java.util.Locale;
 import gr.aueb.ebookingapp.R;
 import gr.aueb.ebookingapp.activity.Thread.RequestHandler;
 import gr.aueb.ebookingapp.dao.MemoryGuestDAO;
+import src.backend.lodging.Lodging;
 import src.shared.ClientActions;
 
 public class Book extends AppCompatActivity {
@@ -37,6 +41,8 @@ public class Book extends AppCompatActivity {
     private MemoryGuestDAO guestDAO;
     private static boolean isInitialized;
     private String username;
+    private Calendar calendar;
+    private TextView daterangeTextView;
 
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -69,9 +75,38 @@ public class Book extends AppCompatActivity {
         checkOutEditText = findViewById(R.id.checkOut);
         selectButton = findViewById(R.id.selectButton);
         backButton = findViewById(R.id.backButton);
+        daterangeTextView = findViewById(R.id.daterange);
 
         setUsername(getIntent().getStringExtra("username"));
-        String lodgeName = this.getIntent().getStringExtra("lodgeName");
+        Lodging lodging = (Lodging) getIntent().getSerializableExtra("lodging");
+
+        Calendar from = lodging.getDateRange().getFrom();
+        Calendar to = lodging.getDateRange().getTo();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/mm/yyyy");
+        String fromInput = formatter.format(from.getTime());
+        String toInput = formatter.format(to.getTime());
+
+        String daterange = fromInput + "-" + toInput;
+        daterangeTextView.setText(daterange);
+
+        // Initialize the calendar instance
+        calendar = Calendar.getInstance();
+
+        // Set up the click listeners for the EditTexts to show the DatePickerDialog
+        checkInEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(checkInEditText);
+            }
+        });
+
+        checkOutEditText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(checkOutEditText);
+            }
+        });
 
         selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +119,7 @@ public class Book extends AppCompatActivity {
                     return;
                 }
 
-                bookLodge(lodgeName);
+                bookLodge(lodging.getRoomName());
             }
         });
 
@@ -108,6 +143,28 @@ public class Book extends AppCompatActivity {
         requestHandler.setLodgeName(lodgeName);
         Thread thread = new Thread(requestHandler);
         thread.start();
+    }
+
+    // Method to show the DatePickerDialog and set the selected date to the EditText
+    private void showDatePickerDialog(EditText editText) {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                Book.this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, month);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        String selectedDate = dateFormat.format(calendar.getTime());
+                        editText.setText(selectedDate);
+                    }
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
     }
 
     private String getUsername() {
