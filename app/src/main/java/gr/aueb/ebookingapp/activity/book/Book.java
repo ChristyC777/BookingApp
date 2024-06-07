@@ -43,7 +43,7 @@ public class Book extends AppCompatActivity {
         public void handleMessage(Message msg) {
             // Update the UI with the lodges data
             String message = (String) msg.obj;
-            Toast.makeText(Book.this, message, Toast.LENGTH_SHORT).show();
+            runOnUiThread(() -> Toast.makeText(Book.this, message, Toast.LENGTH_SHORT).show());
             finish();
         }
     };

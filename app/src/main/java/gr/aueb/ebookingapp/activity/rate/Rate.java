@@ -36,7 +36,7 @@ public class Rate extends AppCompatActivity {
             if (message.equals("Successfully added rating!"))
             {
                 Intent resultIntent = new Intent();
-                runOnUiThread(() ->Toast.makeText(Rate.this, message, Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(Rate.this, message, Toast.LENGTH_SHORT).show());
                 guestDAO.findGuest(getUsername()).addRatings(lodgeName, currentRating);
                 finish();
             }
