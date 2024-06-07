@@ -112,9 +112,10 @@ public class RequestHandler implements Runnable {
                 case FINAL_FILTERS:
                     FilterData final_filters = (FilterData) in.readObject();
                     HashMap<Lodging, Integer> dummymap = final_filters.getFilters();
-                    if (dummymap == null)
+                    if (dummymap == null || dummymap.isEmpty())
                     {
-                        out.writeObject(dummymap);
+                        Response nullResponse = null;
+                        out.writeObject(nullResponse);
                         out.flush();
                         break;
                     }

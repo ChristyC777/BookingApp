@@ -164,6 +164,7 @@ public class Master {
                 String mapid = message.getMapID();
                 RequestHandler handler = handlers.stream().filter(dummyhandler -> dummyhandler.getUsername().equals(mapid)).findFirst().orElse(null);
 
+                System.out.printf("Serving '%s' the following message: '%s'", mapid, message.getMessage());
                 this.out = handler.getOut();
                 this.in = handler.getIn();
 
