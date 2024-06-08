@@ -70,7 +70,7 @@ public class Worker {
         }
     }
 
-    public String getMessage(ClientActions action)
+    public synchronized String getMessage(ClientActions action)
     {
         switch (action) {
             case ADD_LODGING:
@@ -309,7 +309,7 @@ public class Worker {
 
         // Check whether the booking conflicts with another booking.
         for (Booking booking : bookings) {
-            if (booking.getLodge().equals(lodge) && booking.getDateRange().checkReservations(dateRange.getFrom(), dateRange.getTo())) {
+            if (booking.getLodge().equals(lodge) && booking.getDateRange().isReservationAllowed(dateRange.getFrom(), dateRange.getTo())) {
                 return BookingResponse.BOOKING_CONFLICT;
             }
         }

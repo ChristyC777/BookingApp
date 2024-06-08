@@ -24,7 +24,7 @@ public class DateRange implements Serializable{
         return this.to;
     }
     
-    public boolean isWithinRange(Calendar dateFrom, Calendar dateTo) {
+    public synchronized boolean isWithinRange(Calendar dateFrom, Calendar dateTo) {
         if (dateFrom!=null && dateTo!=null)
         {   
             if (!(from.compareTo(dateFrom) <= 0))
@@ -40,10 +40,10 @@ public class DateRange implements Serializable{
         return false;
     }
 
-    public boolean checkReservations(Calendar dateFrom, Calendar dateTo) {
+    public synchronized boolean isReservationAllowed(Calendar dateFrom, Calendar dateTo) {
         if (dateFrom != null && dateTo != null) {
             // Check if the given period overlaps with any existing reservation
-            if ((from.compareTo(dateFrom) <= 0) && (to.compareTo(dateTo) >= 0)) {
+            if ((from.compareTo(dateFrom) <= 0) || (to.compareTo(dateTo) >= 0)) {
                 return false; // There is an overlap, reservation not allowed
             }
             return true; // No overlap, reservation allowed
