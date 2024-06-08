@@ -309,7 +309,7 @@ public class Worker {
 
         // Check whether the booking conflicts with another booking.
         for (Booking booking : bookings) {
-            if (booking.getLodge().equals(lodge) && booking.getDateRange().isReservationAllowed(dateRange.getFrom(), dateRange.getTo())) {
+            if (booking.getLodge().equals(lodge) && (booking.getDateRange().isReservationAllowed(dateRange.getFrom(), dateRange.getTo())==false)) {
                 return BookingResponse.BOOKING_CONFLICT;
             }
         }
