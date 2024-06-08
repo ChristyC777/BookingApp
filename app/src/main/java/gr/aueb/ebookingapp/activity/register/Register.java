@@ -73,7 +73,7 @@ public class Register extends AppCompatActivity {
             public void onClick(View v) {
                 Guest newGuest = new Guest();
                 guestDAO.save(newGuest);
-                Toast.makeText(Register.this, "Your id is: " + newGuest.getUUID() + "Please remember it!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(Register.this, "Your id is: " + newGuest.getUUID(),Toast.LENGTH_SHORT).show();
                 guestRegistered(newGuest.getUUID());
             }
         });
