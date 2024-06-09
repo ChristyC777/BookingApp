@@ -17,8 +17,6 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -92,7 +90,7 @@ public class Book extends AppCompatActivity {
         Calendar from = lodging.getDateRange().getFrom();
         Calendar to = lodging.getDateRange().getTo();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String fromInput = formatter.format(from.getTime());
         String toInput = formatter.format(to.getTime());
 
@@ -124,7 +122,7 @@ public class Book extends AppCompatActivity {
                 selectedCheckOutDate = checkOutEditText.getText().toString();
 
                 if (selectedCheckInDate.isEmpty() || selectedCheckOutDate.isEmpty()) {
-                    Toast.makeText(Book.this, "Please enter both check-in and check-out dates", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Book.this, "Please enter both check-in and check-out dates!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

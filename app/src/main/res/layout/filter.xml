@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
         android:layout_marginBottom="17dp"
-        android:hint="Enter number of stars"
+        android:hint="Enter minimum number of stars"
         android:inputType="number"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
@@ -58,23 +58,23 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="1dp"
         android:background="@color/yellow"
-        android:text="Name of the Lodge"
+        android:text="Lodge Price"
         android:textColor="@color/black"
         android:textColorHint="@color/white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextName"
+        app:layout_constraintBottom_toTopOf="@+id/editTextPrice"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.08"
+        app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextStars" />
 
     <EditText
-        android:id="@+id/editTextName"
+        android:id="@+id/editTextPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:hint="Enter lodge name"
-        android:inputType="text"
+        android:hint="Enter minimum lodge price"
+        android:inputType="number"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/textView3"
@@ -98,14 +98,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextName" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextPrice" />
 
     <EditText
         android:id="@+id/editTextPeople"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
-        android:hint="Enter number of people"
+        android:hint="Enter minimum number of people"
         android:inputType="number"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
@@ -151,6 +151,7 @@
         android:id="@+id/filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:layout_marginBottom="100dp"
         android:background="@color/color1"
         android:text="Search"
@@ -159,6 +160,72 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextLocation" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Availability Dates"
+        android:background="@color/yellow"
+        android:textColor="@color/black"
+        android:textColorHint="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLocation"
+        app:layout_constraintVertical_bias="0.298" />
+
+    <EditText
+        android:id="@+id/editTextDateFrom"
+        android:layout_width="120dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="54dp"
+        android:clickable="true"
+        android:ems="10"
+        android:hint="From"
+        android:inputType="none"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/filter"
+        app:layout_constraintEnd_toStartOf="@+id/editTextDateTo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <EditText
+        android:id="@+id/editTextDateTo"
+        android:layout_width="120dp"
+        android:layout_height="44dp"
+        android:layout_marginEnd="32dp"
+        android:clickable="true"
+        android:ems="10"
+        android:hint="To"
+        android:inputType="none"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/filter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextDateFrom"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <EditText
+        android:id="@+id/editTextDash"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:inputType="none"
+        android:text="-"
+        android:textSize="18dp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/editTextDateFrom"
+        app:layout_constraintEnd_toStartOf="@+id/editTextDateTo"
+        app:layout_constraintStart_toEndOf="@+id/editTextDateFrom"
+        app:layout_constraintTop_toTopOf="@+id/editTextDateTo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
