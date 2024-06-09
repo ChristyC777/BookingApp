@@ -386,13 +386,36 @@ public class Worker {
                                     Object value = entry.getValue();
                                     switch (key) {
                                         case "stars":
-                                            return room.getStars() == (int) value;
+                                            return room.getStars() >= (int) value;
                                         case "area":
-                                            return room.getArea().equals(value);
+                                            String stringValue = (String) value;
+                                            return room.getArea().toLowerCase().equals(stringValue.toLowerCase());
                                         case "noOfPersons":
-                                            return room.getNumberOfPersons() == (int) value;
-                                        case "roomName":
-                                            return room.getRoomName().equals(value);
+                                            return room.getNumberOfPersons() >= (int) value;
+                                        case "roomPrice":
+                                            return room.getPrice() >= (int) value;
+                                        case "date":
+                                            HashMap<String, String> dateMap = (HashMap<String, String>) value;
+
+                                            String stringDateFrom = dateMap.get("dateFrom");
+                                            String stringDateTo = dateMap.get("dateTo");
+
+                                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                                            Calendar dateFrom = Calendar.getInstance();
+                                            Calendar dateTo = Calendar.getInstance();
+
+                                            try {
+                                                dateFrom.setTime(dateFormat.parse(stringDateFrom));
+                                                dateTo.setTime(dateFormat.parse(stringDateTo));
+                                            } catch (ParseException e) {
+                                                // TODO Auto-generated catch block
+                                                e.printStackTrace();
+                                            }
+
+                                            /* Check if date is within range */
+                                            return room.getDateRange().isWithinRange(dateFrom, dateTo);
+
                                         default: 
                                             return false;
                                     }

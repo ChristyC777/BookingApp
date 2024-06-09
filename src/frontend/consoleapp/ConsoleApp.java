@@ -12,9 +12,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import javax.swing.text.Style;
-import javax.swing.text.StyledEditorKit;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
