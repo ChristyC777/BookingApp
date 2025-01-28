@@ -2,10 +2,10 @@
 
 ## Manager Functions ##
 
-1) Add accommodations.\
-2) Add available dates for accommodations.\
-3) View bookings for accommodations they own.\
-4) Management via console application.\
+1) Add accommodations.
+2) Add available dates for accommodations.
+3) View bookings for accommodations they own.
+4) Management via console application.
 5) Display total bookings by region for a specific time period.
 
 ## Tenant Functions ##
@@ -60,16 +60,16 @@ _**Note:** The processing of the reduce function takes place only after the proc
 
 Initial Communication:
 
-- The manager's console app communicates with the Master by sending all accommodation data.\
+- The manager's console app communicates with the Master by sending all accommodation data.
 - Upon receiving the data, the Master uses a hash function H(roomName) to determine the worker node where the accommodation will be stored:\
-        Example: nodeID = H(roomName) mod NumberOfNodes.\
-- The Master then sends the information to the selected worker node.\
+        Example: nodeID = H(roomName) mod NumberOfNodes.
+- The Master then sends the information to the selected worker node.
 
 _**Note:** The worker stores the information in appropriate data structures in its memory. Storing on disk is NOT allowed, except optionally for the photos if desired._
 
 Worker Functionality:
 
--> Stores the accommodation data in appropriate in-memory data structures.\
+-> Stores the accommodation data in appropriate in-memory data structures.
 
 _**Note:** Disk storage is not allowed, except optionally for storing photos._
 
@@ -91,14 +91,14 @@ _**Note:** Measures must be taken to prevent simultaneous bookings for the same 
 
 **Master:**
 - Written in Java and acts as a TCP server.
-        Restrictions:
+        Restrictions:\
             1- No third-party libraries (default ServerSocket of Java or HTTP protocol with a ready server only).\
             2- Must be multithreaded, serving multiple requests simultaneously, and communicate with Workers.
 
 **Workers:**
-- Written in Java and also multithreaded to handle multiple requests from the Master.\
-- Dynamically defined during the Master’s initialization (number of workers can be set via arguments or config file).\
-- Communicate with the Master via TCP sockets.\
+- Written in Java and also multithreaded to handle multiple requests from the Master.
+- Dynamically defined during the Master’s initialization (number of workers can be set via arguments or config file).
+- Communicate with the Master via TCP sockets.
 - Use in-memory data structures, and disk storage is not allowed.
 
 **Synchronization:**
