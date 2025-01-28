@@ -1,121 +1,119 @@
-# Εφαρμογή Booking #
+# Booking Application #
 
-## Λειτουργίες manager: ##
+## Manager Functions ##
 
--	Πρόσθεση καταλυμάτων.
+1) Add accommodations.
+2) Add available dates for accommodations.
+3) View bookings for accommodations they own.
+4) Management via console application.
+5) Display total bookings by region for a specific time period.
 
--	Πρόσθεση διαθέσιμων ημερομηνιών προς ενοικίαση για τα καταλύματα.
+## Tenant Functions ##
 
--	Εμφάνιση κρατήσεων για καταλύματα σε που έχουν σε ιδιοκτησία τους.
+1) Filtering (location, date, number of people, price, stars).
+2) Booking accommodations.
+3) Rating (1–5 stars).
+4) Actions via Android UI:
+        - search(): Sends filters to the Master asynchronously and displays the results.
+        - book(): Makes a booking for an accommodation from those returned by the search().
 
--	Διαχείριση μέσω console application.
 
--	Εμφάνιση συνολικών κρατήσεων ανά περιοχή για συγκεκριμένο χρονικό διάστημα.
+_**Note:** To handle the data volume, the system must be able to run in a distributed manner across multiple machines._
 
-## Λειτουργίες ενοικιαστή: ##
+## Tools ##
 
--	Φιλτράρισμα (location, date, numberOfPeople, price, stars).
-
--	Κράτηση.
-
--	Βαθμολόγηση με αστέρια (1 – 5).
-
--	Μέσω UI σε Android έχουμε ενέργειες:
-    - **search():** στέλνει φίλτρο στον Master ασύγχρονα και εμφανίζει τα αποτελέσματα.
-    - **book():** Κράτηση για ένα κατάλυμα από εκείνα που επέστρεψε η search()
-
-_**Σημείωση:** Προκειμένου το σύστημα να μπορεί να διαχειριστεί τον όγκο των δεδομένων θα πρέπει να μπορεί να τρέξει κατανεμημένα πάνω από ένα σύνολο μηχανημάτων._
-
-## Εργαλεία: ##
-
--	**MapReduce framework:** προγραμματιστικό μοντέλο που επιτρέπει την παράλληλη επεξεργασία μεγάλων όγκων δεδομένων (διαχείριση μεγάλου όγκου δεδομένων), βασίζεται στην χρήση των συναρτήσεων ‘Map’ και ‘Reduce’.
-    - **Map(key, value):** Είσοδος: γραμμές αρχείου κτλ. (key, value).
+-	**MapReduce Framework:** A programming model enabling the parallel processing of large datasets, using the Map and Reduce functions
+    - **Map(key, value):**
       
-      Μετατρέπει (key, value) -> (key2, value2).
+    Input: File lines, etc., as (key, value).
+ 	
+    Transforms (key, value) → (key2, value2).
+
+    Executes in parallel on different nodes with different inputs.
+ 	
+    Note: The degree of parallelism depends on the application and is defined by the user.
+
     
-      Εκτέλεση παράλληλα σε διαφορετικούς κόμβους με διαφορετικές εισόδους.
-    
-      _**Σημείωση:** Ο βαθμός παραλληλίας εξαρτάται από την εφαρμογή και ορίζεται από τον χρήστη._
-    
-    - **Reduce(key2, value2):** Συγχώνευση ενδιάμεσων values που σχετίζονται με το ίδιο κλειδί και παράγει τα τελικά αποτελέσματα. Για κάθε key -> list(values). 
+    - **Reduce(key2, value2):** Merges intermediate value2 elements associated with the same key2, producing the final results.
+      
+    For each key, it generates: key → list(values).
+    Note: Reduce processes data only after all Map functions are complete.
     
       _**Σημείωση:** Η επεξεργασία της συνάρτησης reduce γίνεται αφού έχει τελειώσει η επεξεργασία όλων των map συναρτήσεων._
 
--	**json:** Για προσθήκη καταλύματος, ακολουθεί το παρακάτω πρότυπο:
+-	**JSON** Used for adding accommodations in the following format:
 
     {
-      "roomName": "roomName",
-      "noOfPersons": 5,
-      "area": "Area1",
-      "stars": 3,
-      "noOfReviews": 15,
-      "roomImage": "/usr/bin/images/roomName.png"
+        "roomName": "roomName",
+        "noOfPersons": 5,
+        "area": "Area1",
+        "stars": 3,
+        "noOfReviews": 15,
+        "roomImage": "/usr/bin/images/roomName.png"
     }
 
 -	**Workers:** Nodes.
 
--	**Hashing:** Χρησιμοποιείται το όνομα δωματίου σαν input για το hashing.
+-	**Hashing:** Uses the room name as input for hashing.
 
-## Διαδικασίες: ##
--	Αρχική επικοινωνία του console app του manager γίνεται με τον Master, αποστέλλονται όλα τα στοιχεία του καταλύματος μέσω αυτής.
-Αφού ο Master λάβει τα στοιχεία, μέσω μιας hash συνάρτησης H(roomName) επιλέγει τον worker στον οποίο θα αποθηκευτεί το κατάλυμα. 
+## Procedures ##
 
-    π.χ. nodeID = H(roomName) mod NumberOfNodes
+Initial Communication:
 
--	Αφού επιλέξει τον κόμβο αποστέλλει τις πληροφορίες σε αυτόν.
+- The manager's console app communicates with the Master by sending all accommodation data.
+- Upon receiving the data, the Master uses a hash function H(roomName) to determine the worker node where the accommodation will be stored:
+        Example: nodeID = H(roomName) mod NumberOfNodes.
+- The Master then sends the information to the selected worker node.
 
-_**Παρατήρηση:** O worker αποθηκεύει τις πληροφορίες στις κατάλληλες δομές δεδομένων στην μνήμη του. ΔΕΝ επιτρέπεται αποθήκευση στον δίσκο, εκτός από τις φωτογραφίες αν το επιθυμούμε._
+_**Note:** The worker stores the information in appropriate data structures in its memory. Storing on disk is NOT allowed, except optionally for the photos if desired._
 
--	Όταν ένας χρήστης επιθυμεί να νοικιάσει ένα κατάλυμα αρχικά μέσω της εφαρμογής θα πρέπει να επιλέξει τα κατάλληλα φίλτρα για το κατάλυμα που επιθυμεί.
-  Τότε αποστέλλεται ένα request προς τον master που περιέχει τα φίλτρα. O Master θα πρέπει με διαδικασία MapReduce να επιστρέφει τα καταλύματα που ικανοποιούν τα κριτήρια.
+Worker Functionality:
 
--	Αφού προβληθούν στον χρήστη, εκείνος θα μπορεί να δει αναλυτικά τα στοιχεία και τη φωτογραφία του δωματίου και να προβεί σε κράτηση εφόσον επιθυμεί.
+-> Stores the accommodation data in appropriate in-memory data structures.
 
--	Όταν ο χρήστης πραγματοποιήσει κράτηση, στέλνει ένα request κράτησης στον Master για το συγκεκριμένο κατάλυμα και ο Master με τη σειρά του πρέπει να ενημερώσει κατάλληλα τον Worker που διαχειρίζεται το κατάλυμα για την κράτηση.
+_**Note:** Disk storage is not allowed, except optionally for storing photos._
 
-_**Προσοχή:** Θα πρέπει να ληφθούν μέτρα ώστε να μην μπορεί να συμβεί ταυτόχρονη κράτηση στο ίδιο κατάλυμα για τις ίδιες ημερομηνίες._
+Tenant Search:
 
-## Backend: ##
+-> When a tenant wants to book an accommodation, they select the appropriate filters via the app.
+-> A request containing the filters is sent to the Master.
+-> The Master uses a MapReduce process to return accommodations that meet the criteria.
+-> The results, including details and photos, are displayed to the tenant, who can proceed with booking.
 
--	Master σε γλώσσα Java και αποτελεί τον TCP server. **ΔΕΝ** επιτρέπεται χρήση έτοιμων libraries εκτός από default ServerSocket της Java ή HTTP πρωτοκόλλου με τη χρήση έτοιμου server.
+Booking:
 
--	O Master θα είναι πολυνηματικός, εξυπηρετεί πολλούς ταυτόχρονα και επικοινωνεί με τους workers.
+-> When a tenant books an accommodation, a booking request is sent to the Master.
+-> The Master updates the Worker managing the accommodation to reflect the booking.
+    
+_**Note:** Measures must be taken to prevent simultaneous bookings for the same accommodation on the same dates._
 
--	Οι Workers πρέπει να είναι σε Java και να είναι πολυνηματικοί για να εκτελούν πολλά requests από τον Master.
+## Backend ##
 
--	Οι Workers ορίζονται δυναμικά κατά το initialization του Master. Ο αριθμός τους είναι αυθαίρετος και ορίζεται είτε σε arguments είτε σε config αρχείο.
+**Master:**
+- Written in Java and acts as a TCP server.
+        Restrictions:
+            1- No third-party libraries (default ServerSocket of Java or HTTP protocol with a ready server only).
+            2- Must be multithreaded, serving multiple requests simultaneously, and communicate with Workers.
 
--	Master – Worker: Επικοινωνούν με TCP sockets.
+**Workers:**
+- Written in Java and also multithreaded to handle multiple requests from the Master.
+- Dynamically defined during the Master’s initialization (number of workers can be set via arguments or config file).
+- Communicate with the Master via TCP sockets.
+- Use in-memory data structures, and disk storage is not allowed.
 
--	Συγχρονισμός όπου απαραίτητο (synchronized, wait – notify), **ΟΧΙ** με τη χρήση έτοιμων εργαλείων της βιβλιοθήκης java.util.concurrent ή άλλων έτοιμων εργαλείων.
+**Synchronization:**
+        Use mechanisms such as synchronized, wait, and notify.
+        Restrictions: Do not use java.util.concurrent or any other ready-made tools.
 
--	Οι δομές δεδομένων πρέπει να είναι αποθηκευμένες στην μνήμη. 
+## Frontend ##
 
-_**ΠΡΟΣΟΧΗ: Απαγορεύεται η χρήση βάσης δεδομένων.**_
+-> Application – Master Communication: Via TCP sockets.
+-> Uses Threads.
 
-## Frontend: ##
--	Application – Master: TCP sockets
 
--	Χρήση Threads.
+### Relationship Diagram
 
-## Παραδοτέα εργασίας: ##
-Το project θα παραδοθεί σε δύο φάσεις:
-
-### Παραδοτέο Α: (Ημερομηνία παράδοσης: 7/04/2024) ###
-Στο παραδοτέο αυτό, θα πρέπει να έχετε ολοκληρώσει εντελώς το backend σύστημα και το manager console app, όπως ακριβώς σας έχει ζητηθεί, έτσι ώστε να μπορεί να
-χρησιμοποιηθεί στην επόμενη φάση της εργασίας του μαθήματος (προσθήκη δωματίου και διαθέσιμων ημερομηνιών για κρατήσεις, εμφάνιση κρατήσεων).
-Αντί για android application θα έχετε μια dummy εφαρμογή όπου θα στέλνει το τα φίλτρα για τα δωμάτια στον Master και θα λαμβάνει τα αντίστοιχα αποτελέσματα.
-Επίσης θα πρέπει ο χρήστης να μπορεί να κάνει κράτηση από την dummy εφαρμογή.
-
-### Παραδοτέο Β: (Ημερομηνία παράδοσης: 26/05/2024) ###
-Το παραδοτέο αυτό αποτελεί το Αndroid application, που περιγράφηκε παραπάνω. Στη φάση αυτή το σύστημα θα πρέπει να είναι πλήρως λειτουργικό και ολοκληρωμένο, με όλα τα components του να λειτουργούν σωστά.
-Σε αυτή τη φάση το manager console app θα πρέπει να μπορεί να εκτελέσει και το aggregation query για τις συνολικές κρατήσεις ανά περιοχή για ένα συγκεκριμένο χρονικό διάστημα.
-
-**Bonus (20%):** Active replication
-
-### Σχεδιάγραμμα Σχέσεων
-
-![Διάγραμμα Σχέσεων](/images/scheme.png)
+![Relationship Diagram](/images/scheme.png)
 
 ### Domain Model
 
